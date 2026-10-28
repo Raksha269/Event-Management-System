@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account | Gather{% endblock %}
+
+{% block content %}
+<section class="auth-container">
+    <div class="auth-card">
+        <p class="eyebrow">JOIN GATHER</p>
+        <h1>Create your account</h1>
+        <p class="auth-description">
+            Discover events and start making memorable connections.
+        </p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="form-field">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+                {% for error in form.username.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.email.id_for_label }}">Email address</label>
+                {{ form.email }}
+                {% for error in form.email.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.password1.id_for_label }}">Password</label>
+                {{ form.password1 }}
+                {% for error in form.password1.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+                {{ form.password2 }}
+                {% for error in form.password2.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="btn btn-primary auth-submit">
+                Create account
+            </button>
+        </form>
+
+        <p class="auth-footer">
+            Already have an account?
+            <a href="/accounts/login/">Sign in</a>
+        </p>
+    </div>
+</section>
+
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        padding: 48px 16px;
+    }
+
+    .auth-card {
+        width: 100%;
+        max-width: 460px;
+        padding: 36px;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        box-shadow: 0 12px 35px rgba(23, 37, 84, 0.08);
+    }
+
+    .eyebrow {
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+
+    .auth-card h1 {
+        margin-bottom: 8px;
+        color: #172554;
+    }
+
+    .auth-description,
+    .auth-footer {
+        color: #64748b;
+        line-height: 1.6;
+    }
+
+    .form-field {
+        margin-top: 20px;
+    }
+
+    .form-field label {
+        display: block;
+        margin-bottom: 7px;
+        color: #172554;
+        font-weight: 600;
+    }
+
+    .form-field input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font: inherit;
+    }
+
+    .form-field input:focus {
+        outline: 2px solid #93c5fd;
+        border-color: #2563eb;
+    }
+
+    .auth-submit {
+        width: 100%;
+        margin-top: 24px;
+        padding: 13px;
+        cursor: pointer;
+    }
+
+    .field-error,
+    .form-errors {
+        color: #b91c1c;
+        font-size: 14px;
+    }
+
+    .auth-footer {
+        margin-top: 24px;
+        text-align: center;
+    }
+
+    .auth-footer a {
+        color: #2563eb;
+        font-weight: 600;
+    }
+
+    @media (max-width: 480px) {
+        .auth-card {
+            padding: 24px;
+        }
+    }
+</style>
+{% endblock %}
