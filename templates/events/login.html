@@ -1,0 +1,41 @@
+
+{% extends "base.html" %}
+
+{% block title %}Login | Gather{% endblock %}
+
+{% block content %}
+<section style="max-width: 480px; margin: 60px auto; padding: 24px;">
+    <h1>Welcome back</h1>
+    <p>Log in to your Gather account.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div role="alert" style="color: #b91c1c; margin-bottom: 16px;">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div style="margin-bottom: 18px;">
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+
+                {% for error in field.errors %}
+                    <p style="color: #b91c1c;">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <button type="submit">Log in</button>
+    </form>
+
+    <p>
+        Don't have an account?
+        <a href="{% url 'register' %}">Create one</a>
+    </p>
+</section>
+{% endblock %}

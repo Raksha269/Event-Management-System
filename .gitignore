@@ -1,0 +1,19 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local database
+db.sqlite3
+
+# Environment variables and secrets
+.env
+
+# Test and coverage files
+.coverage
+htmlcov/

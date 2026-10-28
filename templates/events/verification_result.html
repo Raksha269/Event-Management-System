@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Email Verification | Gather{% endblock %}
+
+{% block content %}
+<section style="max-width: 600px; margin: 60px auto; padding: 24px;">
+    {% if success %}
+        <h1>Email verified!</h1>
+        <p>{{ message }}</p>
+        <p>Your email verification is complete.</p>
+    {% else %}
+        <h1>Verification unsuccessful</h1>
+        <p>{{ message }}</p>
+    {% endif %}
+
+    <p><a href="/accounts/register/">Return to registration</a></p>
+</section>
+{% endblock %}
