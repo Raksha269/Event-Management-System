@@ -17,3 +17,6 @@ db.sqlite3
 # Test and coverage files
 .coverage
 htmlcov/
+
+# Generated ticket QR codes
+tickets/qr/
