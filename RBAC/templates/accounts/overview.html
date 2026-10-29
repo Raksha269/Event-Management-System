@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Overview{% endblock %}
+{% block content %}
+<h1>Welcome, {{ user.get_username }}</h1>
+<p>You are signed in as <strong>{{ current_role_label }}</strong>.</p>
+<div class="grid">
+{% for card in cards %}
+  <section class="card"><h2>{{ card.title }}</h2><p>{{ card.text }}</p><a class="btn" href="{{ card.href }}">{{ card.action }}</a></section>
+{% endfor %}
+</div>
+{% endblock %}

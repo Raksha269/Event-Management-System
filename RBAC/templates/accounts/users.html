@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% block title %}Users & roles{% endblock %}
+{% block content %}
+<h1>Users &amp; roles</h1>
+<form method="get" class="card" role="search">
+  <label for="q">Search by name or email</label><input id="q" name="q" value="{{ q }}">
+  <label for="role">Role</label>
+  <select id="role" name="role"><option value="">All roles</option>
+    {% for value, label in roles %}<option value="{{ value }}"{% if value == role %} selected{% endif %}>{{ label }}</option>{% endfor %}
+  </select>
+  <p><button class="btn" type="submit">Filter</button></p>
+</form>
+<div class="tablewrap"><table>
+  <caption class="crumbs">{{ page.paginator.count }} user{{ page.paginator.count|pluralize }}</caption>
+  <thead><tr><th scope="col">User</th><th scope="col">Email</th><th scope="col">Role</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+  <tbody>
+  {% for u in page %}
+    <tr><td>{{ u.username }}</td><td>{{ u.email }}</td><td><span class="badge">{{ u.get_role_display }}</span></td>
+    <td>{% if u.is_active %}Active{% else %}Suspended{% endif %}</td>
+    <td><a href="{% url 'ui:role-change' u.pk %}">Change role</a></td></tr>
+  {% empty %}
+    <tr><td colspan="5">No users match these filters. <a href="{% url 'ui:users' %}">Clear filters</a></td></tr>
+  {% endfor %}
+  </tbody>
+</table></div>
+{% if page.has_other_pages %}
+<p>{% if page.has_previous %}<a href="?q={{ q|urlencode }}&role={{ role|urlencode }}&page={{ page.previous_page_number }}">Previous</a>{% endif %}
+Page {{ page.number }} of {{ page.paginator.num_pages }}
+{% if page.has_next %}<a href="?q={{ q|urlencode }}&role={{ role|urlencode }}&page={{ page.next_page_number }}">Next</a>{% endif %}</p>
+{% endif %}
+{% endblock %}
