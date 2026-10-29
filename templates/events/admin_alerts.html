@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Security Alerts | Gather{% endblock %}
+
+{% block content %}
+<div style="max-width: 1100px; margin: 0 auto;">
+    <div class="page-header" style="margin-bottom: 24px;">
+        <h1>Security Monitoring & Incident Alerts</h1>
+        <p class="muted">Real-time detection and response for suspicious activities, brute-force attempts, account lockouts, and registration rate spikes (EMS-SR-005).</p>
+    </div>
+
+    <!-- Security KPI Metric Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        <div class="card" style="margin-bottom: 0; padding: 18px; text-align: center;">
+            <div style="font-size: 13px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Total Alerts</div>
+            <div style="font-size: 32px; font-weight: 800; color: var(--navy); margin-top: 6px;">{{ total_count }}</div>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 18px; text-align: center; border-left: 4px solid #dc2626;">
+            <div style="font-size: 13px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Unresolved</div>
+            <div style="font-size: 32px; font-weight: 800; color: #dc2626; margin-top: 6px;">{{ unresolved_count }}</div>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 18px; text-align: center; border-left: 4px solid #ea580c;">
+            <div style="font-size: 13px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">High / Critical</div>
+            <div style="font-size: 32px; font-weight: 800; color: #ea580c; margin-top: 6px;">{{ high_count }}</div>
+        </div>
+        <div class="card" style="margin-bottom: 0; padding: 18px; text-align: center; border-left: 4px solid #7c3aed;">
+            <div style="font-size: 13px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Account Lockouts</div>
+            <div style="font-size: 32px; font-weight: 800; color: #7c3aed; margin-top: 6px;">{{ lockout_count }}</div>
+        </div>
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="card" style="margin-bottom: 24px;">
+        <form method="get" action="{% url 'admin_alerts_list' %}" style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <select name="severity" class="form-control" style="flex: 1; min-width: 160px;">
+                <option value="">All Severities</option>
+                {% for sev_code, sev_name in severity_choices %}
+                    <option value="{{ sev_code }}" {% if selected_severity == sev_code %}selected{% endif %}>{{ sev_name }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="type" class="form-control" style="flex: 1; min-width: 200px;">
+                <option value="">All Alert Types</option>
+                {% for type_code, type_name in type_choices %}
+                    <option value="{{ type_code }}" {% if selected_type == type_code %}selected{% endif %}>{{ type_name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="button" style="padding: 10px 20px;">Filter</button>
+            {% if selected_severity or selected_type %}
+                <a href="{% url 'admin_alerts_list' %}" class="button button-secondary" style="padding: 10px 16px;">Reset</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Security Incidents Table -->
+    <div class="card">
+        <h2 style="font-size: 18px; margin-top: 0; margin-bottom: 16px;">Incidents & Audit Events ({{ alerts.count }})</h2>
+
+        {% if alerts %}
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border); text-align: left;">
+                            <th style="padding: 10px 12px;">Timestamp</th>
+                            <th style="padding: 10px 12px;">Severity</th>
+                            <th style="padding: 10px 12px;">Type</th>
+                            <th style="padding: 10px 12px;">Target User</th>
+                            <th style="padding: 10px 12px;">Details</th>
+                            <th style="padding: 10px 12px;">Status</th>
+                            <th style="padding: 10px 12px; text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in alerts %}
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px; white-space: nowrap; color: var(--muted); font-size: 13px;">
+                                    {{ a.created_at|date:"Y-m-d H:i:s" }}
+                                </td>
+                                <td style="padding: 12px;">
+                                    {% if a.severity == 'CRITICAL' %}
+                                        <span class="status-badge" style="background: #7f1d1d; color: #ffffff; font-weight: 700;">CRITICAL</span>
+                                    {% elif a.severity == 'HIGH' %}
+                                        <span class="status-badge" style="background: #fee2e2; color: #b91c1c; font-weight: 700;">HIGH</span>
+                                    {% elif a.severity == 'MEDIUM' %}
+                                        <span class="status-badge" style="background: #fef3c7; color: #b45309; font-weight: 700;">MEDIUM</span>
+                                    {% else %}
+                                        <span class="status-badge" style="background: #f1f5f9; color: #475569;">LOW</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 12px; font-weight: 600;">
+                                    {{ a.get_alert_type_display }}
+                                </td>
+                                <td style="padding: 12px;">
+                                    {% if a.target_user %}
+                                        <strong>{{ a.target_user.username }}</strong>
+                                    {% else %}
+                                        <span class="muted">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 12px; max-width: 320px; word-break: break-word;">
+                                    {{ a.details }}
+                                </td>
+                                <td style="padding: 12px;">
+                                    {% if a.is_resolved %}
+                                        <span class="status-badge" style="background: #dcfce7; color: #15803d;">Resolved</span>
+                                    {% else %}
+                                        <span class="status-badge" style="background: #fee2e2; color: #dc2626;">Active</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 12px; text-align: right;">
+                                    {% if not a.is_resolved %}
+                                        <form method="post" action="{% url 'admin_alert_resolve' a.pk %}" style="display: inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="button button-secondary" style="padding: 4px 10px; font-size: 12px;">
+                                                Resolve
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span class="muted" style="font-size: 12px;">Closed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 48px 24px; color: var(--muted);">
+                <p style="font-size: 16px; margin: 0 0 8px;">No security incidents found.</p>
+                <p style="font-size: 13px; margin: 0;">No alerts matching the selected criteria have been triggered.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

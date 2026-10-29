@@ -104,6 +104,13 @@ def create_registration(user, event_id, ticket_type_id=None, quantity=1):
             quantity=quantity,
             status=Registration.Status.PENDING,
         )
+
+        try:
+            from .security import track_abnormal_registration
+            track_abnormal_registration(event, user=user)
+        except Exception:
+            pass
+
         return registration
 
 

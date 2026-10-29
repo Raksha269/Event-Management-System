@@ -236,6 +236,7 @@
                     {% endif %}
                     {% if user.is_administrator %}
                         <a href="{% url 'admin_user_list' %}">User Admin</a>
+                        <a href="{% url 'admin_alerts_list' %}">Security Alerts</a>
                     {% endif %}
                     <a href="/accounts/profile/">My Profile</a>
 

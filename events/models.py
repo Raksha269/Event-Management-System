@@ -38,6 +38,8 @@ class UserProfile(models.Model):
         null=True,
         unique=True,
     )
+    failed_login_attempts = models.PositiveSmallIntegerField(default=0)
+    locked_until = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -95,6 +97,55 @@ if not hasattr(User, "is_administrator"):
     User.is_administrator = property(
         lambda self: getattr(self, "role", None) == Role.ADMINISTRATOR or self.is_superuser
     )
+
+if not hasattr(User, "failed_login_attempts"):
+    def _get_failed_attempts(self):
+        profile = getattr(self, "profile", None)
+        return profile.failed_login_attempts if profile else 0
+
+    def _set_failed_attempts(self, val):
+        profile = getattr(self, "profile", None)
+        if profile is None and getattr(self, "pk", None):
+            try:
+                profile = UserProfile.objects.create(user=self)
+            except Exception:
+                profile = getattr(self, "profile", None)
+        if profile is not None:
+            profile.failed_login_attempts = val
+            if profile.pk:
+                profile.save(update_fields=["failed_login_attempts"])
+
+    User.failed_login_attempts = property(_get_failed_attempts, _set_failed_attempts)
+
+if not hasattr(User, "locked_until"):
+    def _get_locked_until(self):
+        profile = getattr(self, "profile", None)
+        return profile.locked_until if profile else None
+
+    def _set_locked_until(self, val):
+        profile = getattr(self, "profile", None)
+        if profile is None and getattr(self, "pk", None):
+            try:
+                profile = UserProfile.objects.create(user=self)
+            except Exception:
+                profile = getattr(self, "profile", None)
+        if profile is not None:
+            profile.locked_until = val
+            if profile.pk:
+                profile.save(update_fields=["locked_until"])
+
+    User.locked_until = property(_get_locked_until, _set_locked_until)
+
+if not hasattr(User, "is_locked"):
+    def _is_locked(self):
+        locked_until = self.locked_until
+        if not locked_until:
+            return False
+        if timezone.is_naive(locked_until):
+            locked_until = timezone.make_aware(locked_until, timezone.utc)
+        return locked_until > timezone.now()
+
+    User.is_locked = property(_is_locked)
 
 
 class Event(models.Model):
@@ -334,3 +385,54 @@ class Refund(models.Model):
         default=Status.PENDING,
     )
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class SecurityAlert(models.Model):
+    """
+    EMS-SR-005: Security audit log and suspicious-activity alerts.
+    Tracks repeated failed logins, account lockouts, and abnormal registration bursts.
+    """
+
+    class AlertType(models.TextChoices):
+        FAILED_LOGIN_BURST = "FAILED_LOGIN_BURST", "Repeated Failed Logins"
+        ACCOUNT_LOCKOUT = "ACCOUNT_LOCKOUT", "Account Lockout Triggered"
+        ABNORMAL_REGISTRATION_RATE = (
+            "ABNORMAL_REGISTRATION_RATE",
+            "Abnormal Registration Rate",
+        )
+        UNAUTHORIZED_ACCESS_ATTEMPT = (
+            "UNAUTHORIZED_ACCESS_ATTEMPT",
+            "Unauthorized Access Attempt",
+        )
+
+    class Severity(models.TextChoices):
+        LOW = "LOW", "Low"
+        MEDIUM = "MEDIUM", "Medium"
+        HIGH = "HIGH", "High"
+        CRITICAL = "CRITICAL", "Critical"
+
+    alert_type = models.CharField(
+        max_length=40,
+        choices=AlertType.choices,
+    )
+    severity = models.CharField(
+        max_length=20,
+        choices=Severity.choices,
+        default=Severity.MEDIUM,
+    )
+    target_user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="security_alerts",
+    )
+    details = models.TextField()
+    is_resolved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"[{self.severity}] {self.get_alert_type_display()} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"

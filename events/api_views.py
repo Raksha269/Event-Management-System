@@ -20,11 +20,12 @@ except ImportError:
     )
     from RBAC.accounts.roles import Role
 
-from .models import Event, Registration, TicketType
+from .models import Event, Registration, SecurityAlert, TicketType
 from .reports import build_csv_response
 from .serializers import (
     EventSerializer,
     RegistrationSerializer,
+    SecurityAlertSerializer,
     TicketTypeSerializer,
     UserAdminSerializer,
 )
@@ -342,3 +343,52 @@ class AdminUserDetailUpdateAPIView(APIView):
             return Response(UserAdminSerializer(updated_user).data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AdminSecurityAlertsListAPIView(generics.ListAPIView):
+    """
+    GET /api/v1/admin/alerts/ - Administrator views all security alerts (EMS-SR-005).
+    Supports filtering by ?severity=HIGH, ?type=ACCOUNT_LOCKOUT, and ?is_resolved=false.
+    """
+
+    serializer_class = SecurityAlertSerializer
+    permission_classes = [permissions.IsAuthenticated, IsAdministrator]
+
+    def get_queryset(self):
+        queryset = SecurityAlert.objects.all().select_related("target_user")
+        severity = self.request.query_params.get("severity")
+        alert_type = self.request.query_params.get("type") or self.request.query_params.get("alert_type")
+        is_resolved = self.request.query_params.get("is_resolved")
+
+        if severity:
+            queryset = queryset.filter(severity__iexact=severity.strip())
+        if alert_type:
+            queryset = queryset.filter(alert_type__iexact=alert_type.strip())
+        if is_resolved is not None:
+            if is_resolved.strip().lower() in ["true", "1"]:
+                queryset = queryset.filter(is_resolved=True)
+            elif is_resolved.strip().lower() in ["false", "0"]:
+                queryset = queryset.filter(is_resolved=False)
+
+        return queryset
+
+
+class AdminSecurityAlertResolveAPIView(APIView):
+    """
+    POST /api/v1/admin/alerts/{id}/resolve/ - Administrator resolves an alert (EMS-SR-005).
+    """
+
+    permission_classes = [permissions.IsAuthenticated, IsAdministrator]
+
+    def post(self, request, pk):
+        alert = get_object_or_404(SecurityAlert, pk=pk)
+        alert.is_resolved = True
+        alert.save(update_fields=["is_resolved"])
+
+        audit_log.info(
+            "security_alert_resolved admin_id=%s alert_id=%s",
+            request.user.pk,
+            alert.pk,
+        )
+        serializer = SecurityAlertSerializer(alert)
+        return Response(serializer.data, status=status.HTTP_200_OK)

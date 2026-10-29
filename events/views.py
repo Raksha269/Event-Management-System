@@ -27,8 +27,13 @@ from .forms import (
     RegistrationForm,
     TicketTypeForm,
 )
-from .models import Event, Registration, TicketType, UserProfile
+from .models import Event, Registration, SecurityAlert, TicketType, UserProfile
 from .reports import build_csv_response, get_event_report_data
+from .security import (
+    check_account_lockout,
+    record_login_success,
+    track_login_failure,
+)
 from .services import create_registration
 
 
@@ -127,13 +132,32 @@ def verify_email(request, token):
 
 def login_view(request):
     if request.method == "POST":
+        username = request.POST.get("username", "")
+        user_candidate = (
+            User.objects.filter(username=username).first()
+            or User.objects.filter(email__iexact=username).first()
+        )
+
+        if user_candidate:
+            is_locked, lockout_msg = check_account_lockout(user_candidate)
+            if is_locked:
+                messages.error(request, lockout_msg)
+                form = GatherLoginForm(request, data=request.POST)
+                return render(request, "events/login.html", {"form": form})
+
         form = GatherLoginForm(request, data=request.POST)
 
         if form.is_valid():
             user = form.get_user()
+            record_login_success(user)
             login(request, user)
             messages.success(request, "Welcome back!")
             return redirect("register")
+        else:
+            if username:
+                _, err_msg = track_login_failure(username, request=request)
+                if "locked" in err_msg.lower():
+                    messages.error(request, err_msg)
     else:
         form = GatherLoginForm(request)
 
@@ -563,3 +587,59 @@ def admin_user_change_role(request, pk):
         f"Role for '{target.username}' changed from '{old_role}' to '{new_role}'.",
     )
     return redirect("admin_user_list")
+
+
+@role_required(Role.ADMINISTRATOR)
+def admin_alerts_list(request):
+    """
+    Administrator monitoring panel for security alerts (EMS-SR-005).
+    """
+    alerts = SecurityAlert.objects.all().select_related("target_user")
+    severity = request.GET.get("severity", "").strip()
+    alert_type = request.GET.get("type", "").strip()
+
+    if severity:
+        alerts = alerts.filter(severity=severity)
+    if alert_type:
+        alerts = alerts.filter(alert_type=alert_type)
+
+    total_count = SecurityAlert.objects.count()
+    unresolved_count = SecurityAlert.objects.filter(is_resolved=False).count()
+    high_count = SecurityAlert.objects.filter(
+        severity__in=[SecurityAlert.Severity.HIGH, SecurityAlert.Severity.CRITICAL]
+    ).count()
+    lockout_count = SecurityAlert.objects.filter(
+        alert_type=SecurityAlert.AlertType.ACCOUNT_LOCKOUT
+    ).count()
+
+    return render(
+        request,
+        "events/admin_alerts.html",
+        {
+            "alerts": alerts,
+            "total_count": total_count,
+            "unresolved_count": unresolved_count,
+            "high_count": high_count,
+            "lockout_count": lockout_count,
+            "selected_severity": severity,
+            "selected_type": alert_type,
+            "severity_choices": SecurityAlert.Severity.choices,
+            "type_choices": SecurityAlert.AlertType.choices,
+        },
+    )
+
+
+@role_required(Role.ADMINISTRATOR)
+def admin_alert_resolve(request, pk):
+    """
+    Administrator marks a security alert as resolved (EMS-SR-005).
+    """
+    if request.method != "POST":
+        return HttpResponseBadRequest("POST request required.")
+
+    alert = get_object_or_404(SecurityAlert, pk=pk)
+    alert.is_resolved = True
+    alert.save(update_fields=["is_resolved"])
+
+    messages.success(request, f"Alert #{alert.pk} marked as resolved.")
+    return redirect("admin_alerts_list")

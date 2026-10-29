@@ -105,6 +105,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Modern, salted password hashers (EMS-SR-003)
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
+
+# Security headers and transport configuration (EMS-SR-001)
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/

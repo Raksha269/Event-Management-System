@@ -3,7 +3,7 @@ from decimal import Decimal
 from rest_framework import serializers
 
 from django.contrib.auth.models import User
-from .models import Event, Registration, TicketType
+from .models import Event, Registration, SecurityAlert, TicketType
 
 
 class TicketTypeSerializer(serializers.ModelSerializer):
@@ -152,3 +152,37 @@ class UserAdminSerializer(serializers.ModelSerializer):
             instance.is_active = validated_data["is_active"]
             instance.save(update_fields=["is_active"])
         return instance
+
+
+class SecurityAlertSerializer(serializers.ModelSerializer):
+    alert_type_display = serializers.CharField(
+        source="get_alert_type_display", read_only=True
+    )
+    severity_display = serializers.CharField(
+        source="get_severity_display", read_only=True
+    )
+    target_username = serializers.CharField(
+        source="target_user.username", read_only=True, default=None
+    )
+
+    class Meta:
+        model = SecurityAlert
+        fields = [
+            "id",
+            "alert_type",
+            "alert_type_display",
+            "severity",
+            "severity_display",
+            "target_user",
+            "target_username",
+            "details",
+            "is_resolved",
+            "created_at",
+        ]
+        read_only_fields = [
+            "id",
+            "alert_type_display",
+            "severity_display",
+            "target_username",
+            "created_at",
+        ]

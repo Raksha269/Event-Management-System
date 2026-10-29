@@ -12,4 +12,6 @@ urlpatterns = [
     path("events/<int:pk>/reports/attendees.csv", api_views.EventAttendeesCSVReportAPIView.as_view(), name="api_event_report_csv"),
     path("admin/users/", api_views.AdminUserListAPIView.as_view(), name="api_admin_users_list"),
     path("admin/users/<int:pk>/", api_views.AdminUserDetailUpdateAPIView.as_view(), name="api_admin_users_detail_update"),
+    path("admin/alerts/", api_views.AdminSecurityAlertsListAPIView.as_view(), name="api_admin_alerts_list"),
+    path("admin/alerts/<int:pk>/resolve/", api_views.AdminSecurityAlertResolveAPIView.as_view(), name="api_admin_alert_resolve"),
 ]

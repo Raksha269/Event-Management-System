@@ -5,6 +5,7 @@ from .models import (
     Payment,
     Refund,
     Registration,
+    SecurityAlert,
     Ticket,
     TicketType,
     UserProfile,
@@ -17,3 +18,4 @@ admin.site.register(Registration)
 admin.site.register(Payment)
 admin.site.register(Ticket)
 admin.site.register(Refund)
+admin.site.register(SecurityAlert)
