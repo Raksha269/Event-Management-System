@@ -7,6 +7,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("events.urls")),
     path("events/", include("events.event_urls")),
+    path("admin-portal/", include("events.admin_urls")),
     path("api/v1/", include("events.api_urls")),
     path("", event_views.discover_events, name="home"),
 ]

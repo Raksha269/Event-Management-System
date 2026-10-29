@@ -28,6 +28,7 @@ from .forms import (
     TicketTypeForm,
 )
 from .models import Event, Registration, TicketType, UserProfile
+from .reports import build_csv_response, get_event_report_data
 from .services import create_registration
 
 
@@ -433,3 +434,132 @@ def event_register(request, pk):
             messages.error(request, str(err))
 
     return redirect("event_detail", pk=event.pk)
+
+
+# --- Reporting & Administration Views (EMS-F-050, EMS-F-051) ---
+
+
+@login_required
+def event_report(request, pk):
+    """
+    On-screen attendee list and revenue report for an event (EMS-F-050).
+    Only owning organizer or administrator can access.
+    """
+    event = get_object_or_404(Event, pk=pk)
+
+    is_owner = event.organizer == request.user
+    is_admin = getattr(request.user, "is_administrator", False) or (
+        getattr(request.user, "role", None) == Role.ADMINISTRATOR
+    )
+
+    if not is_owner and not is_admin:
+        raise PermissionDenied("You do not have permission to view reports for this event.")
+
+    report = get_event_report_data(event)
+    return render(
+        request,
+        "events/event_report.html",
+        {
+            "event": event,
+            "report": report,
+        },
+    )
+
+
+@login_required
+def event_report_csv(request, pk):
+    """
+    Download attendee and revenue report in CSV format (EMS-F-050).
+    Only owning organizer or administrator can access.
+    """
+    event = get_object_or_404(Event, pk=pk)
+
+    is_owner = event.organizer == request.user
+    is_admin = getattr(request.user, "is_administrator", False) or (
+        getattr(request.user, "role", None) == Role.ADMINISTRATOR
+    )
+
+    if not is_owner and not is_admin:
+        raise PermissionDenied("You do not have permission to download reports for this event.")
+
+    return build_csv_response(event)
+
+
+@role_required(Role.ADMINISTRATOR)
+def admin_user_list(request):
+    """
+    Administrator view to list and manage all user accounts (EMS-F-051).
+    """
+    users = User.objects.all().select_related("profile").order_by("-date_joined")
+    query = request.GET.get("q", "").strip()
+    role_filter = request.GET.get("role", "").strip()
+
+    if query:
+        users = users.filter(
+            models.Q(username__icontains=query) | models.Q(email__icontains=query)
+        )
+    if role_filter:
+        users = users.filter(profile__role=role_filter)
+
+    return render(
+        request,
+        "events/admin_user_list.html",
+        {
+            "users": users,
+            "query": query,
+            "selected_role": role_filter,
+            "available_roles": Role.choices,
+        },
+    )
+
+
+@role_required(Role.ADMINISTRATOR)
+def admin_user_toggle_active(request, pk):
+    """
+    Administrator toggles user account activation status (EMS-F-051).
+    Deactivated accounts cannot log in.
+    """
+    if request.method != "POST":
+        return HttpResponseBadRequest("POST request required.")
+
+    target = get_object_or_404(User, pk=pk)
+
+    if target.pk == request.user.pk:
+        messages.error(request, "Administrators cannot deactivate their own account.")
+        return redirect("admin_user_list")
+
+    target.is_active = not target.is_active
+    target.save(update_fields=["is_active"])
+
+    status_str = "activated" if target.is_active else "deactivated"
+    messages.success(request, f"User '{target.username}' has been {status_str}.")
+    return redirect("admin_user_list")
+
+
+@role_required(Role.ADMINISTRATOR)
+def admin_user_change_role(request, pk):
+    """
+    Administrator changes the role of a user account (EMS-F-051).
+    Takes effect immediately.
+    """
+    if request.method != "POST":
+        return HttpResponseBadRequest("POST request required.")
+
+    target = get_object_or_404(User, pk=pk)
+    new_role = request.POST.get("role")
+
+    if target.pk == request.user.pk:
+        messages.error(request, "Administrators cannot change their own role.")
+        return redirect("admin_user_list")
+
+    if new_role not in Role.values:
+        messages.error(request, f"Invalid role selection: '{new_role}'.")
+        return redirect("admin_user_list")
+
+    old_role = target.role
+    target.role = new_role
+    messages.success(
+        request,
+        f"Role for '{target.username}' changed from '{old_role}' to '{new_role}'.",
+    )
+    return redirect("admin_user_list")

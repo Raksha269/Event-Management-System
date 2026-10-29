@@ -1,24 +1,36 @@
+import logging
+
+from django.contrib.auth.models import User
 from django.db import models
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, permissions, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 try:
-    from accounts.permissions import IsEventOwner, IsOrganizer
+    from accounts.permissions import IsAdministrator, IsEventOwner, IsOrganizer
     from accounts.roles import Role
 except ImportError:
-    from RBAC.accounts.permissions import IsEventOwner, IsOrganizer
+    from RBAC.accounts.permissions import (
+        IsAdministrator,
+        IsEventOwner,
+        IsOrganizer,
+    )
     from RBAC.accounts.roles import Role
 
 from .models import Event, Registration, TicketType
+from .reports import build_csv_response
 from .serializers import (
     EventSerializer,
     RegistrationSerializer,
     TicketTypeSerializer,
+    UserAdminSerializer,
 )
 from .services import create_registration
+
+audit_log = logging.getLogger("ems.audit")
 
 
 class EventListCreateAPIView(generics.ListCreateAPIView):
@@ -221,3 +233,112 @@ class EventRegistrationAPIView(APIView):
 
         serializer = RegistrationSerializer(registration)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class EventAttendeesCSVReportAPIView(APIView):
+    """
+    GET /api/v1/events/{id}/reports/attendees.csv - Owning organizer or admin downloads CSV report (EMS-F-050).
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, pk):
+        event = get_object_or_404(Event, pk=pk)
+
+        # Owning organizer or administrator permitted
+        is_owner = event.organizer_id == request.user.pk
+        is_admin = getattr(request.user, "is_administrator", False) or (
+            getattr(request.user, "role", None) == Role.ADMINISTRATOR
+        )
+
+        if not is_owner and not is_admin:
+            raise PermissionDenied(
+                "You do not have permission to download reports for this event."
+            )
+
+        return build_csv_response(event)
+
+
+class AdminUserListAPIView(generics.ListAPIView):
+    """
+    GET /api/v1/admin/users/ - Administrator lists all users with role and status (EMS-F-051).
+    """
+
+    permission_classes = [permissions.IsAuthenticated, IsAdministrator]
+    serializer_class = UserAdminSerializer
+
+    def get_queryset(self):
+        queryset = User.objects.all().order_by("-date_joined")
+        q = self.request.query_params.get("q")
+        role = self.request.query_params.get("role")
+
+        if q:
+            queryset = queryset.filter(
+                models.Q(username__icontains=q) | models.Q(email__icontains=q)
+            )
+        if role:
+            # Match role in UserProfile
+            queryset = queryset.filter(profile__role=role)
+
+        return queryset
+
+
+class AdminUserDetailUpdateAPIView(APIView):
+    """
+    GET /api/v1/admin/users/{id}/ - Retrieve user.
+    PATCH /api/v1/admin/users/{id}/ - Administrator activates, deactivates, or changes role (EMS-F-051).
+    """
+
+    permission_classes = [permissions.IsAuthenticated, IsAdministrator]
+
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        serializer = UserAdminSerializer(user)
+        return Response(serializer.data)
+
+    def patch(self, request, pk):
+        target = get_object_or_404(User, pk=pk)
+
+        # Safety: Administrator cannot deactivate their own account
+        if target.pk == request.user.pk and request.data.get("is_active") is False:
+            return Response(
+                {
+                    "code": "CANNOT_DEACTIVATE_SELF",
+                    "message": "Administrators cannot deactivate their own account.",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Safety: Administrator cannot change their own role
+        new_role = request.data.get("role")
+        if (
+            target.pk == request.user.pk
+            and new_role is not None
+            and new_role != target.role
+        ):
+            return Response(
+                {
+                    "code": "CANNOT_CHANGE_OWN_ROLE",
+                    "message": "Administrators cannot change their own role.",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = UserAdminSerializer(target, data=request.data, partial=True)
+        if serializer.is_valid():
+            old_role = target.role
+            old_active = target.is_active
+            updated_user = serializer.save()
+
+            audit_log.info(
+                "admin_user_update actor=%s target=%s role=%s->%s active=%s->%s",
+                request.user.pk,
+                target.pk,
+                old_role,
+                updated_user.role,
+                old_active,
+                updated_user.is_active,
+            )
+            return Response(UserAdminSerializer(updated_user).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

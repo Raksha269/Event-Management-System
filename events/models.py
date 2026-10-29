@@ -54,6 +54,8 @@ def _get_user_role(self):
     profile = getattr(self, "profile", None)
     if profile is not None:
         return getattr(profile, "role", Role.ATTENDEE)
+    if getattr(self, "is_superuser", False):
+        return Role.ADMINISTRATOR
     return Role.ATTENDEE
 
 
@@ -64,6 +66,16 @@ def _set_user_role(self, value):
         profile.role = value
         if profile.pk:
             profile.save(update_fields=["role"])
+    else:
+        if getattr(self, "pk", None):
+            try:
+                UserProfile.objects.create(
+                    user=self,
+                    role=value,
+                    email_verified=True,
+                )
+            except Exception:
+                pass
 
 
 if not hasattr(User, "role"):

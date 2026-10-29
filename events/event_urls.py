@@ -12,4 +12,6 @@ urlpatterns = [
     path("<int:pk>/unpublish/", views.event_unpublish, name="event_unpublish"),
     path("<int:pk>/tickets/", views.ticket_types_manage, name="ticket_types_manage"),
     path("<int:pk>/register/", views.event_register, name="event_register"),
+    path("<int:pk>/report/", views.event_report, name="event_report"),
+    path("<int:pk>/report/attendees.csv", views.event_report_csv, name="event_report_csv"),
 ]

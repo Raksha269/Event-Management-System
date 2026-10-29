@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from rest_framework import serializers
 
+from django.contrib.auth.models import User
 from .models import Event, Registration, TicketType
 
 
@@ -101,3 +102,53 @@ class RegistrationSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = ["id", "event", "ticket_type", "status", "created_at"]
+
+
+class UserAdminSerializer(serializers.ModelSerializer):
+    role = serializers.CharField(required=False)
+    email_verified = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "email",
+            "role",
+            "is_active",
+            "email_verified",
+            "date_joined",
+            "last_login",
+        ]
+        read_only_fields = [
+            "id",
+            "username",
+            "email",
+            "date_joined",
+            "last_login",
+            "email_verified",
+        ]
+
+    def get_email_verified(self, obj):
+        profile = getattr(obj, "profile", None)
+        return bool(profile and profile.email_verified)
+
+    def validate_role(self, value):
+        try:
+            from accounts.roles import Role
+        except ImportError:
+            from RBAC.accounts.roles import Role
+
+        if value not in Role.values:
+            raise serializers.ValidationError(
+                f"Invalid role. Choices are: {list(Role.values)}"
+            )
+        return value
+
+    def update(self, instance, validated_data):
+        if "role" in validated_data:
+            instance.role = validated_data["role"]
+        if "is_active" in validated_data:
+            instance.is_active = validated_data["is_active"]
+            instance.save(update_fields=["is_active"])
+        return instance

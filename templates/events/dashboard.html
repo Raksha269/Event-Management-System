@@ -60,6 +60,7 @@
                     {% endif %}
 
                     <a href="{% url 'ticket_types_manage' event.pk %}" class="button button-secondary" style="padding: 7px 12px; font-size: 13px;">Tickets ({{ event.ticket_types.count }})</a>
+                    <a href="{% url 'event_report' event.pk %}" class="button button-secondary" style="padding: 7px 12px; font-size: 13px;">Report</a>
 
                     {% if event.is_published %}
                         <form method="post" action="{% url 'event_unpublish' event.pk %}" style="display: inline;">
