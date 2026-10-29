@@ -1,0 +1,8 @@
+<section class="card" aria-labelledby="email-status-h" style="border:1px solid #D1D5DB;border-left:4px solid {% if level == 'success' %}#047857{% elif level == 'error' %}#B91C1C{% else %}#2563EB{% endif %};border-radius:8px;padding:12px 16px;margin:16px 0">
+  <h2 id="email-status-h" style="font-size:1rem;margin:0 0 4px">Email notifications</h2>
+  <p role="status" style="margin:0">
+    <strong>{% if level == 'success' %}Sent{% elif level == 'error' %}Not sent{% else %}Pending{% endif %}:</strong>
+    {{ text }}{% if email %} Address: {{ email }}.{% endif %}
+  </p>
+  <p style="margin:4px 0 0">Reminders are sent 48 hours and 2 hours before the event.</p>
+</section>
