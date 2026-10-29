@@ -1,14 +1,14 @@
-import logging
-
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import User
 from .permissions import IsAdministrator, IsAttendee, IsOrganizer
-from .roles import Role
+from .services import RoleChangeError, change_user_role
 
-audit_log = logging.getLogger("ems.audit")   # AuditModule owner can attach a handler
+
+def not_found(request, exception=None):
+    return render(request, "404.html", status=404)
 
 
 def forbidden(request, exception=None):
@@ -49,21 +49,14 @@ class ChangeRoleView(APIView):
     permission_classes = [IsAdministrator]
 
     def post(self, request, user_id):
-        new_role = request.data.get("role")
-        reason = (request.data.get("reason") or "").strip()
-        if new_role not in Role.values:
-            return Response({"error": "invalid_role"}, status=400)
-        if not reason:
-            return Response({"error": "reason_required"}, status=400)
         try:
             target = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return Response({"error": "not_found"}, status=404)
-        if target.pk == request.user.pk:
-            return Response({"error": "cannot_change_own_role"}, status=400)
-        old = target.role
-        target.role = new_role
-        target.save(update_fields=["role"])
-        audit_log.info("role_change actor=%s target=%s %s->%s reason=%s",
-                       request.user.pk, target.pk, old, new_role, reason)
-        return Response({"id": target.pk, "old_role": old, "new_role": new_role})
+        try:
+            old = change_user_role(actor=request.user, target=target,
+                                   new_role=request.data.get("role"),
+                                   reason=request.data.get("reason"))
+        except RoleChangeError as exc:
+            return Response({"error": exc.code}, status=400)
+        return Response({"id": target.pk, "old_role": old, "new_role": target.role})
