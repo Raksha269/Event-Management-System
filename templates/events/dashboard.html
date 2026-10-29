@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Organizer Dashboard | Gather{% endblock %}
+
+{% block content %}
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <div>
+        <h1>Organizer Dashboard</h1>
+        <p class="muted">Manage your events, configure ticket tiers, monitor capacities, and publish to attendees.</p>
+    </div>
+    <a href="{% url 'event_create' %}" class="button">+ Create New Event</a>
+</div>
+
+{% if events %}
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+        {% for event in events %}
+            <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div style="flex: 2; min-width: 260px;">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        {% if event.status == 'PUBLISHED' %}
+                            <span class="status-badge" style="background: #dcfce7; color: #15803d;">Published</span>
+                        {% elif event.status == 'DRAFT' %}
+                            <span class="status-badge" style="background: #fef3c7; color: #b45309;">Draft</span>
+                        {% elif event.status == 'UNPUBLISHED' %}
+                            <span class="status-badge" style="background: #fee2e2; color: #b91c1c;">Unpublished</span>
+                        {% else %}
+                            <span class="status-badge">{{ event.status }}</span>
+                        {% endif %}
+                        <span class="muted" style="font-size: 13px;">{{ event.category }}</span>
+                    </div>
+
+                    <h2 style="margin: 0 0 6px; font-size: 20px;">
+                        <a href="{% url 'event_detail' event.pk %}">{{ event.event_title }}</a>
+                    </h2>
+
+                    <p class="muted" style="margin: 0; font-size: 14px;">
+                        📅 {{ event.date|date:"M j, Y, P" }} &bull; 📍 {{ event.venue }}
+                    </p>
+                </div>
+
+                <!-- Capacity Stats -->
+                <div style="flex: 1; min-width: 160px; text-align: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border); padding: 0 16px;">
+                    <span style="font-size: 12px; color: var(--muted); display: block;">Registered / Capacity</span>
+                    <strong style="font-size: 18px; color: var(--navy);">
+                        {{ event.registered_attendees_count }} / {{ event.capacity }}
+                    </strong>
+                    <span style="font-size: 12px; color: {% if event.is_sold_out %}#b91c1c{% else %}#15803d{% endif %}; display: block;">
+                        {% if event.is_sold_out %}Sold Out{% else %}{{ event.remaining_capacity }} spots left{% endif %}
+                    </span>
+                </div>
+
+                <!-- Action Controls -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                    <a href="{% url 'event_detail' event.pk %}" class="button button-secondary" style="padding: 7px 12px; font-size: 13px;">View</a>
+                    
+                    {% if event.can_be_edited %}
+                        <a href="{% url 'event_edit' event.pk %}" class="button button-secondary" style="padding: 7px 12px; font-size: 13px;">Edit</a>
+                    {% else %}
+                        <span class="muted" style="font-size: 12px; padding: 7px 12px;">Started</span>
+                    {% endif %}
+
+                    <a href="{% url 'ticket_types_manage' event.pk %}" class="button button-secondary" style="padding: 7px 12px; font-size: 13px;">Tickets ({{ event.ticket_types.count }})</a>
+
+                    {% if event.is_published %}
+                        <form method="post" action="{% url 'event_unpublish' event.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="button" style="padding: 7px 12px; font-size: 13px; background: #64748b;">Unpublish</button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="{% url 'event_publish' event.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="button" style="padding: 7px 12px; font-size: 13px; background: #15803d;">Publish</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 48px 24px;">
+        <h3>No events created yet</h3>
+        <p class="muted">You haven't created any events. Create your first event and configure ticket capacity.</p>
+        <a href="{% url 'event_create' %}" class="button" style="margin-top: 12px;">+ Create Your First Event</a>
+    </div>
+{% endif %}
+{% endblock %}

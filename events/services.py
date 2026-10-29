@@ -2,10 +2,10 @@ import io
 
 import qrcode
 from django.core.files.base import ContentFile
-from django.db import transaction
+from django.db import models, transaction
 from django.utils import timezone
 
-from .models import Payment, Refund, Registration, Ticket
+from .models import Event, Payment, Refund, Registration, Ticket, TicketType
 
 
 def mock_payment_gateway(amount):
@@ -44,6 +44,66 @@ def generate_ticket_qr(ticket):
 
 
 @transaction.atomic
+def create_registration(user, event_id, ticket_type_id=None, quantity=1):
+    """
+    Register an attendee for an event with row-level locking to prevent overselling.
+    Enforces EMS-F-014:
+    - Row-level lock on event and ticket type avoids race conditions.
+    - Rejects attempts exceeding event or ticket-type capacity with a 'Sold Out' error.
+    """
+    if quantity <= 0:
+        raise ValueError("Registration quantity must be at least 1.")
+
+    try:
+        event = Event.objects.select_for_update().get(pk=event_id)
+    except Event.DoesNotExist:
+        raise ValueError("Event does not exist.")
+
+    if event.status != Event.Status.PUBLISHED:
+        raise ValueError("Cannot register for an unpublished event.")
+
+    current_event_count = (
+        Registration.objects.filter(event=event)
+        .exclude(status=Registration.Status.CANCELLED)
+        .aggregate(total=models.Sum("quantity"))["total"]
+        or 0
+    )
+
+    if current_event_count + quantity > event.capacity:
+        raise ValueError("Sold Out: Event capacity exceeded.")
+
+    ticket_type = None
+    if ticket_type_id:
+        try:
+            ticket_type = TicketType.objects.select_for_update().get(
+                pk=ticket_type_id, event=event
+            )
+        except TicketType.DoesNotExist:
+            raise ValueError("Ticket type does not exist for this event.")
+
+        current_tt_count = (
+            Registration.objects.filter(ticket_type=ticket_type)
+            .exclude(status=Registration.Status.CANCELLED)
+            .aggregate(total=models.Sum("quantity"))["total"]
+            or 0
+        )
+        if current_tt_count + quantity > ticket_type.quantity_limit:
+            raise ValueError("Sold Out: Ticket type capacity exceeded.")
+
+        ticket_type.sold_count += quantity
+        ticket_type.save(update_fields=["sold_count"])
+
+    registration = Registration.objects.create(
+        user=user,
+        event=event,
+        ticket_type=ticket_type,
+        quantity=quantity,
+        status=Registration.Status.PENDING,
+    )
+    return registration
+
+
+@transaction.atomic
 def process_payment(registration_id):
     """
     Process a registration payment using the mock gateway.
@@ -63,7 +123,10 @@ def process_payment(registration_id):
     if registration.status != Registration.Status.PENDING:
         raise ValueError("Only pending registrations can be paid.")
 
-    amount = registration.event.ticket_price
+    if registration.ticket_type:
+        amount = registration.ticket_type.price * registration.quantity
+    else:
+        amount = registration.event.ticket_price * registration.quantity
 
     payment = existing_payment or Payment.objects.create(
         registration=registration,
@@ -133,5 +196,14 @@ def process_refund(payment_id, reason):
     registration = payment.registration
     registration.status = Registration.Status.CANCELLED
     registration.save(update_fields=["status"])
+
+    if registration.ticket_type:
+        ticket_type = TicketType.objects.select_for_update().get(
+            pk=registration.ticket_type_id
+        )
+        ticket_type.sold_count = max(
+            0, ticket_type.sold_count - registration.quantity
+        )
+        ticket_type.save(update_fields=["sold_count"])
 
     return refund

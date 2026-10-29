@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}{{ event.event_title }} | Gather{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div style="margin-bottom: 16px;">
+        <a href="{% url 'discover_events' %}" class="muted" style="font-size: 14px;">&larr; Back to Events</a>
+    </div>
+
+    <!-- Status Notice for Organizer/Admin -->
+    {% if not event.is_published %}
+        <div class="alert" style="background: #fef3c7; color: #92400e; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <strong>Status: {{ event.get_status_display }}</strong> &bull; This event is currently not published to the public.
+            </div>
+            {% if user == event.organizer or user.is_superuser %}
+                <form method="post" action="{% url 'event_publish' event.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="button" style="padding: 6px 14px; font-size: 13px; background: #15803d;">Publish Now</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+            <div>
+                <span class="status-badge" style="background: #e0f2fe; color: #0369a1; margin-bottom: 8px;">{{ event.category }}</span>
+                <h1 style="margin: 4px 0 8px; font-size: 28px;">{{ event.event_title }}</h1>
+                <p class="muted" style="margin: 0; font-size: 15px;">
+                    📍 {{ event.venue }} &bull; 📅 {{ event.date|date:"F j, Y, P" }}
+                </p>
+                {% if event.organizer %}
+                    <p class="muted" style="margin: 4px 0 0; font-size: 13px;">Organized by <strong>{{ event.organizer.username }}</strong></p>
+                {% endif %}
+            </div>
+
+            <div style="text-align: right;">
+                {% if event.is_sold_out %}
+                    <span class="status-badge" style="background: #fee2e2; color: #b91c1c; font-size: 14px; padding: 6px 14px;">Sold Out</span>
+                {% else %}
+                    <span class="status-badge" style="background: #dcfce7; color: #15803d; font-size: 14px; padding: 6px 14px;">{{ event.remaining_capacity }} Spots Available</span>
+                {% endif %}
+                <div style="margin-top: 8px;">
+                    <span class="muted" style="font-size: 13px;">Total Capacity: {{ event.capacity }}</span>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+
+        <div>
+            <h3 style="margin-bottom: 8px; font-size: 18px;">About This Event</h3>
+            <p style="color: #334155; white-space: pre-line; line-height: 1.7;">
+                {{ event.description|default:"No description provided." }}
+            </p>
+        </div>
+
+        {% if user == event.organizer or user.is_superuser %}
+            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; gap: 10px; flex-wrap: wrap;">
+                <span class="muted" style="font-size: 13px; align-self: center; margin-right: 8px;">Organizer Actions:</span>
+                {% if event.can_be_edited %}
+                    <a href="{% url 'event_edit' event.pk %}" class="button button-secondary" style="padding: 7px 12px; font-size: 13px;">Edit Event</a>
+                {% endif %}
+                <a href="{% url 'ticket_types_manage' event.pk %}" class="button button-secondary" style="padding: 7px 12px; font-size: 13px;">Manage Tickets</a>
+                {% if event.is_published %}
+                    <form method="post" action="{% url 'event_unpublish' event.pk %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="button" style="padding: 7px 12px; font-size: 13px; background: #64748b;">Unpublish Event</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Ticket Options & Registration Section -->
+    <div class="card">
+        <h2 style="font-size: 22px; margin-top: 0; margin-bottom: 16px;">Tickets & Registration</h2>
+
+        {% if ticket_types %}
+            <div style="margin-bottom: 24px; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border); text-align: left;">
+                            <th style="padding: 10px 12px;">Ticket Type</th>
+                            <th style="padding: 10px 12px;">Price</th>
+                            <th style="padding: 10px 12px;">Availability</th>
+                            <th style="padding: 10px 12px; text-align: right;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tt in ticket_types %}
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px; font-weight: 700;">{{ tt.name }}</td>
+                                <td style="padding: 12px;">₹{{ tt.price }}</td>
+                                <td style="padding: 12px;">{{ tt.available_quantity }} / {{ tt.quantity_limit }} remaining</td>
+                                <td style="padding: 12px; text-align: right;">
+                                    {% if tt.is_sold_out %}
+                                        <span class="status-badge" style="background: #fee2e2; color: #b91c1c;">Sold Out</span>
+                                    {% else %}
+                                        <span class="status-badge" style="background: #dcfce7; color: #15803d;">Available</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        <!-- Registration Form -->
+        {% if event.is_sold_out %}
+            <div class="alert alert-error" style="text-align: center; padding: 20px;">
+                <h3 style="margin: 0 0 4px; color: #b91c1c;">Sold Out</h3>
+                <p style="margin: 0;">This event has reached full capacity. No further registrations can be accepted.</p>
+            </div>
+        {% elif not event.is_published %}
+            <div class="alert" style="background: #f1f5f9; color: #475569; text-align: center;">
+                Registration is currently closed because this event is not published.
+            </div>
+        {% elif user.is_authenticated %}
+            <form method="post" action="{% url 'event_register' event.pk %}" style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                {% csrf_token %}
+                <h3 style="margin-top: 0; font-size: 16px; margin-bottom: 14px;">Select Tickets to Register</h3>
+
+                {% if ticket_types %}
+                    <div class="form-group">
+                        <label for="{{ form.ticket_type.id_for_label }}">Select Ticket Type</label>
+                        {{ form.ticket_type }}
+                    </div>
+                {% endif %}
+
+                <div class="form-group" style="max-width: 200px;">
+                    <label for="{{ form.quantity.id_for_label }}">Quantity</label>
+                    {{ form.quantity }}
+                </div>
+
+                <button type="submit" class="button" style="padding: 12px 28px; font-size: 15px;">Register Now</button>
+            </form>
+        {% else %}
+            <div class="alert" style="background: #eff6ff; color: #1e40af; text-align: center; padding: 20px;">
+                <p style="margin: 0 0 12px;">Please log in or create an account to register for this event.</p>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="button" style="padding: 8px 18px;">Sign in</a>
+                    <a href="{% url 'register' %}" class="button button-secondary" style="padding: 8px 18px;">Create account</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

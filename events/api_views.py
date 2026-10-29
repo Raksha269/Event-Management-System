@@ -1,0 +1,223 @@
+from django.db import models
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+try:
+    from accounts.permissions import IsEventOwner, IsOrganizer
+    from accounts.roles import Role
+except ImportError:
+    from RBAC.accounts.permissions import IsEventOwner, IsOrganizer
+    from RBAC.accounts.roles import Role
+
+from .models import Event, Registration, TicketType
+from .serializers import (
+    EventSerializer,
+    RegistrationSerializer,
+    TicketTypeSerializer,
+)
+from .services import create_registration
+
+
+class EventListCreateAPIView(generics.ListCreateAPIView):
+    """
+    GET /api/v1/events/ - Public search and browse published events.
+    POST /api/v1/events/ - Organizer creates a new event in Draft status (EMS-F-010).
+    """
+
+    serializer_class = EventSerializer
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [permissions.IsAuthenticated(), IsOrganizer()]
+        return [permissions.AllowAny()]
+
+    def get_queryset(self):
+        queryset = Event.objects.filter(status=Event.Status.PUBLISHED)
+        q = self.request.query_params.get("q")
+        category = self.request.query_params.get("category")
+
+        if q:
+            queryset = queryset.filter(
+                models.Q(title__icontains=q)
+                | models.Q(name__icontains=q)
+                | models.Q(description__icontains=q)
+                | models.Q(venue__icontains=q)
+            )
+        if category:
+            queryset = queryset.filter(category__iexact=category)
+
+        return queryset.order_by("date")
+
+    def perform_create(self, serializer):
+        serializer.save(
+            organizer=self.request.user,
+            status=Event.Status.DRAFT,
+        )
+
+
+class EventDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
+    """
+    GET /api/v1/events/{id}/ - View event details.
+    PUT/PATCH /api/v1/events/{id}/ - Owning organizer edits event prior to start date (EMS-F-011).
+    """
+
+    serializer_class = EventSerializer
+    queryset = Event.objects.all()
+
+    def get_permissions(self):
+        if self.request.method in ["PUT", "PATCH"]:
+            return [permissions.IsAuthenticated(), IsOrganizer(), IsEventOwner()]
+        return [permissions.AllowAny()]
+
+    def get_object(self):
+        event = get_object_or_404(Event, pk=self.kwargs["pk"])
+
+        # Check read permission: if unpublished, only owning organizer or staff can view
+        if self.request.method == "GET" and not event.is_published:
+            user = self.request.user
+            if not user.is_authenticated or (
+                event.organizer != user and not user.is_staff
+            ):
+                raise permissions.exceptions.NotFound("Event not found.")
+
+        # Check object permissions for write
+        self.check_object_permissions(self.request, event)
+        return event
+
+    def update(self, request, *args, **kwargs):
+        event = self.get_object()
+
+        # EMS-F-011: changes permitted only prior to event start date
+        if not event.can_be_edited():
+            return Response(
+                {
+                    "code": "EVENT_ALREADY_STARTED",
+                    "message": "Cannot edit an event that has already started.",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return super().update(request, *args, **kwargs)
+
+
+class EventPublishAPIView(APIView):
+    """
+    POST /api/v1/events/{id}/publish/ - Owning organizer publishes an event (EMS-F-012).
+    """
+
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer, IsEventOwner]
+
+    def post(self, request, pk):
+        event = get_object_or_404(Event, pk=pk)
+        self.check_object_permissions(request, event)
+
+        try:
+            event.publish()
+        except ValueError as err:
+            return Response(
+                {"code": "PUBLICATION_ERROR", "message": str(err)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = EventSerializer(event)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EventUnpublishAPIView(APIView):
+    """
+    POST /api/v1/events/{id}/unpublish/ - Owning organizer unpublishes an event (EMS-F-012).
+    """
+
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer, IsEventOwner]
+
+    def post(self, request, pk):
+        event = get_object_or_404(Event, pk=pk)
+        self.check_object_permissions(request, event)
+
+        event.unpublish()
+        serializer = EventSerializer(event)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EventTicketTypeListCreateAPIView(APIView):
+    """
+    POST /api/v1/events/{id}/ticket-types/ - Owning organizer adds a ticket type (EMS-F-013).
+    """
+
+    permission_classes = [permissions.IsAuthenticated, IsOrganizer, IsEventOwner]
+
+    def get(self, request, pk):
+        event = get_object_or_404(Event, pk=pk)
+        ticket_types = event.ticket_types.all()
+        serializer = TicketTypeSerializer(ticket_types, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, pk):
+        event = get_object_or_404(Event, pk=pk)
+        self.check_object_permissions(request, event)
+
+        serializer = TicketTypeSerializer(data=request.data)
+        if serializer.is_valid():
+            quantity_limit = serializer.validated_data["quantity_limit"]
+            existing_total = (
+                event.ticket_types.aggregate(total=models.Sum("quantity_limit"))[
+                    "total"
+                ]
+                or 0
+            )
+
+            if existing_total + quantity_limit > event.capacity:
+                return Response(
+                    {
+                        "code": "CAPACITY_EXCEEDED",
+                        "message": (
+                            f"Total ticket type capacity ({existing_total + quantity_limit}) "
+                            f"exceeds event capacity ({event.capacity})."
+                        ),
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            ticket_type = serializer.save(event=event)
+            return Response(
+                TicketTypeSerializer(ticket_type).data,
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EventRegistrationAPIView(APIView):
+    """
+    POST /api/v1/events/{id}/registrations/ - Reserve tickets with capacity control (EMS-F-014).
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        ticket_type_id = request.data.get("ticket_type_id")
+        quantity = int(request.data.get("quantity", 1))
+
+        try:
+            registration = create_registration(
+                user=request.user,
+                event_id=pk,
+                ticket_type_id=ticket_type_id,
+                quantity=quantity,
+            )
+        except ValueError as err:
+            err_msg = str(err)
+            if "Sold Out" in err_msg or "capacity" in err_msg.lower():
+                return Response(
+                    {"code": "CAPACITY_EXCEEDED", "message": err_msg},
+                    status=status.HTTP_409_CONFLICT,
+                )
+            return Response(
+                {"code": "VALIDATION_ERROR", "message": err_msg},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = RegistrationSerializer(registration)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
