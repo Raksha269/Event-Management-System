@@ -1,0 +1,11 @@
+<p>Hi {{ data.attendee_name|default:"there" }},</p>
+<p>Your registration for <strong>{{ data.event_title }}</strong> has been confirmed.</p>
+<ul>
+  <li><strong>When:</strong> {{ starts_at_local }} ({{ timezone }})</li>
+  <li><strong>Where:</strong> {{ data.event_venue|default:"See event page" }}</li>
+  <li><strong>Ticket type:</strong> {{ data.ticket_type }}</li>
+  <li><strong>Booking reference:</strong> {{ data.booking_reference }}</li>
+  <li><strong>Payment status:</strong> {{ data.payment_state }}</li>
+</ul>
+<p><a href="{{ ticket_url }}">View your ticket and QR code</a>. You can also cancel or check refund options there.</p>
+<p>Questions? Contact {{ support_email }}.</p>
