@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} | Gather{% endblock %}
+
+{% block content %}
+<div style="max-width: 720px; margin: 0 auto;">
+    <div class="page-header">
+        <a href="{% url 'organizer_dashboard' %}" class="muted" style="font-size: 14px; display: inline-block; margin-bottom: 8px;">&larr; Back to Organizer Dashboard</a>
+        <h1>{{ title }}</h1>
+        <p class="muted">Fill in the event details below. Events are saved as drafts until published.</p>
+    </div>
+
+    <div class="card">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {% for error in form.non_field_errors %}
+                        <p style="margin: 0;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Event Title *</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.title.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.description.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label for="{{ form.category.id_for_label }}">Category *</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.category.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.venue.id_for_label }}">Venue *</label>
+                    {{ form.venue }}
+                    {% if form.venue.errors %}
+                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.venue.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label for="{{ form.date.id_for_label }}">Date & Time *</label>
+                    {{ form.date }}
+                    {% if form.date.errors %}
+                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.date.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.capacity.id_for_label }}">Event Capacity (Max Attendees) *</label>
+                    {{ form.capacity }}
+                    {% if form.capacity.errors %}
+                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.capacity.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.ticket_price.id_for_label }}">Base Ticket Price (₹) *</label>
+                {{ form.ticket_price }}
+                <span class="muted" style="font-size: 12px;">Set to 0.00 for free events. You can also configure specific ticket tiers later.</span>
+                {% if form.ticket_price.errors %}
+                    <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.ticket_price.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px; align-items: center;">
+                <button type="submit" class="button" style="padding: 12px 24px;">{{ submit_label }}</button>
+                <a href="{% url 'organizer_dashboard' %}" class="button button-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

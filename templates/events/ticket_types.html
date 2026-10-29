@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Tickets - {{ event.event_title }} | Gather{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div class="page-header">
+        <a href="{% url 'organizer_dashboard' %}" class="muted" style="font-size: 14px; display: inline-block; margin-bottom: 8px;">&larr; Back to Organizer Dashboard</a>
+        <h1>Manage Tickets: {{ event.event_title }}</h1>
+        <p class="muted">Define ticket tiers (e.g., Early Bird, Regular, VIP), pricing, and quantity allocations.</p>
+    </div>
+
+    <!-- Capacity Summary Banner -->
+    <div class="card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; background: #f8fafc;">
+        <div>
+            <span class="muted" style="font-size: 13px;">Total Event Capacity</span>
+            <strong style="display: block; font-size: 20px; color: var(--navy);">{{ event.capacity }} tickets</strong>
+        </div>
+        <div>
+            <span class="muted" style="font-size: 13px;">Allocated across Ticket Types</span>
+            <strong style="display: block; font-size: 20px; color: #2563eb;">{{ configured_capacity }} tickets</strong>
+        </div>
+        <div>
+            <span class="muted" style="font-size: 13px;">Unallocated Capacity</span>
+            <strong style="display: block; font-size: 20px; color: {% if event.capacity >= configured_capacity %}#15803d{% else %}#b91c1c{% endif %};">
+                {{ event.capacity|add:"-1"|default:0 }}
+                {{ event.capacity|floatformat:0 }}
+                {% with remaining_alloc=event.capacity|add:"-0" %}
+                    {{ remaining_alloc }}
+                {% endwith %}
+            </strong>
+        </div>
+    </div>
+
+    <!-- Existing Ticket Types Table -->
+    <div class="card" style="margin-bottom: 24px;">
+        <h2 style="font-size: 18px; margin-top: 0; margin-bottom: 16px;">Configured Ticket Types</h2>
+
+        {% if ticket_types %}
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border); text-align: left;">
+                            <th style="padding: 10px 12px;">Tier Name</th>
+                            <th style="padding: 10px 12px;">Price (₹)</th>
+                            <th style="padding: 10px 12px;">Quantity Limit</th>
+                            <th style="padding: 10px 12px;">Sold</th>
+                            <th style="padding: 10px 12px; text-align: right;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tt in ticket_types %}
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 12px; font-weight: 700;">{{ tt.name }}</td>
+                                <td style="padding: 12px;">₹{{ tt.price }}</td>
+                                <td style="padding: 12px;">{{ tt.quantity_limit }}</td>
+                                <td style="padding: 12px;">{{ tt.sold_count }}</td>
+                                <td style="padding: 12px; text-align: right;">
+                                    {% if tt.is_sold_out %}
+                                        <span class="status-badge" style="background: #fee2e2; color: #b91c1c;">Sold Out</span>
+                                    {% else %}
+                                        <span class="status-badge" style="background: #dcfce7; color: #15803d;">{{ tt.available_quantity }} Available</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="muted" style="text-align: center; padding: 24px 0;">No ticket types configured yet. Use the form below to add your first ticket tier.</p>
+        {% endif %}
+    </div>
+
+    <!-- Add Ticket Type Form -->
+    <div class="card">
+        <h2 style="font-size: 18px; margin-top: 0; margin-bottom: 16px;">+ Add New Ticket Tier</h2>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {% for error in form.non_field_errors %}
+                        <p style="margin: 0;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.name.id_for_label }}">Ticket Tier Name *</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label for="{{ form.price.id_for_label }}">Price (₹) *</label>
+                    {{ form.price }}
+                    {% if form.price.errors %}
+                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.price.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.quantity_limit.id_for_label }}">Quantity Limit (Max Tickets) *</label>
+                    {{ form.quantity_limit }}
+                    {% if form.quantity_limit.errors %}
+                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.quantity_limit.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <button type="submit" class="button" style="padding: 10px 20px;">Add Ticket Tier</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

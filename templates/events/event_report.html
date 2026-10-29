@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Report: {{ event.event_title }} | Gather{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+        <div>
+            <a href="{% url 'organizer_dashboard' %}" class="muted" style="font-size: 14px; display: inline-block; margin-bottom: 8px;">&larr; Back to Organizer Dashboard</a>
+            <h1 style="margin: 0; font-size: 28px;">Attendee & Revenue Report</h1>
+            <p class="muted" style="margin: 4px 0 0;">{{ event.event_title }} &bull; {{ event.date|date:"F j, Y, P" }} &bull; {{ event.venue }}</p>
+        </div>
+
+        <a href="{% url 'event_report_csv' event.pk %}" class="button" style="background: #15803d; padding: 11px 20px;">
+            &#x1F4E5; Export CSV Report
+        </a>
+    </div>
+
+    <!-- Revenue & Capacity KPI Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px;">
+        <div class="card" style="padding: 18px; text-align: center; margin: 0;">
+            <span class="muted" style="font-size: 13px; display: block;">Total Gross Revenue</span>
+            <strong style="font-size: 24px; color: var(--navy); display: block; margin: 4px 0;">₹{{ report.gross_revenue }}</strong>
+            <span class="muted" style="font-size: 12px;">From confirmed sales</span>
+        </div>
+
+        <div class="card" style="padding: 18px; text-align: center; margin: 0;">
+            <span class="muted" style="font-size: 13px; display: block;">Total Refunds</span>
+            <strong style="font-size: 24px; color: #dc2626; display: block; margin: 4px 0;">₹{{ report.total_refunded }}</strong>
+            <span class="muted" style="font-size: 12px;">Completed refunds</span>
+        </div>
+
+        <div class="card" style="padding: 18px; text-align: center; margin: 0;">
+            <span class="muted" style="font-size: 13px; display: block;">Net Revenue</span>
+            <strong style="font-size: 24px; color: #15803d; display: block; margin: 4px 0;">₹{{ report.net_revenue }}</strong>
+            <span class="muted" style="font-size: 12px;">After refunds</span>
+        </div>
+
+        <div class="card" style="padding: 18px; text-align: center; margin: 0;">
+            <span class="muted" style="font-size: 13px; display: block;">Confirmed Attendees</span>
+            <strong style="font-size: 24px; color: #2563eb; display: block; margin: 4px 0;">{{ report.confirmed_tickets_count }} / {{ report.total_capacity }}</strong>
+            <span class="muted" style="font-size: 12px;">{{ report.remaining_capacity }} spots remaining</span>
+        </div>
+    </div>
+
+    <!-- Ticket Tier Performance -->
+    {% if report.ticket_tiers %}
+        <div class="card" style="margin-bottom: 28px;">
+            <h2 style="font-size: 18px; margin-top: 0; margin-bottom: 16px;">Ticket Tier Breakdown</h2>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border); text-align: left;">
+                            <th style="padding: 10px 12px;">Tier Name</th>
+                            <th style="padding: 10px 12px;">Price (₹)</th>
+                            <th style="padding: 10px 12px;">Limit</th>
+                            <th style="padding: 10px 12px;">Sold</th>
+                            <th style="padding: 10px 12px; text-align: right;">Revenue (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tt in report.ticket_tiers %}
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 10px 12px; font-weight: 700;">{{ tt.name }}</td>
+                                <td style="padding: 10px 12px;">₹{{ tt.price }}</td>
+                                <td style="padding: 10px 12px;">{{ tt.quantity_limit }}</td>
+                                <td style="padding: 10px 12px;">{{ tt.sold_count }}</td>
+                                <td style="padding: 10px 12px; text-align: right; font-weight: 700;">₹{{ tt.revenue }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Detailed Attendee List -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+            <h2 style="font-size: 18px; margin: 0;">Attendee List ({{ report.total_registrations_count }})</h2>
+            <a href="{% url 'event_report_csv' event.pk %}" class="button button-secondary" style="padding: 6px 14px; font-size: 13px;">Download CSV</a>
+        </div>
+
+        {% if report.attendee_records %}
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border); text-align: left;">
+                            <th style="padding: 10px 12px;">ID</th>
+                            <th style="padding: 10px 12px;">Attendee</th>
+                            <th style="padding: 10px 12px;">Email</th>
+                            <th style="padding: 10px 12px;">Tier</th>
+                            <th style="padding: 10px 12px;">Qty</th>
+                            <th style="padding: 10px 12px;">Amount</th>
+                            <th style="padding: 10px 12px;">Status</th>
+                            <th style="padding: 10px 12px; text-align: right;">Registered</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in report.attendee_records %}
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="padding: 10px 12px; color: var(--muted);">#{{ r.registration_id }}</td>
+                                <td style="padding: 10px 12px; font-weight: 700;">{{ r.username }}</td>
+                                <td style="padding: 10px 12px;">{{ r.email|default:"N/A" }}</td>
+                                <td style="padding: 10px 12px;">{{ r.ticket_tier }}</td>
+                                <td style="padding: 10px 12px;">{{ r.quantity }}</td>
+                                <td style="padding: 10px 12px;">₹{{ r.amount }}</td>
+                                <td style="padding: 10px 12px;">
+                                    {% if r.status == 'CONFIRMED' %}
+                                        <span class="status-badge" style="background: #dcfce7; color: #15803d;">Confirmed</span>
+                                    {% elif r.status == 'CANCELLED' %}
+                                        <span class="status-badge" style="background: #fee2e2; color: #b91c1c;">Cancelled</span>
+                                    {% else %}
+                                        <span class="status-badge" style="background: #fef3c7; color: #b45309;">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 10px 12px; text-align: right; color: var(--muted); font-size: 13px;">
+                                    {{ r.created_at|date:"M j, Y, H:i" }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="muted" style="text-align: center; padding: 32px 0;">No registrations have been made for this event yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

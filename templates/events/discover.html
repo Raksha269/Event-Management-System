@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Discover Events | Gather{% endblock %}
+
+{% block content %}
+<div class="page-header" style="text-align: center; margin-bottom: 32px;">
+    <h1>Discover Upcoming Events</h1>
+    <p class="muted">Find and register for summits, workshops, hackathons, and gatherings.</p>
+</div>
+
+<!-- Search & Filter Bar -->
+<div class="card" style="margin-bottom: 32px;">
+    <form method="get" action="{% url 'discover_events' %}" style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by title, topic, venue..." style="flex: 2; min-width: 220px;">
+        
+        <select name="category" class="form-control" style="flex: 1; min-width: 160px;">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+        
+        <button type="submit" class="button" style="padding: 11px 24px;">Search</button>
+        {% if query or selected_category %}
+            <a href="{% url 'discover_events' %}" class="button button-secondary" style="padding: 11px 18px;">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- Event Listings -->
+{% if events %}
+    <div class="grid">
+        {% for event in events %}
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <span class="status-badge" style="background: #e0f2fe; color: #0369a1;">{{ event.category }}</span>
+                        {% if event.is_sold_out %}
+                            <span class="status-badge" style="background: #fee2e2; color: #b91c1c;">Sold Out</span>
+                        {% else %}
+                            <span class="status-badge" style="background: #dcfce7; color: #15803d;">{{ event.remaining_capacity }} spots left</span>
+                        {% endif %}
+                    </div>
+                    <h2 style="font-size: 20px; margin: 0 0 10px;">{{ event.event_title }}</h2>
+                    <p class="muted" style="font-size: 14px; margin-bottom: 12px;">
+                        📍 {{ event.venue }}<br>
+                        📅 {{ event.date|date:"F j, Y, P" }}
+                    </p>
+                    <p style="font-size: 14px; color: #475569; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                        {{ event.description|default:"No description provided." }}
+                    </p>
+                </div>
+                
+                <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 12px; color: var(--muted); display: block;">Starting from</span>
+                        <strong style="font-size: 18px; color: var(--navy);">
+                            {% if event.ticket_price > 0 %}
+                                ₹{{ event.ticket_price }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </strong>
+                    </div>
+                    <a href="{% url 'event_detail' event.pk %}" class="button" style="padding: 8px 16px;">View Event</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 48px 24px;">
+        <h3 style="margin-bottom: 8px;">No events found</h3>
+        <p class="muted">There are no published events matching your search criteria. Check back soon!</p>
+        {% if query or selected_category %}
+            <a href="{% url 'discover_events' %}" class="button button-secondary" style="margin-top: 12px;">View all published events</a>
+        {% endif %}
+    </div>
+{% endif %}
+{% endblock %}
