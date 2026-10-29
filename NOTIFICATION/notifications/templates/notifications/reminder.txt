@@ -1,0 +1,11 @@
+{% autoescape off %}Hi {{ data.attendee_name|default:"there" }},
+
+{{ data.event_title }} starts {{ when }}.
+
+When: {{ starts_at_local }} ({{ timezone }})
+Where: {{ data.event_venue|default:"See event page" }}
+Booking reference: {{ data.booking_reference }}
+
+Your ticket: {{ ticket_url }}
+Need to cancel or have a question? Use the link above or contact {{ support_email }}.
+{% endautoescape %}

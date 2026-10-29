@@ -1,0 +1,8 @@
+<p>Hi {{ data.attendee_name|default:"there" }},</p>
+<p><strong>{{ data.event_title }}</strong> starts {{ when }}.</p>
+<ul>
+  <li><strong>When:</strong> {{ starts_at_local }} ({{ timezone }})</li>
+  <li><strong>Where:</strong> {{ data.event_venue|default:"See event page" }}</li>
+  <li><strong>Booking reference:</strong> {{ data.booking_reference }}</li>
+</ul>
+<p><a href="{{ ticket_url }}">Open your ticket</a>. Need to cancel? Use that link or contact {{ support_email }}.</p>

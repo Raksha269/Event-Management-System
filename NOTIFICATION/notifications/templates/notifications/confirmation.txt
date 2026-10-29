@@ -1,0 +1,14 @@
+{% autoescape off %}Hi {{ data.attendee_name|default:"there" }},
+
+Your registration for {{ data.event_title }} has been confirmed.
+
+When: {{ starts_at_local }} ({{ timezone }})
+Where: {{ data.event_venue|default:"See event page" }}
+Ticket type: {{ data.ticket_type }}
+Booking reference: {{ data.booking_reference }}
+Payment status: {{ data.payment_state }}
+
+Your ticket and QR code: {{ ticket_url }}
+To cancel or check refund options, open the link above.
+Questions? Contact {{ support_email }}.
+{% endautoescape %}
