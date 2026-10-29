@@ -1,0 +1,37 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}EMS{% endblock %} · Event Management System</title>
+  <link rel="stylesheet" href="{% static 'accounts/ems.css' %}">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header>
+  <div class="bar">
+    <a class="brand" href="/">EMS</a>
+    <nav aria-label="Main">
+      <ul>
+        {% for item in nav_items %}
+          <li><a href="{{ item.href }}"{% if item.active %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+    <div class="acct">
+      {% if user.is_authenticated %}
+        <span class="badge" title="Your role">{{ current_role_label }}</span>
+        <span>{{ user.get_username }}</span>
+        <form method="post" action="{% url 'admin:logout' %}">{% csrf_token %}<button class="btn secondary" type="submit">Sign out</button></form>
+      {% else %}
+        <a href="{{ login_url }}" style="color:#fff">Sign in</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+<main id="main">
+  {% for m in messages %}<div class="alert {{ m.tags }}" role="status">{{ m }}</div>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
