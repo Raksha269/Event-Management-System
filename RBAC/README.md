@@ -1,11 +1,8 @@
-# RBAC module (EMS-F-005) - self-contained
+# RBAC integration
 
-Everything for issue #3 lives in this folder, so it cannot conflict with
-teammates' files. Run all commands from inside `RBAC/`.
+RBAC is now part of the main `events` app. Its roles, permissions, decorators,
+authentication, context processor, and role-change service live under
+`events/`; the integrated behavior is configured by `config/settings.py`.
 
-    cd RBAC
-    pip install -r requirements.txt
-    python manage.py migrate
-    python manage.py test
-
-See docs/rbac.md for how other modules use the permission classes.
+See [`events/docs/rbac.md`](../events/docs/rbac.md) and run migrations/tests from
+the repository root. Do not use the standalone project settings in this folder.

@@ -6,18 +6,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 
-try:
-    from accounts.roles import DEFAULT_ROLE, Role
-except ImportError:
-    try:
-        from RBAC.accounts.roles import DEFAULT_ROLE, Role
-    except ImportError:
-        class Role(models.TextChoices):
-            ATTENDEE = "attendee", "Attendee"
-            ORGANIZER = "organizer", "Organizer"
-            ADMINISTRATOR = "administrator", "Administrator"
-
-        DEFAULT_ROLE = Role.ATTENDEE
+from .roles import DEFAULT_ROLE, Role
 
 
 class UserProfile(models.Model):
@@ -318,6 +307,7 @@ class Registration(models.Model):
         choices=Status.choices,
         default=Status.PENDING,
     )
+    confirmed_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 

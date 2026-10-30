@@ -3,7 +3,7 @@
 [![Django](https://img.shields.io/badge/Django-5.2-green.svg)](https://www.djangoproject.com/)
 [![DRF](https://img.shields.io/badge/Django%20REST%20Framework-3.15+-red.svg)](https://www.django-rest-framework.org/)
 [![Python](https://img.shields.io/badge/Python-3.12%20%7C%203.14-blue.svg)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/Tests-86%20Passing-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-101%20Passing-brightgreen.svg)]()
 [![Security](https://img.shields.io/badge/Security-TLS%201.2%2B%20%7C%20PCI--DSS%20%7C%20RBAC-success.svg)]()
 
 **Gather** is a full-featured, secure, and robust Event Management System designed to handle event publishing, multi-tier ticketing, high-concurrency attendee registration, mock payment processing with QR e-tickets, comprehensive financial reporting, administrator user governance, and real-time security monitoring.
@@ -14,7 +14,8 @@
 
 1. [Architectural Overview](#architectural-overview)
 2. [Role-Based Access Control (RBAC)](#role-based-access-control-rbac)
-3. [Implemented Feature Modules](#implemented-feature-modules)
+3. [Notifications](#notifications)
+4. [Implemented Feature Modules](#implemented-feature-modules)
    - [Authentication & Account Governance](#1-authentication--account-governance)
    - [Event Management Workflows (Issue #4)](#2-event-management-workflows-issue-4)
    - [Ticketing, Payments & Refunds](#3-ticketing-payments--refunds)
@@ -31,14 +32,14 @@
 Gather is built on Django 5.2 and Django REST Framework, adopting a layered architecture:
 
 - **Presentation Layer**: Mobile-responsive Django templates (`base.html`, `organizer_dashboard.html`, `admin_user_list.html`, `admin_alerts.html`, `event_report.html`) paired with RESTful JSON endpoints.
-- **Service & Domain Layer**: Dedicated service routines (`events/services.py`, `events/reports.py`, `events/security.py`) handling transactional capacity locks, payment tokenization, cryptographic validation, and velocity anomaly detection.
+- **Service & Domain Layer**: Event workflows, RBAC helpers, and notification delivery live under `events/`; `config/settings.py` wires the main Django app and notification worker.
 - **Persistence Layer**: Relational data models (`Event`, `TicketType`, `Registration`, `Payment`, `Refund`, `Ticket`, `UserProfile`, `SecurityAlert`) enforced by database constraints, transaction isolation, and row-level locking.
 
 ---
 
 ## Role-Based Access Control (RBAC)
 
-The system defines three core roles in `accounts/roles.py`:
+The system defines three core roles in `events/roles.py`:
 
 | Role | Permissions & Access Scope |
 | :--- | :--- |
@@ -47,6 +48,12 @@ The system defines three core roles in `accounts/roles.py`:
 | **Administrator** | Access system administration portal, list and search user accounts, toggle user active/deactivated status, reassign user roles, monitor real-time security alerts and resolve incidents. |
 
 *RBAC is strictly enforced on every route and API endpoint using `@role_required` decorators, DRF permission classes (`IsOrganizer`, `IsAdministrator`, `IsEventOwner`), returning `403 Forbidden` for unauthorized attempts.*
+
+Role-based views, permissions, role-change auditing, and template navigation are part of the `events` app. Administrator API role changes require a reason.
+
+## Notifications
+
+Confirmation emails are queued after successful payment, and queued reminders are cancelled when a registration is refunded. Notification code, templates, and migrations are in `events/notifications`; it uses the main `Event` and `Registration` models. Celery/Redis are only needed for background delivery and scheduled reminders.
 
 ---
 
@@ -128,9 +135,8 @@ Automated tests map directly to the IEEE Software Test Plan:
 | **TC-Sec-05**| `EMS-SR-005` | 5 failed logins trigger 15m lockout, abnormal velocity alert, admin resolve API | **PASS** |
 
 ### Test Execution Summary
-- **Main Test Suite (`events`)**: 71 passed in 34.7s (`python manage.py test`)
-- **RBAC Module (`RBAC`)**: 15 passed in 5.3s (`cd RBAC && python manage.py test`)
-- **Total Tests**: **86 passing automated tests (100% pass rate)**
+- **Main Test Suite**: 101 passed (`python manage.py test`)
+- The test suite also covers the integrated payment notification workflow.
 
 ---
 
@@ -150,7 +156,7 @@ Automated tests map directly to the IEEE Software Test Plan:
 ### Administration & User Management Endpoints
 - `GET /api/v1/admin/users/`: List all users with query and role filters *(Administrator only)*.
 - `GET /api/v1/admin/users/{id}/`: Retrieve user details *(Administrator only)*.
-- `PATCH /api/v1/admin/users/{id}/`: Update user `is_active` status or `role` *(Administrator only)*.
+- `PATCH /api/v1/admin/users/{id}/`: Update user `is_active` status or `role` *(Administrator only; role changes require a `reason`)*.
 
 ### Security Monitoring & Alerts Endpoints
 - `GET /api/v1/admin/alerts/`: List security alerts with `?severity=`, `?type=`, and `?is_resolved=` filters *(Administrator only)*.
@@ -163,6 +169,7 @@ Automated tests map directly to the IEEE Software Test Plan:
 ### Prerequisites
 - Python 3.10+ (tested on Python 3.12 and 3.14)
 - SQLite3
+- Redis, when running background notification workers or scheduled reminders
 
 ### 1. Clone & Set Up Environment
 ```bash
@@ -181,11 +188,8 @@ python manage.py migrate
 
 ### 3. Run Automated Tests
 ```bash
-# Run all core event, reporting, and security tests
+# Run all event, RBAC, payment, and notification tests
 python manage.py test
-
-# Run isolated RBAC unit tests
-cd RBAC && python manage.py test
 ```
 
 ### 4. Start Local Development Server
@@ -193,3 +197,9 @@ cd RBAC && python manage.py test
 python manage.py runserver
 ```
 Visit `http://localhost:8000/` in your browser to access the Gather portal.
+
+For asynchronous notifications, run a Celery worker and beat scheduler in separate terminals:
+```bash
+celery -A config worker -l info --pool=solo
+celery -A config beat -l info
+```

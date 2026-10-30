@@ -134,10 +134,7 @@ class UserAdminSerializer(serializers.ModelSerializer):
         return bool(profile and profile.email_verified)
 
     def validate_role(self, value):
-        try:
-            from accounts.roles import Role
-        except ImportError:
-            from RBAC.accounts.roles import Role
+        from .roles import Role
 
         if value not in Role.values:
             raise serializers.ValidationError(

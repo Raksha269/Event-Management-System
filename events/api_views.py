@@ -1,7 +1,7 @@
 import logging
 
 from django.contrib.auth.models import User
-from django.db import models
+from django.db import models, transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, permissions, status
@@ -9,19 +9,11 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-try:
-    from accounts.permissions import IsAdministrator, IsEventOwner, IsOrganizer
-    from accounts.roles import Role
-except ImportError:
-    from RBAC.accounts.permissions import (
-        IsAdministrator,
-        IsEventOwner,
-        IsOrganizer,
-    )
-    from RBAC.accounts.roles import Role
-
+from .permissions import IsAdministrator, IsEventOwner, IsOrganizer
+from .roles import Role
 from .models import Event, Registration, SecurityAlert, TicketType
 from .reports import build_csv_response
+from .role_services import RoleChangeError, change_user_role
 from .serializers import (
     EventSerializer,
     RegistrationSerializer,
@@ -329,7 +321,21 @@ class AdminUserDetailUpdateAPIView(APIView):
         if serializer.is_valid():
             old_role = target.role
             old_active = target.is_active
-            updated_user = serializer.save()
+            try:
+                with transaction.atomic():
+                    if new_role is not None and new_role != old_role:
+                        change_user_role(
+                            actor=request.user,
+                            target=target,
+                            new_role=new_role,
+                            reason=request.data.get("reason"),
+                        )
+                    updated_user = serializer.save()
+            except RoleChangeError as exc:
+                return Response(
+                    {"code": exc.code.upper(), "message": str(exc)},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             audit_log.info(
                 "admin_user_update actor=%s target=%s role=%s->%s active=%s->%s",

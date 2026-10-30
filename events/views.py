@@ -13,12 +13,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 
-try:
-    from accounts.decorators import role_required
-    from accounts.roles import Role
-except ImportError:
-    from RBAC.accounts.decorators import role_required
-    from RBAC.accounts.roles import Role
+from .decorators import role_required
+from .roles import Role
 
 from .forms import (
     EventForm,

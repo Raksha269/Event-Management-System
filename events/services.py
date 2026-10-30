@@ -155,7 +155,8 @@ def process_payment(registration_id):
     payment.save(update_fields=["status"])
 
     registration.status = Registration.Status.CONFIRMED
-    registration.save(update_fields=["status"])
+    registration.confirmed_at = timezone.now()
+    registration.save(update_fields=["status", "confirmed_at"])
 
     ticket, _ = Ticket.objects.get_or_create(
         registration=registration
@@ -164,6 +165,9 @@ def process_payment(registration_id):
     if not ticket.qr_code:
         generate_ticket_qr(ticket)
 
+    from .notifications.services import notify_registration_confirmed
+
+    notify_registration_confirmed(registration.pk)
     return payment
 
 
@@ -207,6 +211,10 @@ def process_refund(payment_id, reason):
     registration = payment.registration
     registration.status = Registration.Status.CANCELLED
     registration.save(update_fields=["status"])
+
+    from .notifications.services import cancel_reminders
+
+    cancel_reminders(registration.pk)
 
     if registration.ticket_type:
         ticket_type = TicketType.objects.select_for_update().get(

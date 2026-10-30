@@ -10,10 +10,7 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 
-try:
-    from accounts.roles import Role
-except ImportError:
-    from RBAC.accounts.roles import Role
+from .roles import Role
 
 from events.models import Event, Payment, Registration, SecurityAlert, TicketType, UserProfile
 from events.security import (

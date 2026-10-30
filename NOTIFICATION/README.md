@@ -1,7 +1,10 @@
-# NOTIFICATIONS module (EMS-F-040, EMS-F-041) - self-contained
+# Notifications integration
 
-Everything for issue #7 lives in this folder so it cannot conflict with teammates' files.
-Run all commands from inside `NOTIFICATIONS/`. See docs/notifications.md.
+Notifications are now part of the main project under `events/notifications` and
+use the main `events` models. Configuration is in `config/settings.py`; run
+migrations and tests from the repository root.
+
+See [`events/notifications/docs/notifications.md`](../events/notifications/docs/notifications.md).
 
     pip install -r requirements.txt
     python manage.py migrate

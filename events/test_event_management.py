@@ -8,10 +8,7 @@ from django.test import TestCase, TransactionTestCase
 from django.urls import reverse
 from django.utils import timezone
 
-try:
-    from accounts.roles import Role
-except ImportError:
-    from RBAC.accounts.roles import Role
+from .roles import Role
 
 from .models import Event, Registration, TicketType, UserProfile
 from .services import create_registration, process_payment, process_refund

@@ -16,11 +16,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Ensure RBAC directory is on sys.path so accounts.roles, permissions, etc. can be imported
-if str(BASE_DIR / 'RBAC') not in sys.path:
-    sys.path.insert(0, str(BASE_DIR / 'RBAC'))
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
@@ -44,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'events',
+    'events.notifications.apps.NotificationsConfig',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'events.context_processors.rbac_context',
             ],
         },
     },
@@ -145,3 +142,28 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "noreply@gather.local"
+SUPPORT_EMAIL = "support@gather.local"
+SITE_URL = "http://localhost:8000"
+
+NOTIFICATION_EMAIL_BACKEND = "events.notifications.email_service.DjangoMailBackend"
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+CELERY_BEAT_SCHEDULE = {
+    "ems-reminders-every-5-min": {
+        "task": "events.notifications.tasks.run_scheduled_notifications",
+        "schedule": 300.0,
+    },
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "events.authentication.EMSSessionAuthentication",
+    ],
+}
+
+if "test" in sys.argv:
+    NOTIFICATION_EMAIL_BACKEND = "events.notifications.email_service.MockEmailBackend"
+    CELERY_BROKER_URL = "memory://"
+    CELERY_RESULT_BACKEND = "cache+memory://"
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES = True

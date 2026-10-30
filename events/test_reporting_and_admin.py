@@ -8,10 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-try:
-    from accounts.roles import Role
-except ImportError:
-    from RBAC.accounts.roles import Role
+from .roles import Role
 
 from .models import Event, Payment, Registration, TicketType, UserProfile
 from .reports import generate_event_attendees_csv, get_event_report_data
@@ -460,7 +457,11 @@ class UserAdministrationTests(TestCase):
                 "api_admin_users_detail_update",
                 kwargs={"pk": self.target_user.pk},
             ),
-            {"role": "organizer", "is_active": False},
+            {
+                "role": "organizer",
+                "reason": "Approved organizer application",
+                "is_active": False,
+            },
             content_type="application/json",
         )
         self.assertEqual(response.status_code, 200)
@@ -470,6 +471,22 @@ class UserAdministrationTests(TestCase):
         self.target_user.refresh_from_db()
         self.assertEqual(self.target_user.role, Role.ORGANIZER)
         self.assertFalse(self.target_user.is_active)
+
+    def test_api_admin_role_change_requires_reason(self):
+        self.client.force_login(self.admin)
+        response = self.client.patch(
+            reverse(
+                "api_admin_users_detail_update",
+                kwargs={"pk": self.target_user.pk},
+            ),
+            {"role": "organizer"},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["code"], "REASON_REQUIRED")
+        self.target_user.refresh_from_db()
+        self.assertEqual(self.target_user.role, Role.ATTENDEE)
 
     def test_api_admin_patch_self_deactivation_rejected(self):
         """PATCH /api/v1/admin/users/{id}/ - Self deactivation rejected (400)."""

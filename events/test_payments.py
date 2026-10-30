@@ -7,6 +7,9 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
 
+from .notifications.constants import NotificationStatus, NotificationType
+from .notifications.email_service import MockEmailBackend
+from .notifications.models import Notification
 from .models import Event, Payment, Refund, Registration, Ticket
 from .services import process_payment, process_refund
 
@@ -14,6 +17,7 @@ from .services import process_payment, process_refund
 class PaymentWorkflowTests(TestCase):
 
     def setUp(self):
+        MockEmailBackend.reset()
         self.user = User.objects.create_user(
             username="payment_user",
             password="StrongTestPass123!",
@@ -46,6 +50,17 @@ class PaymentWorkflowTests(TestCase):
 
         ticket = Ticket.objects.get(registration=self.registration)
         self.assertTrue(ticket.qr_code.name)
+
+    def test_successful_payment_sends_confirmation_after_commit(self):
+        with self.captureOnCommitCallbacks(execute=True):
+            process_payment(self.registration.pk)
+
+        notification = Notification.objects.get(
+            registration_id=self.registration.pk,
+            notification_type=NotificationType.CONFIRMATION,
+        )
+        self.assertEqual(notification.status, NotificationStatus.SENT)
+        self.assertEqual(len(MockEmailBackend.outbox), 1)
 
     @patch(
         "events.services.mock_payment_gateway",
@@ -86,6 +101,20 @@ class PaymentWorkflowTests(TestCase):
             self.registration.status,
             Registration.Status.CANCELLED,
         )
+
+    def test_refund_cancels_queued_reminders(self):
+        payment = process_payment(self.registration.pk)
+        reminder = Notification.objects.create(
+            notification_type=NotificationType.REMINDER_48H,
+            registration_id=self.registration.pk,
+            recipient_email=self.user.email,
+            idempotency_key=f"reminder_48h:{self.registration.pk}",
+        )
+
+        process_refund(payment.pk, "Event cancellation")
+
+        reminder.refresh_from_db()
+        self.assertEqual(reminder.status, NotificationStatus.CANCELLED)
 
     def test_failed_payment_cannot_be_refunded(self):
         payment = Payment.objects.create(
