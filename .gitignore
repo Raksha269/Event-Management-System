@@ -20,3 +20,6 @@ htmlcov/
 
 # Generated ticket QR codes
 tickets/qr/
+
+# Local database backups
+db_backup_before_migrations.sqlite3

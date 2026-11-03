@@ -286,7 +286,59 @@ class EventManagementTests(TestCase):
         self.client.logout()
         discover_response = self.client.get(reverse("discover_events"))
         self.assertNotContains(discover_response, "Cloud Native Summit")
+    # --- EMS-F-020: Event Discovery and Search Filter Tests ---
 
+    def test_discover_events_filters_by_keyword(self):
+        """EMS-F-020: Search events by keyword."""
+        self.event.status = Event.Status.PUBLISHED
+        self.event.save()
+
+        response = self.client.get(
+            reverse("discover_events"),
+            {"q": "Cloud Native"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Cloud Native Summit")
+
+    def test_discover_events_filters_by_category(self):
+        """EMS-F-020: Filter published events by category."""
+        self.event.status = Event.Status.PUBLISHED
+        self.event.save()
+
+        response = self.client.get(
+            reverse("discover_events"),
+            {"category": "Technology"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Cloud Native Summit")
+
+    def test_discover_events_filters_by_location(self):
+        """EMS-F-020: Filter published events by venue/location."""
+        self.event.status = Event.Status.PUBLISHED
+        self.event.save()
+
+        response = self.client.get(
+            reverse("discover_events"),
+            {"location": "Convention Hall"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Cloud Native Summit")
+
+    def test_discover_events_filters_by_date(self):
+        """EMS-F-020: Filter published events by event date."""
+        self.event.status = Event.Status.PUBLISHED
+        self.event.save()
+
+        response = self.client.get(
+            reverse("discover_events"),
+            {"date": self.future_date.date().isoformat()},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Cloud Native Summit")
     # --- EMS-F-013: Ticket Types Configuration Tests (TC-Evt-04) ---
 
     def test_organizer_can_configure_ticket_types(self):
@@ -725,3 +777,5 @@ class ConcurrentCapacityTests(TransactionTestCase):
         self.assertEqual(event.remaining_capacity, 0)
         self.assertTrue(event.is_sold_out)
         self.assertEqual(event.registered_attendees_count, 1)
+
+        

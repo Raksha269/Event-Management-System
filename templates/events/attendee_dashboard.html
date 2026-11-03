@@ -1,0 +1,79 @@
+
+{% extends "base.html" %}
+
+{% block title %}My Registrations | Gather{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>My Registrations</h1>
+        <p class="muted">View and manage your event registrations.</p>
+    </div>
+    <a href="{% url 'discover_events' %}" class="button">Discover Events</a>
+</div>
+
+{% if registrations %}
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+        {% for registration in registrations %}
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                        <h2 style="margin: 0 0 8px;">
+                            <a href="{% url 'event_detail' registration.event.pk %}">
+                                {{ registration.event.event_title }}
+                            </a>
+                        </h2>
+
+                        <p class="muted">
+                            {{ registration.event.date|date:"M j, Y, P" }}
+                            &bull; {{ registration.event.venue }}
+                        </p>
+
+                        <p>
+                            <strong>Quantity:</strong> {{ registration.quantity }}
+                        </p>
+
+                        <p>
+                            <strong>Ticket type:</strong>
+                            {% if registration.ticket_type %}
+                                {{ registration.ticket_type.name }}
+                            {% else %}
+                                General Admission
+                            {% endif %}
+                        </p>
+
+                        <p>
+                            <strong>Registered on:</strong>
+                            {{ registration.created_at|date:"M j, Y" }}
+                        </p>
+                    </div>
+
+                    <div>
+                        {% if registration.status == "CONFIRMED" %}
+                            <span class="status-badge" style="background: #dcfce7; color: #15803d;">
+                                Confirmed
+                            </span>
+                        {% elif registration.status == "PENDING" %}
+                            <span class="status-badge" style="background: #fef3c7; color: #b45309;">
+                                Pending
+                            </span>
+                        {% elif registration.status == "CANCELLED" %}
+                            <span class="status-badge" style="background: #fee2e2; color: #b91c1c;">
+                                Cancelled
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card" style="text-align: center; padding: 48px 24px;">
+        <h3>You haven't registered for any events yet.</h3>
+        <p class="muted">Discover events and register to see them here.</p>
+        <a href="{% url 'discover_events' %}" class="button" style="margin-top: 12px;">
+            Explore Events
+        </a>
+    </div>
+{% endif %}
+{% endblock %}

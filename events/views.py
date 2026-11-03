@@ -177,10 +177,14 @@ def discover_events(request):
     """
     Public browse and search view.
     Only published events are visible to public attendees (EMS-F-012).
+    Supports keyword, category, location, and date filters.
     """
     events = Event.objects.filter(status=Event.Status.PUBLISHED)
+
     query = request.GET.get("q", "").strip()
     category = request.GET.get("category", "").strip()
+    location = request.GET.get("location", "").strip()
+    event_date = request.GET.get("date", "").strip()
 
     if query:
         events = events.filter(
@@ -189,10 +193,18 @@ def discover_events(request):
             | models.Q(description__icontains=query)
             | models.Q(venue__icontains=query)
         )
+
     if category:
         events = events.filter(category__iexact=category)
 
+    if location:
+        events = events.filter(venue__icontains=location)
+
+    if event_date:
+        events = events.filter(date__date=event_date)
+
     events = events.order_by("date")
+
     categories = (
         Event.objects.filter(status=Event.Status.PUBLISHED)
         .values_list("category", flat=True)
@@ -206,10 +218,11 @@ def discover_events(request):
             "events": events,
             "query": query,
             "selected_category": category,
+            "selected_location": location,
+            "selected_date": event_date,
             "categories": [c for c in categories if c],
         },
     )
-
 
 @role_required(Role.ORGANIZER, Role.ADMINISTRATOR)
 def organizer_dashboard(request):
@@ -219,6 +232,24 @@ def organizer_dashboard(request):
     """
     events = Event.objects.filter(organizer=request.user).order_by("-created_at")
     return render(request, "events/dashboard.html", {"events": events})
+@role_required(Role.ATTENDEE)
+def attendee_dashboard(request):
+    """
+    Attendee dashboard showing the user's event registrations.
+    EMS-F-024.
+    """
+    registrations = (
+        Registration.objects
+        .filter(user=request.user)
+        .select_related("event", "ticket_type")
+        .order_by("-created_at")
+    )
+
+    return render(
+        request,
+        "events/attendee_dashboard.html",
+        {"registrations": registrations},
+    )
 
 
 @role_required(Role.ORGANIZER, Role.ADMINISTRATOR)
