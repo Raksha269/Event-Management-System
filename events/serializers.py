@@ -85,6 +85,21 @@ class EventSerializer(serializers.ModelSerializer):
         return value
 
 
+class EventListSerializer(serializers.ModelSerializer):
+    """Compact event card payload for explicitly paged public search results."""
+
+    remaining_capacity = serializers.IntegerField(read_only=True)
+    is_sold_out = serializers.BooleanField(read_only=True)
+    is_published = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Event
+        fields = [
+            "id", "title", "name", "category", "venue", "date",
+            "ticket_price", "capacity", "status", "is_published",
+            "remaining_capacity", "is_sold_out",
+        ]
+
 class RegistrationSerializer(serializers.ModelSerializer):
     ticket_type_id = serializers.IntegerField(
         write_only=True, required=False, allow_null=True

@@ -182,7 +182,7 @@ class Event(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["status", "date"], name="event_status_date_idx")
+            models.Index(fields=["status", "date"], name="event_status_date_idx"),
         ]
 
     def save(self, *args, **kwargs):
@@ -239,6 +239,8 @@ class Event(models.Model):
     @property
     def registered_attendees_count(self):
         """Total quantity of active registrations for this event."""
+        if hasattr(self, "_active_registration_quantity"):
+            return self._active_registration_quantity
         manager = getattr(self, "registrations", None) or getattr(
             self, "registration_set", None
         )
@@ -281,6 +283,9 @@ class TicketType(models.Model):
 
     @property
     def available_quantity(self):
+        if hasattr(self, "_active_registration_quantity"):
+            used = max(self.sold_count, self._active_registration_quantity)
+            return max(0, self.quantity_limit - used)
         active_count = (
             self.registrations.exclude(
                 status=Registration.Status.CANCELLED
@@ -323,12 +328,20 @@ class Registration(models.Model):
         choices=Status.choices,
         default=Status.PENDING,
     )
+    idempotency_key = models.CharField(max_length=64, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         indexes = [
             models.Index(fields=["event", "status"], name="reg_event_status_idx"),
             models.Index(fields=["user", "created_at"], name="reg_user_created_idx"),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "idempotency_key"],
+                condition=models.Q(idempotency_key__isnull=False),
+                name="registration_user_idem_uniq",
+            )
         ]
 
 

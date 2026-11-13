@@ -1,0 +1,65 @@
+name: PostgreSQL NFR verification
+
+on:
+  push:
+    branches: [main, feature/issue-9-nfr-verification]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  postgres-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: ems
+          POSTGRES_USER: ems
+          POSTGRES_PASSWORD: ems-test-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ems -d ems"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DJANGO_DEBUG: "true"
+      DJANGO_SECRET_KEY: ci-only-test-key
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+      EMS_DB_ENGINE: postgresql
+      EMS_DB_NAME: ems
+      EMS_DB_USER: ems
+      EMS_DB_PASSWORD: ems-test-password
+      EMS_DB_HOST: 127.0.0.1
+      EMS_DB_PORT: "5432"
+      EMS_DB_SSLMODE: disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Check Django configuration
+        run: python manage.py check
+      - name: Check migrations
+        run: python manage.py makemigrations --check --dry-run
+      - name: Apply PostgreSQL migrations
+        run: python manage.py migrate --noinput
+      - name: Rehearse PostgreSQL backup and restore
+        run: |
+          docker run --rm --network host \
+            --env PGPASSWORD=ems-test-password \
+            --volume "$RUNNER_TEMP:/backup" \
+            postgres:16 bash -euc '
+              pg_dump --host=127.0.0.1 --username=ems --dbname=ems --format=custom --no-owner --no-acl --file=/backup/ems-backup.dump
+              createdb --host=127.0.0.1 --username=ems ems_restore_test
+              pg_restore --host=127.0.0.1 --username=ems --dbname=ems_restore_test --exit-on-error --no-owner --no-acl /backup/ems-backup.dump
+              migration_count=$(psql --host=127.0.0.1 --username=ems --dbname=ems_restore_test --tuples-only --no-align --command="SELECT COUNT(*) FROM django_migrations")
+              test "$migration_count" -gt 0
+            '
+      - name: Run application suite on PostgreSQL
+        run: python manage.py test

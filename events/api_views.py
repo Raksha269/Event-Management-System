@@ -2,6 +2,8 @@ import logging
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import Prefetch
+from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import generics, permissions, status
@@ -26,6 +28,7 @@ from .audit import record_audit_event
 from .reports import build_csv_response
 from .serializers import (
     EventSerializer,
+    EventListSerializer,
     RegistrationSerializer,
     SecurityAlertSerializer,
     TicketTypeSerializer,
@@ -62,8 +65,45 @@ class EventListCreateAPIView(generics.ListCreateAPIView):
             return [permissions.IsAuthenticated(), IsOrganizer()]
         return [permissions.AllowAny()]
 
+    def get_serializer_class(self):
+        if self.request.method == "GET" and (
+            "limit" in self.request.query_params
+            or "offset" in self.request.query_params
+        ):
+            return EventListSerializer
+        return self.serializer_class
+
     def get_queryset(self):
-        queryset = Event.objects.filter(status=Event.Status.PUBLISHED)
+        active_tickets = TicketType.objects.annotate(
+            _active_registration_quantity=Coalesce(
+                models.Sum(
+                    "registrations__quantity",
+                    filter=~models.Q(
+                        registrations__status=Registration.Status.CANCELLED
+                    ),
+                ),
+                models.Value(0),
+            )
+        )
+        queryset = (
+            Event.objects.filter(status=Event.Status.PUBLISHED)
+            .annotate(
+                _active_registration_quantity=Coalesce(
+                    models.Sum(
+                        "registrations__quantity",
+                        filter=~models.Q(
+                            registrations__status=Registration.Status.CANCELLED
+                        ),
+                    ),
+                    models.Value(0),
+                )
+            )
+            .prefetch_related(
+                Prefetch("ticket_types", queryset=active_tickets)
+            )
+        )
+        if "limit" in self.request.query_params or "offset" in self.request.query_params:
+            queryset = queryset.defer("description")
         q = self.request.query_params.get("q")
         category = self.request.query_params.get("category")
 
@@ -245,6 +285,7 @@ class EventRegistrationAPIView(APIView):
                 ticket_type_id=ticket_type_id,
                 quantity=quantity,
                 request=request,
+                idempotency_key=request.headers.get("Idempotency-Key"),
             )
         except ValueError as err:
             err_msg = str(err)
@@ -259,7 +300,12 @@ class EventRegistrationAPIView(APIView):
             )
 
         serializer = RegistrationSerializer(registration)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        replayed = getattr(registration, "_idempotency_replayed", False)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK if replayed else status.HTTP_201_CREATED,
+            headers={"Idempotency-Replayed": "true"} if replayed else None,
+        )
 
 
 class EventAttendeesCSVReportAPIView(APIView):

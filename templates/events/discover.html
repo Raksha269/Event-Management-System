@@ -107,6 +107,18 @@
             </div>
         {% endfor %}
     </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+        <nav aria-label="Event result pages" style="display: flex; justify-content: center; gap: 16px; margin: 24px 0;">
+            {% if page_obj.has_previous %}
+                <a class="button button-secondary" href="?page={{ page_obj.previous_page_number }}&q={{ query|urlencode }}&category={{ selected_category|urlencode }}&location={{ selected_location|urlencode }}&date={{ selected_date|urlencode }}">Previous</a>
+            {% endif %}
+            <span class="muted" aria-current="page">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a class="button button-secondary" href="?page={{ page_obj.next_page_number }}&q={{ query|urlencode }}&category={{ selected_category|urlencode }}&location={{ selected_location|urlencode }}&date={{ selected_date|urlencode }}">Next</a>
+            {% endif %}
+        </nav>
+    {% endif %}
 {% else %}
     <div class="card" style="text-align: center; padding: 48px 24px;">
         <h3 style="margin-bottom: 8px;">No events found</h3>

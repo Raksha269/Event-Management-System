@@ -37,6 +37,28 @@ class NonFunctionalFoundationTests(TestCase):
         self.assertEqual(paginated_response.status_code, 200)
         self.assertEqual(paginated_response.data["count"], 2)
         self.assertEqual(len(paginated_response.data["results"]), 1)
+        self.assertNotIn("description", paginated_response.data["results"][0])
+
+    def test_discovery_page_is_limited_to_50_events(self):
+        Event.objects.bulk_create(
+            [
+                Event(
+                    title=f"Page event {index:02d}",
+                    name=f"Page event {index:02d}",
+                    venue="Online",
+                    date=timezone.now() + timedelta(days=index + 1),
+                    status=Event.Status.PUBLISHED,
+                )
+                for index in range(51)
+            ]
+        )
+
+        response = self.client.get(reverse("discover_events"), {"q": "Page event"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["events"]), 50)
+        self.assertContains(response, "Page 1 of 2")
+        self.assertContains(response, "page=2&q=Page%20event")
 
     def test_admin_audit_api_is_protected_and_read_only(self):
         admin = User.objects.create_user(username="nfr_admin", password="pass")
@@ -57,12 +79,12 @@ class NonFunctionalFoundationTests(TestCase):
         with self.assertRaises(ValueError):
             record.delete()
 
-    @override_settings(EMS_AUDIT_RETENTION_DAYS=5)
-    def test_retention_command_removes_only_expired_records(self):
+    @override_settings(EMS_AUDIT_RETENTION_DAYS=1095)
+    def test_retention_command_enforces_three_year_boundary(self):
         expired = AuditEvent.objects.create(action="expired.record")
         retained = AuditEvent.objects.create(action="retained.record")
         AuditEvent.objects.filter(pk=expired.pk).update(
-            created_at=timezone.now() - timedelta(days=6)
+            created_at=timezone.now() - timedelta(days=1096)
         )
 
         output = StringIO()
@@ -94,3 +116,35 @@ class NonFunctionalFoundationTests(TestCase):
             {"registration.created", "payment.confirmed", "payment.refunded"}
             <= actions
         )
+
+    def test_registration_api_retries_are_idempotent(self):
+        attendee = User.objects.create_user(username="retry_attendee", password="pass")
+        event = Event.objects.create(
+            title="Retry-safe event",
+            venue="Online",
+            date=timezone.now() + timedelta(days=1),
+            capacity=2,
+            status=Event.Status.PUBLISHED,
+        )
+        self.client.force_login(attendee)
+        url = reverse("api_events_registrations", kwargs={"pk": event.pk})
+        key = "nfr-retry-key-001"
+
+        first = self.client.post(
+            url,
+            {"quantity": 1},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=key,
+        )
+        replay = self.client.post(
+            url,
+            {"quantity": 1},
+            content_type="application/json",
+            HTTP_IDEMPOTENCY_KEY=key,
+        )
+
+        self.assertEqual(first.status_code, 201)
+        self.assertEqual(replay.status_code, 200)
+        self.assertEqual(first.data["id"], replay.data["id"])
+        self.assertEqual(replay["Idempotency-Replayed"], "true")
+        self.assertEqual(event.registrations.count(), 1)

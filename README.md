@@ -112,9 +112,9 @@ The application now includes implementation support for the NFRs. Production tar
 
 | Requirement | Application support | Verification target / evidence |
 | :--- | :--- | :--- |
-| `EMS-NF-001` Performance | Composite indexes for event discovery and registration lookups; collection APIs support bounded pagination with `?limit=50&offset=0` (maximum 100). | Run the Software Test Plan search/load scenario; record p95 response time (target <= 2 seconds) and load profile. |
-| `EMS-NF-002` Availability | `/health/ready/` checks database connectivity and returns 503 if unavailable; production HTTPS, secure cookies, HSTS, and configurable database connection reuse are enabled when `DJANGO_DEBUG=false`. | Monitor endpoint and record monthly uptime against the SRS target of 99.5%, excluding scheduled maintenance; retain alert, backup, failover, and restore evidence. |
-| `EMS-NF-003` Scalability | Production PostgreSQL configuration is supported through environment variables; registration transactions use database row locks; registration queries are indexed. | Run 500 concurrent registration attempts and the SRS 10,000-attempt load test against PostgreSQL. SQLite is for local development and does not provide production row-lock semantics. |
+| `EMS-NF-001` Performance | Composite indexes, PostgreSQL trigram indexes for event text search, bounded API pagination, compact paginated list serialization, and annotated registration counts. | `scripts/nfr_search_benchmark.py` reports p95 and error counts for a configured representative dataset; target p95 <= 2 seconds. |
+| `EMS-NF-002` Availability | `/health/ready/` checks database connectivity and returns 503 if unavailable; production HTTPS, secure cookies, HSTS, and configurable database connection reuse are enabled when `DJANGO_DEBUG=false`. | Monitor endpoint and record monthly uptime against the SRS target of 99.5%, excluding scheduled maintenance; retain alert, production backup, failover, and restore evidence. CI rehearses a PostgreSQL dump/restore against an isolated disposable database. |
+| `EMS-NF-003` Scalability | Production PostgreSQL configuration is supported through environment variables; registration transactions use database row locks; idempotency keys prevent duplicate registrations on client retries. | Run 500 concurrent registration attempts and the SRS 10,000-attempt load test against PostgreSQL. SQLite is for local development and does not provide production row-lock semantics. A PostgreSQL 16 GitHub Actions workflow runs checks, migrations, and core tests. |
 | `EMS-NF-004` Usability | Responsive viewport metadata and flexible layouts are included in the web UI. | Capture checks at 360, 768, and 1440 px and record clipping/overflow and accessibility findings. |
 | `EMS-NF-005` Audit retention | Append-only `AuditEvent` records cover authentication, event create/update/publication, registration, payment/refund, security alerts, and administrator user changes. Administrator audit access is read-only. | Records default to 1,095 days (three years). Schedule `python manage.py purge_audit_events`; verify retrieval before expiry and retain archive/deletion-policy evidence. |
 
@@ -124,9 +124,9 @@ Audit entries exclude passwords, raw payment details, and request bodies. A serv
 
 Set `DJANGO_DEBUG=false`, a unique `DJANGO_SECRET_KEY`, and comma-separated `DJANGO_ALLOWED_HOSTS`. For PostgreSQL set `EMS_DB_ENGINE=postgresql`, `EMS_DB_NAME`, `EMS_DB_USER`, `EMS_DB_PASSWORD`, `EMS_DB_HOST`, and optionally `EMS_DB_PORT`, `EMS_DB_CONN_MAX_AGE`, and `EMS_DB_SSLMODE`. Keep the database on a private network and provision recurring backups and an external uptime monitor. Configure the TLS-terminating proxy for TLS 1.2+ and forward the HTTPS protocol header.
 
-Operational validation is **not yet executed** in this repository workspace. Record actual load, availability, backup-restore, and viewport results before marking the NFR verification cases as passed.
+Production operational validation is **not complete** in this repository workspace. Record actual PostgreSQL load, monthly availability, production backup/restore, and full accessibility results before marking those NFR verification cases as passed. GitHub Actions performs a disposable PostgreSQL 16 dump/restore rehearsal on every PR; this validates the procedure, not a deployed system's recovery objectives or backup retention.
 
-Local evidence: readiness/request-ID behavior, optional pagination, administrator-only audit retrieval, audit immutability, and expiry-boundary deletion are covered by automated tests. Chromium checked the public discovery page at 360, 768, and 1440 px with no horizontal document overflow; full workflow and WCAG 2.1 AA checks remain. The existing final-ticket concurrency case passes on the local SQLite development backend. This does not establish the PostgreSQL 500-user/10,000-attempt target; those load cases remain partial. The three-year archive/retrieval boundary has not been simulated end-to-end.
+Local evidence: readiness/request-ID behavior, API and HTML pagination, administrator-only audit retrieval, audit immutability, registration/payment/refund audit records, and the 1,095-day retention deletion boundary are covered by automated tests. A same-key API retry replays the original registration; a concurrent retry test checks that only one registration is created. Chromium checked the public homepage, login, registration, and event detail pages at 360, 768, and 1440 px with no horizontal document overflow; full workflows and WCAG 2.1 AA checks remain. On a local SQLite dataset of 1,000 published events using Waitress, the included search benchmark completed 100/100 requests at 100 concurrent clients (p95 1.459 seconds) and 500/500 at 500 clients (p95 6.279 seconds). The 500-client p95 misses the 2-second target; this local result is not a PostgreSQL production measurement. The 500/10,000 registration load test, monthly availability, and backup/restore remain pending in the deployed environment.
 
 ---
 
@@ -151,16 +151,16 @@ Automated tests map directly to the IEEE Software Test Plan:
 | **TC-Sec-03**| `EMS-SR-003` | Database inspection confirms modern salted password hashing; rejects plaintext | **PASS** |
 | **TC-Sec-04**| `EMS-SR-004` | RBAC matrix enforcement across roles returns 403 Forbidden on unauthorized endpoints | **PASS** |
 | **TC-Sec-05**| `EMS-SR-005` | 5 failed logins trigger 15m lockout, abnormal velocity alert, admin resolve API | **PASS** |
-| **TC-NF-01** | `EMS-NF-001` | Search p95 at normal load (up to 500 concurrent users; <= 2 sec target) | **NOT EXECUTED** |
+| **TC-NF-01** | `EMS-NF-001` | Search p95 at normal load (up to 500 concurrent users; <= 2 sec target) | **PARTIAL (500-client local p95 6.279s; target missed)** |
 | **TC-NF-02** | `EMS-NF-002` | 99.5% monthly uptime (excluding scheduled maintenance), failure recovery and restore evidence | **NOT EXECUTED** |
 | **TC-NF-03** | `EMS-NF-003` | 500 concurrent registrations and 10,000-attempt load on PostgreSQL | **PARTIAL** |
 | **TC-NF-04** | `EMS-NF-004` | Usability at 360, 768, 1440 px | **PARTIAL** |
 | **TC-NF-05** | `EMS-NF-005` | Audit completeness, retrieval, access and retention boundary | **PARTIAL** |
 
 ### Test Execution Summary
-- **Main Test Suite (`events`)**: 80 passed in 78.4s (`python manage.py test`)
-- **RBAC Module (`RBAC`)**: 24 passed in 20.3s (`cd RBAC && python manage.py test`)
-- **Total Tests**: **104 passing automated tests (100% pass rate)**
+- **Main Test Suite (`events`)**: 83 passed in 80.9s (`python manage.py test`)
+- **RBAC Module (`RBAC`)**: 24 passed (`cd RBAC && python manage.py test`)
+- **Total Tests**: **107 passing automated tests** locally; core events suite uses the local SQLite backend.
 
 ---
 

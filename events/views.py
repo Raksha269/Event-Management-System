@@ -8,7 +8,9 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.db import models, transaction
+from django.db.models.functions import Coalesce
 from django.http import Http404, HttpResponseBadRequest
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -180,7 +182,17 @@ def discover_events(request):
     Only published events are visible to public attendees (EMS-F-012).
     Supports keyword, category, location, and date filters.
     """
-    events = Event.objects.filter(status=Event.Status.PUBLISHED)
+    events = Event.objects.filter(status=Event.Status.PUBLISHED).annotate(
+        _active_registration_quantity=Coalesce(
+            models.Sum(
+                "registrations__quantity",
+                filter=~models.Q(
+                    registrations__status=Registration.Status.CANCELLED
+                ),
+            ),
+            models.Value(0),
+        )
+    )
 
     query = request.GET.get("q", "").strip()
     category = request.GET.get("category", "").strip()
@@ -205,6 +217,7 @@ def discover_events(request):
         events = events.filter(date__date=event_date)
 
     events = events.order_by("date")
+    page_obj = Paginator(events, 50).get_page(request.GET.get("page"))
 
     categories = (
         Event.objects.filter(status=Event.Status.PUBLISHED)
@@ -216,7 +229,8 @@ def discover_events(request):
         request,
         "events/discover.html",
         {
-            "events": events,
+            "events": page_obj.object_list,
+            "page_obj": page_obj,
             "query": query,
             "selected_category": category,
             "selected_location": location,
@@ -387,7 +401,17 @@ def event_detail(request, pk):
             raise Http404("Event not found or not published.")
 
     form = EventRegistrationForm(event=event)
-    ticket_types = event.ticket_types.all()
+    ticket_types = event.ticket_types.annotate(
+        _active_registration_quantity=Coalesce(
+            models.Sum(
+                "registrations__quantity",
+                filter=~models.Q(
+                    registrations__status=Registration.Status.CANCELLED
+                ),
+            ),
+            models.Value(0),
+        )
+    )
 
     return render(
         request,
@@ -486,6 +510,7 @@ def event_register(request, pk):
                 ticket_type_id=ticket_type_id,
                 quantity=quantity,
                 request=request,
+                idempotency_key=form.cleaned_data.get("idempotency_key"),
             )
             messages.success(
                 request,
