@@ -17,9 +17,13 @@ db.sqlite3
 # Test and coverage files
 .coverage
 htmlcov/
+coverage.xml
 
 # Generated ticket QR codes
 tickets/qr/
 
 # Local database backups
 db_backup_before_migrations.sqlite3
+
+# Generated production static files
+staticfiles/
