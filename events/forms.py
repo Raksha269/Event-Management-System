@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 
 from django import forms
@@ -187,6 +188,9 @@ class TicketTypeForm(forms.ModelForm):
 
 
 class EventRegistrationForm(forms.Form):
+    idempotency_key = forms.CharField(
+        max_length=64, required=False, widget=forms.HiddenInput
+    )
     ticket_type = forms.ModelChoiceField(
         queryset=TicketType.objects.none(),
         required=False,
@@ -201,6 +205,8 @@ class EventRegistrationForm(forms.Form):
 
     def __init__(self, *args, event=None, **kwargs):
         super().__init__(*args, **kwargs)
+        if not self.is_bound:
+            self.initial.setdefault("idempotency_key", uuid.uuid4().hex)
         if event is not None:
             self.event = event
             self.fields["ticket_type"].queryset = event.ticket_types.all()

@@ -778,4 +778,46 @@ class ConcurrentCapacityTests(TransactionTestCase):
         self.assertTrue(event.is_sold_out)
         self.assertEqual(event.registered_attendees_count, 1)
 
-        
+    def test_concurrent_retries_with_same_idempotency_key_create_one_registration(self):
+        event = Event.objects.create(
+            name="Retry-safe event",
+            title="Retry-safe event",
+            venue="Online",
+            date=timezone.now() + timedelta(days=5),
+            capacity=10,
+            status=Event.Status.PUBLISHED,
+        )
+        user = User.objects.create_user(
+            username="concurrent_retry_user",
+            password="StrongPass123!",
+        )
+
+        results = []
+        errors = []
+
+        def attempt_registration():
+            connection.close()
+            try:
+                results.append(
+                    create_registration(
+                        user,
+                        event.pk,
+                        quantity=1,
+                        idempotency_key="concurrent-retry-key",
+                    )
+                )
+            except ValueError as err:
+                errors.append(str(err))
+            finally:
+                connection.close()
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            futures = [executor.submit(attempt_registration) for _ in range(2)]
+            concurrent.futures.wait(futures)
+
+        self.assertEqual(errors, [])
+        self.assertEqual(len(results), 2)
+        self.assertEqual(results[0].pk, results[1].pk)
+        self.assertEqual(Registration.objects.filter(event=event, user=user).count(), 1)
+
+

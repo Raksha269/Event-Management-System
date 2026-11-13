@@ -3,6 +3,7 @@ import threading
 from contextlib import nullcontext
 
 import qrcode
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.db import connection, models, transaction
 from django.utils import timezone
@@ -49,7 +50,14 @@ def generate_ticket_qr(ticket):
 
 
 @transaction.atomic
-def create_registration(user, event_id, ticket_type_id=None, quantity=1, request=None):
+def create_registration(
+    user,
+    event_id,
+    ticket_type_id=None,
+    quantity=1,
+    request=None,
+    idempotency_key=None,
+):
     """
     Register an attendee for an event with row-level locking to prevent overselling.
     Enforces EMS-F-014:
@@ -58,11 +66,33 @@ def create_registration(user, event_id, ticket_type_id=None, quantity=1, request
     """
     if quantity <= 0:
         raise ValueError("Registration quantity must be at least 1.")
+    idempotency_key = (idempotency_key or "").strip() or None
+    if idempotency_key and len(idempotency_key) > 64:
+        raise ValueError("Idempotency key must be at most 64 characters.")
 
     # SQLite has no row-level SELECT FOR UPDATE; keep local tests/dev safe there.
     # PostgreSQL serializes only requests contending for the same locked event row.
     lock = _registration_lock if connection.vendor == "sqlite" else nullcontext()
     with lock:
+        if idempotency_key:
+            # Locking the attendee row serializes the same retry key even when
+            # retries are mistakenly sent with different event IDs.
+            get_user_model().objects.select_for_update().get(pk=user.pk)
+            existing = Registration.objects.filter(
+                user=user, idempotency_key=idempotency_key
+            ).first()
+            if existing:
+                if (
+                    existing.event_id != event_id
+                    or existing.ticket_type_id != ticket_type_id
+                    or existing.quantity != quantity
+                ):
+                    raise ValueError(
+                        "Idempotency key was already used for a different registration."
+                    )
+                existing._idempotency_replayed = True
+                return existing
+
         try:
             event = Event.objects.select_for_update().get(pk=event_id)
         except Event.DoesNotExist:
@@ -108,6 +138,7 @@ def create_registration(user, event_id, ticket_type_id=None, quantity=1, request
             ticket_type=ticket_type,
             quantity=quantity,
             status=Registration.Status.PENDING,
+            idempotency_key=idempotency_key,
         )
         record_audit_event(
             "registration.created", actor=user, target=registration, request=request

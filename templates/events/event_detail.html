@@ -122,6 +122,7 @@
         {% elif user.is_authenticated %}
             <form method="post" action="{% url 'event_register' event.pk %}" style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
                 {% csrf_token %}
+                {{ form.idempotency_key }}
                 <h3 style="margin-top: 0; font-size: 16px; margin-bottom: 14px;">Select Tickets to Register</h3>
 
                 {% if ticket_types %}
