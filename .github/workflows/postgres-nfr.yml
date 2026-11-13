@@ -50,13 +50,16 @@ jobs:
       - name: Apply PostgreSQL migrations
         run: python manage.py migrate --noinput
       - name: Rehearse PostgreSQL backup and restore
-        env:
-          PGPASSWORD: ems-test-password
         run: |
-          pg_dump --host=127.0.0.1 --username=ems --dbname=ems --format=custom --no-owner --no-acl --file="$RUNNER_TEMP/ems-backup.dump"
-          createdb --host=127.0.0.1 --username=ems ems_restore_test
-          pg_restore --host=127.0.0.1 --username=ems --dbname=ems_restore_test --exit-on-error --no-owner --no-acl "$RUNNER_TEMP/ems-backup.dump"
-          migration_count=$(psql --host=127.0.0.1 --username=ems --dbname=ems_restore_test --tuples-only --no-align --command='SELECT COUNT(*) FROM django_migrations')
-          test "$migration_count" -gt 0
+          docker run --rm --network host \
+            --env PGPASSWORD=ems-test-password \
+            --volume "$RUNNER_TEMP:/backup" \
+            postgres:16 bash -euc '
+              pg_dump --host=127.0.0.1 --username=ems --dbname=ems --format=custom --no-owner --no-acl --file=/backup/ems-backup.dump
+              createdb --host=127.0.0.1 --username=ems ems_restore_test
+              pg_restore --host=127.0.0.1 --username=ems --dbname=ems_restore_test --exit-on-error --no-owner --no-acl /backup/ems-backup.dump
+              migration_count=$(psql --host=127.0.0.1 --username=ems --dbname=ems_restore_test --tuples-only --no-align --command="SELECT COUNT(*) FROM django_migrations")
+              test "$migration_count" -gt 0
+            '
       - name: Run application suite on PostgreSQL
         run: python manage.py test
