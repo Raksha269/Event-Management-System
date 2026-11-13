@@ -1,5 +1,6 @@
 from django.contrib.postgres.indexes import GinIndex, OpClass
 from django.db import migrations
+from django.db.models import Func
 from django.db.models.functions import Upper
 
 
@@ -29,19 +30,19 @@ def remove_postgres_search_indexes(apps, schema_editor):
 def _search_indexes():
     return [
         GinIndex(
-            OpClass(Upper("title"), name="gin_trgm_ops"),
+            OpClass(Func(Upper("title"), template="(%(expressions)s)"), name="gin_trgm_ops"),
             name="event_title_trgm_idx",
         ),
         GinIndex(
-            OpClass(Upper("name"), name="gin_trgm_ops"),
+            OpClass(Func(Upper("name"), template="(%(expressions)s)"), name="gin_trgm_ops"),
             name="event_name_trgm_idx",
         ),
         GinIndex(
-            OpClass(Upper("description"), name="gin_trgm_ops"),
+            OpClass(Func(Upper("description"), template="(%(expressions)s)"), name="gin_trgm_ops"),
             name="event_description_trgm_idx",
         ),
         GinIndex(
-            OpClass(Upper("venue"), name="gin_trgm_ops"),
+            OpClass(Func(Upper("venue"), template="(%(expressions)s)"), name="gin_trgm_ops"),
             name="event_venue_trgm_idx",
         ),
     ]
@@ -63,28 +64,28 @@ class Migration(migrations.Migration):
                 migrations.AddIndex(
                     model_name="event",
                     index=GinIndex(
-                        OpClass(Upper("title"), name="gin_trgm_ops"),
+                        OpClass(Func(Upper("title"), template="(%(expressions)s)"), name="gin_trgm_ops"),
                         name="event_title_trgm_idx",
                     ),
                 ),
                 migrations.AddIndex(
                     model_name="event",
                     index=GinIndex(
-                        OpClass(Upper("name"), name="gin_trgm_ops"),
+                        OpClass(Func(Upper("name"), template="(%(expressions)s)"), name="gin_trgm_ops"),
                         name="event_name_trgm_idx",
                     ),
                 ),
                 migrations.AddIndex(
                     model_name="event",
                     index=GinIndex(
-                        OpClass(Upper("description"), name="gin_trgm_ops"),
+                        OpClass(Func(Upper("description"), template="(%(expressions)s)"), name="gin_trgm_ops"),
                         name="event_description_trgm_idx",
                     ),
                 ),
                 migrations.AddIndex(
                     model_name="event",
                     index=GinIndex(
-                        OpClass(Upper("venue"), name="gin_trgm_ops"),
+                        OpClass(Func(Upper("venue"), template="(%(expressions)s)"), name="gin_trgm_ops"),
                         name="event_venue_trgm_idx",
                     ),
                 ),

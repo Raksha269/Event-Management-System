@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.contrib.postgres.indexes import GinIndex, OpClass
+from django.db.models import Func
 from django.db.models.functions import Upper
 from django.utils import timezone
 
@@ -186,19 +187,19 @@ class Event(models.Model):
         indexes = [
             models.Index(fields=["status", "date"], name="event_status_date_idx"),
             GinIndex(
-                OpClass(Upper("title"), name="gin_trgm_ops"),
+                OpClass(Func(Upper("title"), template="(%(expressions)s)"), name="gin_trgm_ops"),
                 name="event_title_trgm_idx",
             ),
             GinIndex(
-                OpClass(Upper("name"), name="gin_trgm_ops"),
+                OpClass(Func(Upper("name"), template="(%(expressions)s)"), name="gin_trgm_ops"),
                 name="event_name_trgm_idx",
             ),
             GinIndex(
-                OpClass(Upper("description"), name="gin_trgm_ops"),
+                OpClass(Func(Upper("description"), template="(%(expressions)s)"), name="gin_trgm_ops"),
                 name="event_description_trgm_idx",
             ),
             GinIndex(
-                OpClass(Upper("venue"), name="gin_trgm_ops"),
+                OpClass(Func(Upper("venue"), template="(%(expressions)s)"), name="gin_trgm_ops"),
                 name="event_venue_trgm_idx",
             ),
         ]
