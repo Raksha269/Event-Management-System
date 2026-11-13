@@ -14,4 +14,5 @@ urlpatterns = [
     path("admin/users/<int:pk>/", api_views.AdminUserDetailUpdateAPIView.as_view(), name="api_admin_users_detail_update"),
     path("admin/alerts/", api_views.AdminSecurityAlertsListAPIView.as_view(), name="api_admin_alerts_list"),
     path("admin/alerts/<int:pk>/resolve/", api_views.AdminSecurityAlertResolveAPIView.as_view(), name="api_admin_alert_resolve"),
+    path("admin/audit-events/", api_views.AdminAuditEventsAPIView.as_view(), name="api_admin_audit_events"),
 ]

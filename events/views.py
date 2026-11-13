@@ -28,6 +28,7 @@ from .forms import (
     TicketTypeForm,
 )
 from .models import Event, Registration, SecurityAlert, TicketType, UserProfile
+from .audit import record_audit_event
 from .reports import build_csv_response, get_event_report_data
 from .security import (
     check_account_lockout,
@@ -149,7 +150,7 @@ def login_view(request):
 
         if form.is_valid():
             user = form.get_user()
-            record_login_success(user)
+            record_login_success(user, request=request)
             login(request, user)
             messages.success(request, "Welcome back!")
             return redirect("register")
@@ -264,6 +265,7 @@ def event_create(request):
             event.organizer = request.user
             event.status = Event.Status.DRAFT
             event.save()
+            record_audit_event("event.created", actor=request.user, target=event, request=request)
             messages.success(
                 request,
                 f"Event '{event.event_title}' created successfully as a Draft. Configure ticket types or publish when ready.",
@@ -303,7 +305,8 @@ def event_edit(request, pk):
     if request.method == "POST":
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
-            form.save()
+            event = form.save()
+            record_audit_event("event.updated", actor=request.user, target=event, request=request)
             messages.success(
                 request,
                 f"Event '{event.event_title}' updated successfully.",
@@ -339,6 +342,7 @@ def event_publish(request, pk):
 
     try:
         event.publish()
+        record_audit_event("event.published", actor=request.user, target=event, request=request)
         messages.success(
             request, f"Event '{event.event_title}' is now published and visible to attendees."
         )
@@ -362,6 +366,7 @@ def event_unpublish(request, pk):
         raise PermissionDenied("You do not have permission to unpublish this event.")
 
     event.unpublish()
+    record_audit_event("event.unpublished", actor=request.user, target=event, request=request)
     messages.success(
         request, f"Event '{event.event_title}' has been unpublished."
     )
@@ -480,6 +485,7 @@ def event_register(request, pk):
                 event_id=event.pk,
                 ticket_type_id=ticket_type_id,
                 quantity=quantity,
+                request=request,
             )
             messages.success(
                 request,
@@ -585,6 +591,7 @@ def admin_user_toggle_active(request, pk):
 
     target.is_active = not target.is_active
     target.save(update_fields=["is_active"])
+    record_audit_event("admin.user_activation_changed", actor=request.user, target=target, request=request)
 
     status_str = "activated" if target.is_active else "deactivated"
     messages.success(request, f"User '{target.username}' has been {status_str}.")
@@ -613,6 +620,7 @@ def admin_user_change_role(request, pk):
 
     old_role = target.role
     target.role = new_role
+    record_audit_event("admin.user_role_changed", actor=request.user, target=target, request=request)
     messages.success(
         request,
         f"Role for '{target.username}' changed from '{old_role}' to '{new_role}'.",

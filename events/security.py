@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 
 from .models import Payment, Registration, SecurityAlert
+from .audit import record_audit_event
 
 audit_log = logging.getLogger("ems.audit")
 security_log = logging.getLogger("ems.security")
@@ -16,7 +17,7 @@ LOCKOUT_DURATION = timedelta(minutes=15)
 ABNORMAL_REGISTRATION_THRESHOLD = 5  # registrations within 1 minute on same event
 
 
-def record_security_alert(alert_type, severity, details, target_user=None):
+def record_security_alert(alert_type, severity, details, target_user=None, request=None):
     """
     Log and create an administrator-visible security alert (EMS-SR-005).
     """
@@ -33,6 +34,7 @@ def record_security_alert(alert_type, severity, details, target_user=None):
         getattr(target_user, "username", "N/A"),
         details,
     )
+    record_audit_event("security.alert_created", target=alert, outcome="alert", request=request)
     return alert
 
 
@@ -59,15 +61,18 @@ def track_login_failure(username_or_email, request=None):
         audit_log.warning(
             "login_failure username=%s reason=user_not_found", username_or_email
         )
+        record_audit_event("auth.login_failed", outcome="failure", request=request)
         return False, "Invalid username or password."
 
     # Check if already locked
     is_locked, msg = check_account_lockout(user)
     if is_locked:
         audit_log.warning("login_attempt_on_locked_account user_id=%s", user.pk)
+        record_audit_event("auth.login_blocked", actor=user, target=user, outcome="failure", request=request)
         return False, msg
 
     user.failed_login_attempts += 1
+    record_audit_event("auth.login_failed", actor=user, target=user, outcome="failure", request=request)
 
     if user.failed_login_attempts >= MAX_FAILED_LOGIN_ATTEMPTS:
         user.locked_until = timezone.now() + LOCKOUT_DURATION
@@ -79,6 +84,7 @@ def track_login_failure(username_or_email, request=None):
                 f"{user.failed_login_attempts} consecutive failed login attempts."
             ),
             target_user=user,
+            request=request,
         )
         security_log.error(
             "account_lockout user_id=%s failed_attempts=%s",
@@ -96,12 +102,13 @@ def track_login_failure(username_or_email, request=None):
                 f"{user.failed_login_attempts} failed login attempts."
             ),
             target_user=user,
+            request=request,
         )
 
     return False, "Invalid username or password."
 
 
-def record_login_success(user):
+def record_login_success(user, request=None):
     """
     Clear failed login counters on successful authentication.
     """
@@ -115,9 +122,12 @@ def record_login_success(user):
         user.pk,
         getattr(user, "role", "unknown"),
     )
+    record_audit_event(
+        "auth.login_succeeded", actor=user, target=user, request=request
+    )
 
 
-def track_abnormal_registration(event, user=None, count=1):
+def track_abnormal_registration(event, user=None, count=1, request=None):
     """
     Monitor registration velocity and alert on abnormal spikes (EMS-SR-005).
     """
@@ -135,6 +145,7 @@ def track_abnormal_registration(event, user=None, count=1):
                 f"{recent_count} registrations created within the last 60 seconds."
             ),
             target_user=user,
+            request=request,
         )
 
 

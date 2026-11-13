@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 import sys
+import os
+from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,12 +27,14 @@ if str(BASE_DIR / 'RBAC') not in sys.path:
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-eca$mzz9a-0&1xnh#@!(9#t=e40$154^!q)lx@gy@z)4v+cf_a'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-local-development-only-change-me")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes"}
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").split(",") if host.strip()]
+if not DEBUG and SECRET_KEY == "django-insecure-local-development-only-change-me":
+    raise ImproperlyConfigured("Set DJANGO_SECRET_KEY when DJANGO_DEBUG is false.")
 
 
 # Application definition
@@ -48,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'events.middleware.RequestIdMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -85,6 +90,19 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Production deployments can select PostgreSQL without changing source code.
+if os.environ.get("EMS_DB_ENGINE", "").lower() in {"postgres", "postgresql"}:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("EMS_DB_NAME", ""),
+        "USER": os.environ.get("EMS_DB_USER", ""),
+        "PASSWORD": os.environ.get("EMS_DB_PASSWORD", ""),
+        "HOST": os.environ.get("EMS_DB_HOST", "localhost"),
+        "PORT": os.environ.get("EMS_DB_PORT", "5432"),
+        "CONN_MAX_AGE": int(os.environ.get("EMS_DB_CONN_MAX_AGE", "60")),
+        "OPTIONS": {"sslmode": os.environ.get("EMS_DB_SSLMODE", "require")},
+    }
 
 
 # Password validation
@@ -143,5 +161,28 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# EMS-NF-005: use the retention period approved by the organization. The default
+# meets the SRS three-year minimum; production can extend it to match policy.
+EMS_AUDIT_RETENTION_DAYS = int(os.environ.get("EMS_AUDIT_RETENTION_DAYS", "1095"))
+
+# Production-only transport protections. TLS itself must terminate at a proxy
+# or load balancer configured to allow TLS 1.2 and 1.3 only.
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = int(os.environ.get("DJANGO_HSTS_SECONDS", "31536000"))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "noreply@gather.local"
+
+# Bound collection response size to keep public APIs predictable under load.
+REST_FRAMEWORK = {
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {"anon": "120/minute", "user": "600/minute"},
+}

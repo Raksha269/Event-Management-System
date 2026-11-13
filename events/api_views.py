@@ -8,6 +8,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import LimitOffsetPagination
 
 try:
     from accounts.permissions import IsAdministrator, IsEventOwner, IsOrganizer
@@ -20,7 +21,8 @@ except ImportError:
     )
     from RBAC.accounts.roles import Role
 
-from .models import Event, Registration, SecurityAlert, TicketType
+from .models import AuditEvent, Event, Registration, SecurityAlert, TicketType
+from .audit import record_audit_event
 from .reports import build_csv_response
 from .serializers import (
     EventSerializer,
@@ -34,6 +36,18 @@ from .services import create_registration
 audit_log = logging.getLogger("ems.audit")
 
 
+class OptInLimitOffsetPagination(LimitOffsetPagination):
+    """Support paging without changing the existing default array responses."""
+
+    default_limit = 50
+    max_limit = 100
+
+    def paginate_queryset(self, queryset, request, view=None):
+        if "limit" not in request.query_params and "offset" not in request.query_params:
+            return None
+        return super().paginate_queryset(queryset, request, view=view)
+
+
 class EventListCreateAPIView(generics.ListCreateAPIView):
     """
     GET /api/v1/events/ - Public search and browse published events.
@@ -41,6 +55,7 @@ class EventListCreateAPIView(generics.ListCreateAPIView):
     """
 
     serializer_class = EventSerializer
+    pagination_class = OptInLimitOffsetPagination
 
     def get_permissions(self):
         if self.request.method == "POST":
@@ -65,10 +80,11 @@ class EventListCreateAPIView(generics.ListCreateAPIView):
         return queryset.order_by("date")
 
     def perform_create(self, serializer):
-        serializer.save(
+        event = serializer.save(
             organizer=self.request.user,
             status=Event.Status.DRAFT,
         )
+        record_audit_event("event.created", actor=self.request.user, target=event, request=self.request)
 
 
 class EventDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
@@ -99,6 +115,12 @@ class EventDetailUpdateAPIView(generics.RetrieveUpdateAPIView):
         # Check object permissions for write
         self.check_object_permissions(self.request, event)
         return event
+
+    def perform_update(self, serializer):
+        event = serializer.save()
+        record_audit_event(
+            "event.updated", actor=self.request.user, target=event, request=self.request
+        )
 
     def update(self, request, *args, **kwargs):
         event = self.get_object()
@@ -135,6 +157,8 @@ class EventPublishAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        record_audit_event("event.published", actor=request.user, target=event, request=request)
+
         serializer = EventSerializer(event)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -151,6 +175,7 @@ class EventUnpublishAPIView(APIView):
         self.check_object_permissions(request, event)
 
         event.unpublish()
+        record_audit_event("event.unpublished", actor=request.user, target=event, request=request)
         serializer = EventSerializer(event)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -219,6 +244,7 @@ class EventRegistrationAPIView(APIView):
                 event_id=pk,
                 ticket_type_id=ticket_type_id,
                 quantity=quantity,
+                request=request,
             )
         except ValueError as err:
             err_msg = str(err)
@@ -267,6 +293,7 @@ class AdminUserListAPIView(generics.ListAPIView):
 
     permission_classes = [permissions.IsAuthenticated, IsAdministrator]
     serializer_class = UserAdminSerializer
+    pagination_class = OptInLimitOffsetPagination
 
     def get_queryset(self):
         queryset = User.objects.all().order_by("-date_joined")
@@ -340,6 +367,7 @@ class AdminUserDetailUpdateAPIView(APIView):
                 old_active,
                 updated_user.is_active,
             )
+            record_audit_event("admin.user_updated", actor=request.user, target=updated_user, request=request)
             return Response(UserAdminSerializer(updated_user).data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -352,6 +380,7 @@ class AdminSecurityAlertsListAPIView(generics.ListAPIView):
     """
 
     serializer_class = SecurityAlertSerializer
+    pagination_class = OptInLimitOffsetPagination
     permission_classes = [permissions.IsAuthenticated, IsAdministrator]
 
     def get_queryset(self):
@@ -384,6 +413,7 @@ class AdminSecurityAlertResolveAPIView(APIView):
         alert = get_object_or_404(SecurityAlert, pk=pk)
         alert.is_resolved = True
         alert.save(update_fields=["is_resolved"])
+        record_audit_event("security.alert_resolved", actor=request.user, target=alert, request=request)
 
         audit_log.info(
             "security_alert_resolved admin_id=%s alert_id=%s",
@@ -392,3 +422,24 @@ class AdminSecurityAlertResolveAPIView(APIView):
         )
         serializer = SecurityAlertSerializer(alert)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AdminAuditEventsAPIView(APIView):
+    """Read-only, administrator-only access to retained audit history."""
+
+    permission_classes = [permissions.IsAuthenticated, IsAdministrator]
+
+    def get(self, request):
+        try:
+            limit = min(max(int(request.query_params.get("limit", 50)), 1), 100)
+            offset = max(int(request.query_params.get("offset", 0)), 0)
+        except (TypeError, ValueError):
+            return Response({"detail": "limit and offset must be integers."}, status=400)
+
+        rows = AuditEvent.objects.select_related("actor").order_by("-created_at", "-pk")
+        count = rows.count()
+        results = list(rows[offset:offset + limit].values(
+            "id", "actor_id", "actor__username", "action", "target_type",
+            "target_id", "outcome", "request_id", "ip_address", "created_at",
+        ))
+        return Response({"count": count, "limit": limit, "offset": offset, "results": results})

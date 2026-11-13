@@ -180,6 +180,11 @@ class Event(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["status", "date"], name="event_status_date_idx")
+        ]
+
     def save(self, *args, **kwargs):
         # Keep title and name synchronized for interoperability
         if self.title and not self.name:
@@ -320,6 +325,12 @@ class Registration(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["event", "status"], name="reg_event_status_idx"),
+            models.Index(fields=["user", "created_at"], name="reg_user_created_idx"),
+        ]
+
 
 class Payment(models.Model):
     class Status(models.TextChoices):
@@ -433,6 +444,45 @@ class SecurityAlert(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        indexes = [
+            models.Index(
+                fields=["is_resolved", "created_at"],
+                name="alert_resolved_created_idx",
+            )
+        ]
 
     def __str__(self):
         return f"[{self.severity}] {self.get_alert_type_display()} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+
+
+class AuditEvent(models.Model):
+    """Append-only audit record; never store credentials or payment data."""
+
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="ems_audit_events",
+    )
+    action = models.CharField(max_length=64)
+    target_type = models.CharField(max_length=64, blank=True)
+    target_id = models.CharField(max_length=64, blank=True)
+    outcome = models.CharField(max_length=16, default="success")
+    request_id = models.CharField(max_length=64, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            raise ValueError("Audit events are append-only.")
+        return super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise ValueError("Audit events can only be removed by the retention policy.")
+
+    def __str__(self):
+        return f"{self.created_at} {self.action} ({self.outcome})"

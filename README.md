@@ -3,7 +3,7 @@
 [![Django](https://img.shields.io/badge/Django-5.2-green.svg)](https://www.djangoproject.com/)
 [![DRF](https://img.shields.io/badge/Django%20REST%20Framework-3.15+-red.svg)](https://www.django-rest-framework.org/)
 [![Python](https://img.shields.io/badge/Python-3.12%20%7C%203.14-blue.svg)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/Tests-86%20Passing-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-104%20Passing-brightgreen.svg)]()
 [![Security](https://img.shields.io/badge/Security-TLS%201.2%2B%20%7C%20PCI--DSS%20%7C%20RBAC-success.svg)]()
 
 **Gather** is a full-featured, secure, and robust Event Management System designed to handle event publishing, multi-tier ticketing, high-concurrency attendee registration, mock payment processing with QR e-tickets, comprehensive financial reporting, administrator user governance, and real-time security monitoring.
@@ -20,9 +20,10 @@
    - [Ticketing, Payments & Refunds](#3-ticketing-payments--refunds)
    - [Reporting & Analytics (Issue #8)](#4-reporting--analytics-issue-8)
    - [Security & Incident Response (Issue #10)](#5-security--incident-response-issue-10)
-4. [Software Test Plan & Verification Matrix](#software-test-plan--verification-matrix)
-5. [REST API Documentation](#rest-api-documentation)
-6. [Getting Started & Local Development](#getting-started--local-development)
+4. [Non-Functional Requirements & Operations](#non-functional-requirements--operations)
+5. [Software Test Plan & Verification Matrix](#software-test-plan--verification-matrix)
+6. [REST API Documentation](#rest-api-documentation)
+7. [Getting Started & Local Development](#getting-started--local-development)
 
 ---
 
@@ -105,6 +106,30 @@ The system defines three core roles in `accounts/roles.py`:
 
 ---
 
+## Non-Functional Requirements & Operations
+
+The application now includes implementation support for the NFRs. Production targets still need measurements from the deployed environment; local SQLite runs cannot establish the 500-user concurrency or monthly availability targets.
+
+| Requirement | Application support | Verification target / evidence |
+| :--- | :--- | :--- |
+| `EMS-NF-001` Performance | Composite indexes for event discovery and registration lookups; collection APIs support bounded pagination with `?limit=50&offset=0` (maximum 100). | Run the Software Test Plan search/load scenario; record p95 response time (target <= 2 seconds) and load profile. |
+| `EMS-NF-002` Availability | `/health/ready/` checks database connectivity and returns 503 if unavailable; production HTTPS, secure cookies, HSTS, and configurable database connection reuse are enabled when `DJANGO_DEBUG=false`. | Monitor endpoint and record monthly uptime against the SRS target of 99.5%, excluding scheduled maintenance; retain alert, backup, failover, and restore evidence. |
+| `EMS-NF-003` Scalability | Production PostgreSQL configuration is supported through environment variables; registration transactions use database row locks; registration queries are indexed. | Run 500 concurrent registration attempts and the SRS 10,000-attempt load test against PostgreSQL. SQLite is for local development and does not provide production row-lock semantics. |
+| `EMS-NF-004` Usability | Responsive viewport metadata and flexible layouts are included in the web UI. | Capture checks at 360, 768, and 1440 px and record clipping/overflow and accessibility findings. |
+| `EMS-NF-005` Audit retention | Append-only `AuditEvent` records cover authentication, event create/update/publication, registration, payment/refund, security alerts, and administrator user changes. Administrator audit access is read-only. | Records default to 1,095 days (three years). Schedule `python manage.py purge_audit_events`; verify retrieval before expiry and retain archive/deletion-policy evidence. |
+
+Audit entries exclude passwords, raw payment details, and request bodies. A server-generated `X-Request-ID` is included in responses and stored with audit events created within a request. Retention defaults to the SRS minimum of three years. The purge command permanently deletes expired records, so schedule it only after any required external archival is configured.
+
+### Production configuration
+
+Set `DJANGO_DEBUG=false`, a unique `DJANGO_SECRET_KEY`, and comma-separated `DJANGO_ALLOWED_HOSTS`. For PostgreSQL set `EMS_DB_ENGINE=postgresql`, `EMS_DB_NAME`, `EMS_DB_USER`, `EMS_DB_PASSWORD`, `EMS_DB_HOST`, and optionally `EMS_DB_PORT`, `EMS_DB_CONN_MAX_AGE`, and `EMS_DB_SSLMODE`. Keep the database on a private network and provision recurring backups and an external uptime monitor. Configure the TLS-terminating proxy for TLS 1.2+ and forward the HTTPS protocol header.
+
+Operational validation is **not yet executed** in this repository workspace. Record actual load, availability, backup-restore, and viewport results before marking the NFR verification cases as passed.
+
+Local evidence: readiness/request-ID behavior, optional pagination, administrator-only audit retrieval, audit immutability, and expiry-boundary deletion are covered by automated tests. Chromium checked the public discovery page at 360, 768, and 1440 px with no horizontal document overflow; full workflow and WCAG 2.1 AA checks remain. The existing final-ticket concurrency case passes on the local SQLite development backend. This does not establish the PostgreSQL 500-user/10,000-attempt target; those load cases remain partial. The three-year archive/retrieval boundary has not been simulated end-to-end.
+
+---
+
 ## Software Test Plan & Verification Matrix
 
 Automated tests map directly to the IEEE Software Test Plan:
@@ -126,11 +151,16 @@ Automated tests map directly to the IEEE Software Test Plan:
 | **TC-Sec-03**| `EMS-SR-003` | Database inspection confirms modern salted password hashing; rejects plaintext | **PASS** |
 | **TC-Sec-04**| `EMS-SR-004` | RBAC matrix enforcement across roles returns 403 Forbidden on unauthorized endpoints | **PASS** |
 | **TC-Sec-05**| `EMS-SR-005` | 5 failed logins trigger 15m lockout, abnormal velocity alert, admin resolve API | **PASS** |
+| **TC-NF-01** | `EMS-NF-001` | Search p95 at normal load (up to 500 concurrent users; <= 2 sec target) | **NOT EXECUTED** |
+| **TC-NF-02** | `EMS-NF-002` | 99.5% monthly uptime (excluding scheduled maintenance), failure recovery and restore evidence | **NOT EXECUTED** |
+| **TC-NF-03** | `EMS-NF-003` | 500 concurrent registrations and 10,000-attempt load on PostgreSQL | **PARTIAL** |
+| **TC-NF-04** | `EMS-NF-004` | Usability at 360, 768, 1440 px | **PARTIAL** |
+| **TC-NF-05** | `EMS-NF-005` | Audit completeness, retrieval, access and retention boundary | **PARTIAL** |
 
 ### Test Execution Summary
-- **Main Test Suite (`events`)**: 71 passed in 34.7s (`python manage.py test`)
-- **RBAC Module (`RBAC`)**: 15 passed in 5.3s (`cd RBAC && python manage.py test`)
-- **Total Tests**: **86 passing automated tests (100% pass rate)**
+- **Main Test Suite (`events`)**: 80 passed in 78.4s (`python manage.py test`)
+- **RBAC Module (`RBAC`)**: 24 passed in 20.3s (`cd RBAC && python manage.py test`)
+- **Total Tests**: **104 passing automated tests (100% pass rate)**
 
 ---
 
@@ -138,6 +168,7 @@ Automated tests map directly to the IEEE Software Test Plan:
 
 ### Event Endpoints
 - `GET /api/v1/events/`: Search and browse published events (supports `?q=` and `?category=`).
+- Collection endpoints accept optional `?limit=` and `?offset=` parameters (maximum page size 100); omitting them preserves the existing array response shape.
 - `POST /api/v1/events/`: Create a new event in Draft status *(Organizer only)*.
 - `GET /api/v1/events/{id}/`: Retrieve event details.
 - `PUT/PATCH /api/v1/events/{id}/`: Edit event metadata before start date *(Owning Organizer only)*.
@@ -155,6 +186,7 @@ Automated tests map directly to the IEEE Software Test Plan:
 ### Security Monitoring & Alerts Endpoints
 - `GET /api/v1/admin/alerts/`: List security alerts with `?severity=`, `?type=`, and `?is_resolved=` filters *(Administrator only)*.
 - `POST /api/v1/admin/alerts/{id}/resolve/`: Mark a security alert as resolved *(Administrator only)*.
+- `GET /api/v1/admin/audit-events/?limit=50&offset=0`: Read retained audit events *(Administrator only; max 100 rows per page)*.
 
 ---
 

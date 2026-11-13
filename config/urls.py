@@ -2,8 +2,10 @@ from django.contrib import admin
 from django.urls import include, path
 
 from events import views as event_views
+from events.health import readiness
 
 urlpatterns = [
+    path("health/ready/", readiness, name="readiness"),
     path("admin/", admin.site.urls),
     path("accounts/", include("events.urls")),
     path("events/", include("events.event_urls")),

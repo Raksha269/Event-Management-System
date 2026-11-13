@@ -1,12 +1,14 @@
 import io
 import threading
+from contextlib import nullcontext
 
 import qrcode
 from django.core.files.base import ContentFile
-from django.db import models, transaction
+from django.db import connection, models, transaction
 from django.utils import timezone
 
 from .models import Event, Payment, Refund, Registration, Ticket, TicketType
+from .audit import record_audit_event
 
 _registration_lock = threading.Lock()
 
@@ -47,7 +49,7 @@ def generate_ticket_qr(ticket):
 
 
 @transaction.atomic
-def create_registration(user, event_id, ticket_type_id=None, quantity=1):
+def create_registration(user, event_id, ticket_type_id=None, quantity=1, request=None):
     """
     Register an attendee for an event with row-level locking to prevent overselling.
     Enforces EMS-F-014:
@@ -57,7 +59,10 @@ def create_registration(user, event_id, ticket_type_id=None, quantity=1):
     if quantity <= 0:
         raise ValueError("Registration quantity must be at least 1.")
 
-    with _registration_lock:
+    # SQLite has no row-level SELECT FOR UPDATE; keep local tests/dev safe there.
+    # PostgreSQL serializes only requests contending for the same locked event row.
+    lock = _registration_lock if connection.vendor == "sqlite" else nullcontext()
+    with lock:
         try:
             event = Event.objects.select_for_update().get(pk=event_id)
         except Event.DoesNotExist:
@@ -104,10 +109,13 @@ def create_registration(user, event_id, ticket_type_id=None, quantity=1):
             quantity=quantity,
             status=Registration.Status.PENDING,
         )
+        record_audit_event(
+            "registration.created", actor=user, target=registration, request=request
+        )
 
         try:
             from .security import track_abnormal_registration
-            track_abnormal_registration(event, user=user)
+            track_abnormal_registration(event, user=user, request=request)
         except Exception:
             pass
 
@@ -115,7 +123,7 @@ def create_registration(user, event_id, ticket_type_id=None, quantity=1):
 
 
 @transaction.atomic
-def process_payment(registration_id):
+def process_payment(registration_id, request=None):
     """
     Process a registration payment using the mock gateway.
     Successful payments confirm registration and issue an e-ticket.
@@ -149,6 +157,10 @@ def process_payment(registration_id):
     if not result["success"]:
         payment.status = Payment.Status.FAILED
         payment.save(update_fields=["status"])
+        record_audit_event(
+            "payment.failed", actor=registration.user, target=payment,
+            outcome="failure", request=request,
+        )
         return payment
 
     payment.status = Payment.Status.SUCCESS
@@ -156,6 +168,9 @@ def process_payment(registration_id):
 
     registration.status = Registration.Status.CONFIRMED
     registration.save(update_fields=["status"])
+    record_audit_event(
+        "payment.confirmed", actor=registration.user, target=payment, request=request
+    )
 
     ticket, _ = Ticket.objects.get_or_create(
         registration=registration
@@ -168,7 +183,7 @@ def process_payment(registration_id):
 
 
 @transaction.atomic
-def process_refund(payment_id, reason):
+def process_refund(payment_id, reason, request=None):
     """
     Process a full refund through a controlled mock workflow.
     Only successful payments can be refunded.
@@ -205,6 +220,9 @@ def process_refund(payment_id, reason):
     payment.save(update_fields=["status"])
 
     registration = payment.registration
+    record_audit_event(
+        "payment.refunded", actor=registration.user, target=refund, request=request
+    )
     registration.status = Registration.Status.CANCELLED
     registration.save(update_fields=["status"])
 
