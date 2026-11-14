@@ -74,16 +74,9 @@ class EventListCreateAPIView(generics.ListCreateAPIView):
         return self.serializer_class
 
     def get_queryset(self):
-        active_tickets = TicketType.objects.annotate(
-            _active_registration_quantity=Coalesce(
-                models.Sum(
-                    "registrations__quantity",
-                    filter=~models.Q(
-                        registrations__status=Registration.Status.CANCELLED
-                    ),
-                ),
-                models.Value(0),
-            )
+        compact_list = self.request.method == "GET" and (
+            "limit" in self.request.query_params
+            or "offset" in self.request.query_params
         )
         queryset = (
             Event.objects.filter(status=Event.Status.PUBLISHED)
@@ -98,12 +91,26 @@ class EventListCreateAPIView(generics.ListCreateAPIView):
                     models.Value(0),
                 )
             )
-            .prefetch_related(
+        )
+        if compact_list:
+            # The compact serializer doesn't include ticket types; avoid building
+            # a second annotated queryset and fetching rows it cannot serialize.
+            queryset = queryset.defer("description")
+        else:
+            active_tickets = TicketType.objects.annotate(
+                _active_registration_quantity=Coalesce(
+                    models.Sum(
+                        "registrations__quantity",
+                        filter=~models.Q(
+                            registrations__status=Registration.Status.CANCELLED
+                        ),
+                    ),
+                    models.Value(0),
+                )
+            )
+            queryset = queryset.prefetch_related(
                 Prefetch("ticket_types", queryset=active_tickets)
             )
-        )
-        if "limit" in self.request.query_params or "offset" in self.request.query_params:
-            queryset = queryset.defer("description")
         q = self.request.query_params.get("q")
         category = self.request.query_params.get("category")
 
