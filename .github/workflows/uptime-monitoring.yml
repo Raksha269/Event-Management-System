@@ -1,0 +1,39 @@
+
+name: Render Uptime Monitoring
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  uptime-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check Render website availability
+        shell: bash
+        run: |
+          URL="https://event-management-system-cqxx.onrender.com/"
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          HTTP_CODE=$(curl -L -sS \
+            --max-time 120 \
+            --output /dev/null \
+            --write-out "%{http_code}" \
+            "$URL") || HTTP_CODE="000"
+
+          echo "Timestamp (UTC): $TIMESTAMP"
+          echo "Website: $URL"
+          echo "HTTP status: $HTTP_CODE"
+
+          if [[ "$HTTP_CODE" =~ ^2[0-9][0-9]$ ]]; then
+            echo "Result: UP"
+          else
+            echo "Result: DOWN"
+            exit 1
+          fi
