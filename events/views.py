@@ -707,3 +707,16 @@ def admin_alert_resolve(request, pk):
 
     messages.success(request, f"Alert #{alert.pk} marked as resolved.")
     return redirect("admin_alerts_list")
+
+@login_required
+def user_profile(request):
+    """Display the currently logged-in user's profile."""
+    profile = UserProfile.objects.filter(user=request.user).first()
+
+    return render(
+        request,
+        "events/user_profile.html",
+        {
+            "profile": profile,
+        },
+    )

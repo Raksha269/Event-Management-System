@@ -1,0 +1,42 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <h2>My Profile</h2>
+    <hr>
+
+    <div class="card p-4">
+        <h4>Account Information</h4>
+
+        <p>
+            <strong>Username:</strong>
+            {{ request.user.username }}
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            {{ request.user.email }}
+        </p>
+
+        <p>
+            <strong>First Name:</strong>
+            {{ request.user.first_name|default:"Not provided" }}
+        </p>
+
+        <p>
+            <strong>Last Name:</strong>
+            {{ request.user.last_name|default:"Not provided" }}
+        </p>
+
+        <p>
+            <strong>Email Verification:</strong>
+            {% if profile and profile.email_verified %}
+                Verified
+            {% else %}
+                Not verified
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}
