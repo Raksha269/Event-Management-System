@@ -35,6 +35,7 @@ jobs:
       EMS_DB_HOST: 127.0.0.1
       EMS_DB_PORT: "5432"
       EMS_DB_SSLMODE: disable
+      EMS_DB_CONN_MAX_AGE: "0"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

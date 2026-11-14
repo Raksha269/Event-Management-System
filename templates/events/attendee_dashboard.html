@@ -53,10 +53,19 @@
                             <span class="status-badge" style="background: #dcfce7; color: #15803d;">
                                 Confirmed
                             </span>
+                            <div style="margin-top: 12px;">
+                                <a href="{% url 'ticket_detail' registration.id %}" class="button">
+                                    View Ticket
+                                </a>
+                            </div>
                         {% elif registration.status == "PENDING" %}
                             <span class="status-badge" style="background: #fef3c7; color: #b45309;">
                                 Pending
                             </span>
+                            <form method="post" action="{% url 'registration_pay' registration.id %}" style="margin-top: 12px;">
+                                {% csrf_token %}
+                                <button type="submit" class="button">Pay Now</button>
+                            </form>
                         {% elif registration.status == "CANCELLED" %}
                             <span class="status-badge" style="background: #fee2e2; color: #b91c1c;">
                                 Cancelled

@@ -27,3 +27,5 @@ db_backup_before_migrations.sqlite3
 
 # Generated production static files
 staticfiles/
+# Generated media files (ticket QR codes)
+/media/

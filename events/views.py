@@ -1,4 +1,4 @@
-import secrets
+﻿import secrets
 
 from django.conf import settings
 from django.contrib import messages
@@ -9,11 +9,12 @@ from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.db import models, transaction
 from django.db.models.functions import Coalesce
-from django.http import Http404, HttpResponseBadRequest
+from django.http import FileResponse, Http404, HttpResponseBadRequest
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 try:
     from accounts.decorators import role_required
@@ -29,7 +30,7 @@ from .forms import (
     RegistrationForm,
     TicketTypeForm,
 )
-from .models import Event, Registration, SecurityAlert, TicketType, UserProfile
+from .models import Event, Payment, Registration, SecurityAlert, Ticket, TicketType, UserProfile
 from .audit import record_audit_event
 from .reports import build_csv_response, get_event_report_data
 from .security import (
@@ -37,7 +38,7 @@ from .security import (
     record_login_success,
     track_login_failure,
 )
-from .services import create_registration
+from .services import create_registration, process_payment
 
 
 @login_required
@@ -717,3 +718,73 @@ def admin_alert_resolve(request, pk):
 
     messages.success(request, f"Alert #{alert.pk} marked as resolved.")
     return redirect("admin_alerts_list")
+@login_required
+@require_POST
+def registration_pay(request, registration_id):
+    """Process a mock payment for the logged-in attendee."""
+    registration = get_object_or_404(
+        Registration,
+        pk=registration_id,
+        user=request.user,
+    )
+
+    try:
+        payment = process_payment(registration.pk, request=request)
+
+        if payment.status == Payment.Status.SUCCESS:
+            messages.success(
+                request,
+                "Payment successful! Your registration is confirmed.",
+            )
+        else:
+            messages.error(request, "Mock payment failed.")
+
+    except ValueError as err:
+        messages.error(request, str(err))
+
+    return redirect("attendee_dashboard")
+
+@login_required
+def ticket_detail(request, registration_id):
+    """Display a confirmed ticket belonging to the logged-in user."""
+    registration = get_object_or_404(
+        Registration.objects.select_related("event", "ticket_type"),
+        pk=registration_id,
+        user=request.user,
+        status=Registration.Status.CONFIRMED,
+    )
+
+    ticket = get_object_or_404(Ticket, registration=registration)
+
+    return render(
+        request,
+        "events/ticket_detail.html",
+        {
+            "registration": registration,
+            "ticket": ticket,
+        },
+    )
+
+
+@login_required
+def ticket_qr(request, registration_id):
+    """Serve a QR-code image only to its ticket owner."""
+    ticket = get_object_or_404(
+        Ticket,
+        registration_id=registration_id,
+        registration__user=request.user,
+        registration__status=Registration.Status.CONFIRMED,
+    )
+
+    if not ticket.qr_code:
+        raise Http404("QR code not available.")
+
+    try:
+        qr_file = ticket.qr_code.open("rb")
+    except (FileNotFoundError, OSError):
+        raise Http404("QR code file not found.")
+
+    response = FileResponse(qr_file, content_type="image/png")
+    response["Cache-Control"] = "private, no-store"
+    response["X-Content-Type-Options"] = "nosniff"
+    return response
