@@ -63,4 +63,5 @@ jobs:
               test "$migration_count" -gt 0
             '
       - name: Run application suite on PostgreSQL
-        run: python manage.py test
+        run: python manage.py test --reverse
+        
