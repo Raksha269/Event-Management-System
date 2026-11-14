@@ -1,0 +1,68 @@
+﻿{% extends "base.html" %}
+
+{% block title %}View Ticket | Gather{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>My Event Ticket</h1>
+        <p class="muted">Your confirmed event registration.</p>
+    </div>
+    <a href="{% url 'attendee_dashboard' %}" class="button">Back to My Registrations</a>
+</div>
+
+<div class="card" style="max-width: 650px; margin: 0 auto; padding: 32px;">
+
+    <h2>{{ registration.event.event_title }}</h2>
+
+    <p>
+        <strong>Status:</strong>
+        <span class="status-badge" style="background: #dcfce7; color: #15803d;">
+            Confirmed
+        </span>
+    </p>
+
+    <p><strong>Attendee:</strong> {{ registration.user.username }}</p>
+
+    <p>
+        <strong>Date:</strong>
+        {{ registration.event.date|date:"M j, Y, P" }}
+    </p>
+
+    <p><strong>Venue:</strong> {{ registration.event.venue }}</p>
+
+    <p><strong>Quantity:</strong> {{ registration.quantity }}</p>
+
+    <p>
+        <strong>Ticket Type:</strong>
+        {% if registration.ticket_type %}
+            {{ registration.ticket_type.name }}
+        {% else %}
+            General Admission
+        {% endif %}
+    </p>
+
+    <hr>
+
+    <div style="text-align: center; margin-top: 24px;">
+        <h3>Your Ticket QR Code</h3>
+
+        {% if ticket.qr_code %}
+            <img
+                src="{% url 'ticket_qr' registration.id %}"
+                alt="QR code for ticket {{ ticket.ticket_code }}"
+                style="width: 220px; max-width: 100%; height: auto;"
+            >
+        {% else %}
+            <p class="muted">QR code is not available.</p>
+        {% endif %}
+
+        <p style="overflow-wrap: anywhere;">
+            <strong>Ticket Code:</strong><br>
+            {{ ticket.ticket_code }}
+        </p>
+
+        <p class="muted">Present this ticket at the event entrance.</p>
+    </div>
+</div>
+{% endblock %}

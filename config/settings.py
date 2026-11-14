@@ -197,3 +197,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_THROTTLE_RATES": {"anon": "600/minute", "user": "600/minute"},
 }
+
+# Uploaded media files, including generated QR-code tickets
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

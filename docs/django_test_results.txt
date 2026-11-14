@@ -1,0 +1,30 @@
+﻿.\.venv\Scripts\python.exe : Creating test database for alias 'default'...
+At line:1 char:1
++ .\.venv\Scripts\python.exe manage.py test 2>&1 |
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Creating test d...as 'default'...:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+
+...........................................................................security_alert
+type=ABNORMAL_REGISTRATION_RATE severity=HIGH user=velocity_user_4 details=Abnormal registration spike on event
+'Cybersecurity Summit 2026' (id=1): 5 registrations created within the last 60 seconds.
+.security_alert type=ACCOUNT_LOCKOUT severity=HIGH user=sec_attendee details=API alert test.
+.security_alert type=ACCOUNT_LOCKOUT severity=HIGH user=sec_attendee details=User locked out.
+security_alert type=FAILED_LOGIN_BURST severity=MEDIUM user=sec_organizer1 details=Repeated failures.
+.security_alert type=FAILED_LOGIN_BURST severity=MEDIUM user=sec_attendee details=Suspicious login failure burst:
+'sec_attendee' has 3 failed login attempts.
+security_alert type=FAILED_LOGIN_BURST severity=MEDIUM user=sec_attendee details=Suspicious login failure burst:
+'sec_attendee' has 4 failed login attempts.
+security_alert type=ACCOUNT_LOCKOUT severity=HIGH user=sec_attendee details=Account 'sec_attendee' locked for 15 minutes
+after 5 consecutive failed login attempts.
+account_lockout user_id=1 failed_attempts=5
+............
+----------------------------------------------------------------------
+Ran 90 tests in 125.822s
+
+OK
+Destroying test database for alias 'default'...
+
+Found 90 test(s).
+System check identified no issues (0 silenced).
