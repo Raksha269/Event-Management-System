@@ -11,47 +11,55 @@
 <!-- Search & Filter Bar -->
 <div class="card" style="margin-bottom: 32px;">
     <form method="get" action="{% url 'discover_events' %}"
-          style="display: flex; gap: 12px; flex-wrap: wrap;">
+          style="display: flex; gap: 12px; flex-wrap: wrap; align-items: end;">
 
-        <input
-            type="text"
-            name="q"
-            value="{{ query }}"
-            class="form-control"
-            placeholder="Search by title, topic, venue..."
-            style="flex: 2; min-width: 220px;"
-        >
+        <div class="form-group" style="flex: 2; min-width: 220px; margin: 0;">
+            <label for="event-search">Search events</label>
+            <input
+                id="event-search"
+                type="text"
+                name="q"
+                value="{{ query }}"
+                class="form-control"
+                placeholder="Search by title, topic, venue..."
+            >
+        </div>
 
-        <select
-            name="category"
-            class="form-control"
-            style="flex: 1; min-width: 160px;"
-        >
-            <option value="">All Categories</option>
-            {% for cat in categories %}
-                <option value="{{ cat }}"
-                    {% if selected_category == cat %}selected{% endif %}>
-                    {{ cat }}
-                </option>
-            {% endfor %}
-        </select>
+        <div class="form-group" style="flex: 1; min-width: 160px; margin: 0;">
+            <label for="event-category">Category</label>
+            <select id="event-category" name="category" class="form-control">
+                <option value="">All Categories</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}"
+                        {% if selected_category == cat %}selected{% endif %}>
+                        {{ cat }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <input
-            type="text"
-            name="location"
-            value="{{ selected_location }}"
-            class="form-control"
-            placeholder="Filter by location..."
-            style="flex: 1; min-width: 160px;"
-        >
+        <div class="form-group" style="flex: 1; min-width: 160px; margin: 0;">
+            <label for="event-location">Location</label>
+            <input
+                id="event-location"
+                type="text"
+                name="location"
+                value="{{ selected_location }}"
+                class="form-control"
+                placeholder="Filter by location..."
+            >
+        </div>
 
-        <input
-            type="date"
-            name="date"
-            value="{{ selected_date }}"
-            class="form-control"
-            style="flex: 1; min-width: 150px;"
-        >
+        <div class="form-group" style="flex: 1; min-width: 150px; margin: 0;">
+            <label for="event-date">Date</label>
+            <input
+                id="event-date"
+                type="date"
+                name="date"
+                value="{{ selected_date }}"
+                class="form-control"
+            >
+        </div>
 
         <button type="submit" class="button" style="padding: 11px 24px;">
             Search

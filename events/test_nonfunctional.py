@@ -60,6 +60,14 @@ class NonFunctionalFoundationTests(TestCase):
         self.assertContains(response, "Page 1 of 2")
         self.assertContains(response, "page=2&q=Page%20event")
 
+    def test_discovery_filters_have_associated_labels(self):
+        response = self.client.get(reverse("discover_events"))
+
+        self.assertContains(response, '<label for="event-search">Search events</label>', html=True)
+        self.assertContains(response, '<label for="event-category">Category</label>', html=True)
+        self.assertContains(response, '<label for="event-location">Location</label>', html=True)
+        self.assertContains(response, '<label for="event-date">Date</label>', html=True)
+
     def test_admin_audit_api_is_protected_and_read_only(self):
         admin = User.objects.create_user(username="nfr_admin", password="pass")
         admin.role = "administrator"
