@@ -1,4 +1,4 @@
-﻿
+
 import tempfile
 from datetime import timedelta
 from decimal import Decimal
@@ -190,7 +190,7 @@ class TicketAccessTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "image/png")
-        response.close()
+        # response.close()  # Temporarily disabled for PostgreSQL CI diagnosis
 
     def test_pending_registration_cannot_view_ticket(self):
         self.registration.status = Registration.Status.PENDING
