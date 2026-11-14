@@ -7,6 +7,7 @@ generator for payment or registration endpoints.
 
 import concurrent.futures
 import json
+import math
 import os
 import threading
 import time
@@ -28,36 +29,71 @@ barrier = threading.Barrier(CLIENTS + 1)
 def request_once(_):
     barrier.wait(timeout=60)
     started = time.perf_counter()
+    status = None
+    error = None
     try:
         with urllib.request.urlopen(URL, timeout=REQUEST_TIMEOUT) as response:
             response.read()
             status = response.status
     except urllib.error.HTTPError as error:
         status = error.code
-    except Exception as error:
-        status = f"{type(error).__name__}: {str(error)[:120]}"
-    return status, time.perf_counter() - started
+        error = f"HTTPError: {error.code}"
+    except Exception as exception:
+        error = f"{type(exception).__name__}: {str(exception)[:120]}"
+    return status, error, time.perf_counter() - started
 
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=CLIENTS) as pool:
     futures = [pool.submit(request_once, index) for index in range(CLIENTS)]
     time.sleep(1)
+    wall_started = time.perf_counter()
     barrier.wait(timeout=60)
     results = [future.result(timeout=REQUEST_TIMEOUT + 90) for future in futures]
+    elapsed = time.perf_counter() - wall_started
 
-durations = sorted(duration for _, duration in results)
-p95 = durations[int(0.95 * (len(durations) - 1))]
+durations = sorted(duration for _, _, duration in results)
+
+
+def percentile(values, quantile):
+    return values[max(0, math.ceil(quantile * len(values)) - 1)]
+
+
+statuses = [status for status, _, _ in results]
+errors = [error for _, error, _ in results if error]
+successful = sum(status == 200 for status in statuses)
+connection_refusals = [
+    error
+    for error in errors
+    if "ConnectionRefusedError" in error
+    or "WinError 10061" in error
+    or "Connection refused" in error
+]
+error_counts = Counter(errors)
 report = {
     "measured_at_utc": datetime.now(timezone.utc).isoformat(),
     "url": URL,
     "concurrent_clients": CLIENTS,
-    "successful_responses": sum(status == 200 for status, _ in results),
-    "non_200_responses": sum(status != 200 for status, _ in results),
-    "response_status_counts": dict(Counter(str(status) for status, _ in results)),
-    "p50_seconds": durations[len(durations) // 2],
-    "p95_seconds": p95,
+    "total_requests": len(results),
+    "successful_responses": successful,
+    "failed_requests": len(results) - successful,
+    "connection_refusals": len(connection_refusals),
+    "other_transport_errors": sum(
+        not error.startswith("HTTPError:")
+        and "ConnectionRefusedError" not in error
+        and "WinError 10061" not in error
+        and "Connection refused" not in error
+        for error in errors
+    ),
+    "response_status_counts": dict(Counter(str(status) for status in statuses)),
+    "average_seconds": sum(durations) / len(durations),
+    "p50_seconds": percentile(durations, 0.50),
+    "p95_seconds": percentile(durations, 0.95),
+    "p99_seconds": percentile(durations, 0.99),
     "max_seconds": max(durations),
+    "wall_time_seconds": elapsed,
+    "throughput_requests_per_second": len(results) / elapsed if elapsed else None,
     "srs_p95_target_seconds": 2.0,
-    "srs_target_met_in_this_run": p95 <= 2.0 and all(status == 200 for status, _ in results),
+    "srs_target_met_in_this_run": percentile(durations, 0.95) < 2.0 and successful == len(results),
+    "error_counts": dict(error_counts),
 }
 print(json.dumps(report, indent=2))

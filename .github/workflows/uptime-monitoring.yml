@@ -18,18 +18,33 @@ jobs:
       - name: Check Render website availability
         shell: bash
         run: |
-          URL="https://event-management-system-cqxx.onrender.com/"
+          URL="https://event-management-system-cqxx.onrender.com/health/ready/"
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-          HTTP_CODE=$(curl -L -sS \
+          RESULT=$(curl -L -sS \
             --max-time 120 \
             --output /dev/null \
-            --write-out "%{http_code}" \
-            "$URL") || HTTP_CODE="000"
+            --write-out "%{http_code},%{time_total}" \
+            "$URL") || RESULT="000,0"
+          HTTP_CODE="${RESULT%%,*}"
+          LATENCY="${RESULT#*,}"
 
           echo "Timestamp (UTC): $TIMESTAMP"
-          echo "Website: $URL"
+          echo "Readiness endpoint: $URL"
           echo "HTTP status: $HTTP_CODE"
+          echo "Response time (seconds): $LATENCY"
+          mkdir -p uptime-results
+          printf 'timestamp_utc,url,http_status,response_seconds,result\n%s,%s,%s,%s,%s\n' \
+            "$TIMESTAMP" "$URL" "$HTTP_CODE" "$LATENCY" \
+            "$([[ "$HTTP_CODE" =~ ^2[0-9][0-9]$ ]] && echo UP || echo DOWN)" \
+            > uptime-results/check.csv
+          {
+            echo "### Render readiness check"
+            echo "- Timestamp (UTC): $TIMESTAMP"
+            echo "- URL: $URL"
+            echo "- HTTP status: $HTTP_CODE"
+            echo "- Response time: ${LATENCY}s"
+          } >> "$GITHUB_STEP_SUMMARY"
 
           if [[ "$HTTP_CODE" =~ ^2[0-9][0-9]$ ]]; then
             echo "Result: UP"
@@ -37,3 +52,12 @@ jobs:
             echo "Result: DOWN"
             exit 1
           fi
+
+      - name: Archive uptime result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uptime-check-${{ github.run_id }}
+          path: uptime-results/check.csv
+          if-no-files-found: ignore
+          retention-days: 35
