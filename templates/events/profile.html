@@ -1,0 +1,32 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>My Profile</h1>
+    <p class="muted">View your account information.</p>
+</div>
+
+<div class="card">
+    <h2>Account Details</h2>
+
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Full Name:</strong> {{ user.get_full_name|default:"Not provided" }}</p>
+
+    {% if profile %}
+        <p><strong>Role:</strong> {{ profile.get_role_display }}</p>
+        <p><strong>Email Verified:</strong>
+            {% if profile.email_verified %}
+                Yes
+            {% else %}
+                No
+            {% endif %}
+        </p>
+    {% else %}
+        <p><strong>Role:</strong> {{ user.role|default:"Attendee" }}</p>
+        <p><strong>Profile details:</strong> Not available</p>
+    {% endif %}
+
+    <p><strong>Date Joined:</strong> {{ user.date_joined|date:"d M Y" }}</p>
+</div>
+{% endblock %}

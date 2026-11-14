@@ -40,6 +40,16 @@ from .security import (
 from .services import create_registration
 
 
+@login_required
+def profile_view(request):
+    profile = UserProfile.objects.filter(user=request.user).first()
+
+    return render(
+        request,
+        "events/profile.html",
+        {"profile": profile},
+    )
+
 def register(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
