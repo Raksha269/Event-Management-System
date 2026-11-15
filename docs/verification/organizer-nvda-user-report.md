@@ -74,4 +74,35 @@ These user-supplied speech sequences support Venue and Date summary links reachi
 
 After instructions to set Edge zoom to 200%, scroll through the local event form and use Tab/Shift+Tab, the user supplied further control speech and explicitly reported no overlapping text, missing controls, horizontal scrolling or keyboard trap at 200%. This is a user-reported layout/traversal result, not an independently reproduced or screenshot-measured 200% check. The speech includes the date edit/Day spin button/date-picker menu, capacity, price, submit, Cancel and form fields; the generic `clickable button` / `button` lines remain unidentified and are not counted as named application controls. No complete per-control reverse sequence or viewport dimensions were supplied. The result applies to this invalid event-form state, not the entire organizer workflow.
 
-These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: populated organizer workflows, complete control interactions (including native date picker), ticket tiers, publication/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.
+## Populated local draft and capacity error
+
+The user attempted a synthetic event creation and supplied speech showing `Capacity: Capacity must be greater than zero` in the error summary, followed by capacity field speech `required invalid entry editable Capacity must be greater than zero 0`. After changing capacity, submission returned to Organizer Dashboard. A supplied screenshot shows a success banner, one `Accessibility Test Event` card in Draft status, category Workshop, local test hall and 0/10 capacity. It also shows Tickets (0). This supports local draft creation and the capacity validation/correction sequence, not publication or registration success.
+
+The screenshot displays 14 November 2030, 4:53 p.m. The suggested test value had been 15 January 2030, 10:00; the reason for the different saved date has not been established. Do not assert the originally suggested date was entered successfully or conclude a date-picker defect from the difference alone.
+
+## Populated organizer card traversal
+
+The user supplied the following forward/reverse speech sequence on localhost:
+
+```text
+Accessibility Test Event link heading level 2
+View link
+Edit link
+Tickets (0) link
+Report link
+Publish button
+Report link
+Tickets (0) link
+Edit link
+View link
+Accessibility Test Event link heading level 2
++ Create New Event visited link
+Log out button
+My Profile link
+My Events visited same page link
+Discover Events link
+```
+
+This supports named card controls and traversal in both directions through this segment. It is not evidence that each action was activated, every interaction is free of traps, or that names remain distinguishable with multiple event cards. Unrelated browser/tab speech was excluded. No populated-card 200% zoom result was supplied at this point.
+
+These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: complete control interactions (including native date picker), populated-card zoom observations, ticket tiers, publication/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.
