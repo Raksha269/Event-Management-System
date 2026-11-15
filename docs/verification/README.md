@@ -46,6 +46,8 @@ Later local steps created a General tier, visually retested the corrected capaci
 
 The [attendee report](attendee-nvda-user-report.md) now also records a user-performed local registration with General Admission selected, availability changing to 9 of 10, and the populated attendee card's heading and Pay Now button. This does not establish selection of the configured named tier, completed payment or ticket issuance.
 
+Subsequent [payment/ticket evidence](payment-ticket-nvda-user-report.md) records a separate ₹1 synthetic fixture's confirmed mock payment and ticket page, textual ticket details and QR alternative. The earlier ₹0 fixture remains Pending; zero-value rejection and repeated Pay Now label ambiguity are retained as findings. This later result updates only the paid fixture's status, not the earlier free registration or all payment/accessibility cases.
+
 ## Uptime (#38)
 
 The user-supplied revised SRS PDF page 15 and Test Plan PDF page 25 state: scheduled readiness monitoring, with schedule, endpoint, timestamped results and failures documented over the available project observation window. They explicitly call 99.5% monthly uptime a longer-term objective rather than academic prototype acceptance. Revised SAD PDF page 18 describes retained timestamped external readiness checks. These documents retain candidate/approval caveats: record which baseline and observation window the team accepts; this report supplies no faculty approval.
