@@ -51,7 +51,7 @@ The current collector substitutes `000,0` when curl returns nonzero. Thus a futu
 ## Local reproduction of this snapshot summary
 
 ```bash
-python3 scripts/summarize_uptime_evidence.py > /tmp/uptime-summary.json
+python scripts/summarize_uptime_evidence.py
 ```
 
-The command only reads archived evidence and writes the requested output. It performs no network calls or live health checks. It verifies artifact/CSV hashes, one-row CSV consistency, status/result consistency and nonnegative latency before summarizing run counts/gaps, manual versus scheduled samples and nominal post-change slots.
+The command only reads archived evidence and prints the summary; it performs no network calls or live health checks. It verifies artifact/CSV hashes, one-row CSV consistency, status/result consistency and nonnegative latency before summarizing run counts/gaps, manual versus scheduled samples and nominal post-change slots. CSV hashes use canonical LF content so Git's Windows CRLF checkout does not cause a false mismatch; `events.test_uptime_evidence` covers that case.

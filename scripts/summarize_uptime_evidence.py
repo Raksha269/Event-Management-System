@@ -21,12 +21,15 @@ def summarize(root):
     for item in manifest:
         run_id = item['run_id']
         data = (root / str(run_id) / 'check.csv').read_bytes()
-        if hashlib.sha256(data).hexdigest() != item['csv_sha256']:
+        # Git may check these text CSVs out with CRLF on Windows. Hash the
+        # canonical LF representation used when the manifest was created.
+        canonical_data = data.replace(b'\r\n', b'\n')
+        if hashlib.sha256(canonical_data).hexdigest() != item['csv_sha256']:
             raise ValueError(f'CSV hash mismatch for {run_id}')
         artifact = next(a for a in metadata if a['run_id'] == run_id)
         if artifact.get('digest') != 'sha256:' + item['archive_sha256']:
             raise ValueError(f'Archive digest mismatch for {run_id}')
-        rows = list(csv.DictReader(data.decode().splitlines()))
+        rows = list(csv.DictReader(canonical_data.decode('utf-8').splitlines()))
         if len(rows) != 1 or rows[0] != item['row']:
             raise ValueError(f'CSV/manifest mismatch for {run_id}')
         row = rows[0]
