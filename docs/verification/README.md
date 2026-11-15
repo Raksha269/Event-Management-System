@@ -32,6 +32,8 @@ The user also [reported successful NVDA and forward/reverse keyboard checks on d
 
 In a subsequent [user-reported 200% browser zoom check](zoom-user-report.md), registration, login and discovery had no reported overlapping text, missing controls or horizontal scrolling. Viewport measurements/captures and independent reproduction were not supplied; this does not establish all reflow criteria or authenticated-workflow zoom behavior.
 
+The user then configured a separate local SQLite/in-memory-email instance of the PR branch and supplied [NVDA speech after an empty registration submission](registration-errors-nvda-user-report.md). It announces the error summary and three required-field error links. Field-level announcements, summary-link focus transfer and other error states remain pending; this local result does not verify production deployment.
+
 ## Uptime (#38)
 
 The user-supplied revised SRS PDF page 15 and Test Plan PDF page 25 state: scheduled readiness monitoring, with schedule, endpoint, timestamped results and failures documented over the available project observation window. They explicitly call 99.5% monthly uptime a longer-term objective rather than academic prototype acceptance. Revised SAD PDF page 18 describes retained timestamped external readiness checks. These documents retain candidate/approval caveats: record which baseline and observation window the team accepts; this report supplies no faculty approval.
