@@ -70,4 +70,8 @@ Day Date & Time * spin button 0 This field is required.
 
 These user-supplied speech sequences support Venue and Date summary links reaching their corresponding controls and exposing the required/invalid states and associated required-field descriptions. They also capture the native date control's Day subcontrol speech. This does not establish all date-picker interactions or validation of populated values.
 
-These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: organizer 200% zoom observations, complete forward/reverse keyboard interactions, populated organizer workflows, ticket tiers, publication/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.
+## Event-form zoom and keyboard observation
+
+After instructions to set Edge zoom to 200%, scroll through the local event form and use Tab/Shift+Tab, the user supplied further control speech and explicitly reported no overlapping text, missing controls, horizontal scrolling or keyboard trap at 200%. This is a user-reported layout/traversal result, not an independently reproduced or screenshot-measured 200% check. The speech includes the date edit/Day spin button/date-picker menu, capacity, price, submit, Cancel and form fields; the generic `clickable button` / `button` lines remain unidentified and are not counted as named application controls. No complete per-control reverse sequence or viewport dimensions were supplied. The result applies to this invalid event-form state, not the entire organizer workflow.
+
+These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: populated organizer workflows, complete control interactions (including native date picker), ticket tiers, publication/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.

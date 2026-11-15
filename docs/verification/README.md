@@ -40,6 +40,8 @@ The user also [checked the local authenticated attendee empty dashboard](attende
 
 Subsequent [organizer observations](organizer-nvda-user-report.md) cover the empty dashboard's named links, default event form controls and NVDA's Venue/Date error-summary announcements after invalid submission. Follow-up speech supports both error links reaching the matching controls and announcing their required/invalid states and error descriptions. The report retains uncertain generic button speech and required-state inconsistencies as review findings, not passes. Other organizer interactions and zoom checks remain pending.
 
+For that local invalid event-form state, the user subsequently reported no overlap, missing controls, horizontal scrolling or keyboard trap at 200% zoom. Broader organizer workflow zoom/interaction coverage remains pending; this updates only the sampled form result.
+
 ## Uptime (#38)
 
 The user-supplied revised SRS PDF page 15 and Test Plan PDF page 25 state: scheduled readiness monitoring, with schedule, endpoint, timestamped results and failures documented over the available project observation window. They explicitly call 99.5% monthly uptime a longer-term objective rather than academic prototype acceptance. Revised SAD PDF page 18 describes retained timestamped external readiness checks. These documents retain candidate/approval caveats: record which baseline and observation window the team accepts; this report supplies no faculty approval.
