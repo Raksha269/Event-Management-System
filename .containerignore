@@ -1,0 +1,15 @@
+.git
+.venv
+.staging
+.agents
+.codex
+.aws
+.env
+**/__pycache__
+**/*.pyc
+media
+staticfiles
+*.sqlite3
+*.dump
+docs
+NOTIFICATION

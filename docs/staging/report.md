@@ -1,110 +1,112 @@
-# Issue #9 — PostgreSQL Staging and Recovery Verification Report
+# Issue #9 — Local PostgreSQL Staging and Recovery Report
 
-**Report date:** 2026-11-15
+**Date:** 2026-11-15
 
 **Owner/operator:** Rahul Biju (`rahulb`)
 
-**Assigned sub-issues:** [#32](https://github.com/Raksha269/Event-Management-System/issues/32) and [#33](https://github.com/Raksha269/Event-Management-System/issues/33)
+**Scope:** revised local acceptance for [#32](https://github.com/Raksha269/Event-Management-System/issues/32) and [#33](https://github.com/Raksha269/Event-Management-System/issues/33)
 
-**Implementation:** commit `56d2bae`; [draft PR #34](https://github.com/Raksha269/Event-Management-System/pull/34)
+**Delivery:** [PR #34](https://github.com/Raksha269/Event-Management-System/pull/34)
 
-**Disposition:** local implementation and verification complete; original deployment-dependent acceptance remains incomplete.
+**Disposition:** both sub-issues' implementation and verification are complete under the owner-approved local scope; PR review/merge is the next handoff. Parent #9 remains open for its other NFR work.
 
-## 1. Executive assessment
+## 1. Scope decision and executive assessment
 
-The isolated local PostgreSQL environment, synthetic dataset, performance measurements and separate-database restore verification have been implemented and tested. All 160 search requests succeeded, 95 Django tests and two probe regression tests passed, and restored data matched the source. Both PR CI workflows passed.
+On 2026-11-15 the owner explicitly approved: “Use local PostgreSQL as the revised acceptance scope” and requested a containerized production-comparable environment, performance execution and documentation. This supersedes the earlier requirement to obtain hosted-provider evidence for these two tasks. Rahul executes the tests directly in place of a staging handoff to Rajath. The chosen baseline is a small resource-constrained application/database deployment; no existing production deployment is asserted.
 
-The owner reports that no deployed application/database exists. Accordingly, this report documents the local backup and audit configuration as observed, and records deployment-specific requirements as pending. Neither sub-issue can be certified complete under its currently published acceptance criteria. No issue closure, merge or deployment is performed by this report.
+Rootless Podman enforced independent CPU/RAM ceilings for PostgreSQL 16 and Gunicorn. The public-search dataset had matching published events. All 160 requests succeeded and p95 stayed below two seconds at 10/50/100 concurrent clients. A populated backup was restored into a separate PostgreSQL server/container; data and integrity checks and restored application readiness passed. All 95 Django tests and five script regressions passed. All four run-owned containers and their anonymous volumes were removed after validation; private backup/evidence files remain protected locally.
 
-## 2. Objective and method
+This is a reproducible local acceptance baseline. Shared physical host/kernel/storage, synthetic data and short search bursts limit extrapolation to a future hosted deployment, sustained load or registration stress. Backup/audit controls that are absent are recorded as absent, not presented as configured.
 
-The objective of #32 is isolated PostgreSQL staging with representative published events for performance verification. The objective of #33 is evidence of the deployed database backup/recovery and audit-retention arrangements, including a restore into a separate isolated database.
+## 2. Baseline and provenance
 
-The method was to provision an unprivileged disposable cluster, migrate Django, generate synthetic records, analyze tables, start Gunicorn, verify readiness and nonempty search, execute synchronized search bursts, stop the source app, dump the populated database, restore into a separately created database, compare table content/counts, run integrity checks, and verify restored migrations/readiness. Automated tests ran against PostgreSQL. Services were stopped after verification. Python dependencies and commands ran in `.venv`; native database utilities used an isolated data directory. See the [operating runbook](README.md) for reproduction and access.
+| Component | Selected baseline | Verified evidence |
+| --- | --- | --- |
+| Application | Python 3.12 container; DEBUG=false; non-root user; Gunicorn 2 workers × 4 threads | App image recipe, dependency inventory, readiness |
+| Application resources | 1 CPU quota; 512 MiB RAM; no swap | `cpu.max=100000 100000`, `memory.max=536870912`, `memory.swap.max=0` |
+| Source database | PostgreSQL 16.16 (Debian 16.16-1.pgdg12+1); 64 max connections; 128 MiB shared buffers | Official image, explicit startup configuration and SQL version query |
+| Database resources | 1 CPU quota; 1 GiB RAM; no swap | `cpu.max=100000 100000`, `memory.max=1073741824`, `memory.swap.max=0` |
+| Recovery target | Separate PostgreSQL container/server/data volume, same resource limits | Matching quota checks and cross-container restore |
+| Restored app | Same app image and limits | Readiness and quota checks |
+| Load generator | Host `.venv`, outside service quotas | Host package inventory and probe JSON |
 
-Authoritative run: [20261115T065402Z](evidence/20261115T065402Z/environment.json), executed by `rahulb`. All Python commands used `.venv`; no system Python packages or system database packages were installed. Matching contrib libraries were downloaded/extracted privately. The database and application are stopped after verification (`postgres_stopped: true`).
+CPU quotas bound scheduler time rather than reserve physical cores. [Podman resource controls](https://docs.podman.io/en/stable/markdown/podman-run.1.html) and [Docker's resource documentation](https://docs.docker.com/engine/containers/resource_constraints/) describe these limits. The runner independently verifies effective cgroup values and refuses silently ignored limits. The measured runtime is Podman; Docker is an unexecuted CLI-compatible option.
 
-## 3. Environment and source
+Authoritative run: [`20261115T071135Z-container`](evidence/20261115T071135Z-container/environment.json). Local execution window: `2026-11-15T07:11:35.801509+00:00` through `2026-11-15T07:13:01.930646+00:00`. Only locally provisioned services received test traffic. The owner's instruction to execute locally supplies authorization for this window; no external deployment operator/test window is required under the revised scope.
 
-- PostgreSQL 18.6; Python 3.14.10; [exact dependencies](evidence/20261115T065402Z/python-packages.txt).
-- Linux workstation: 16 logical CPUs, 15.03 GiB reported host RAM. No imposed per-service limits; processes share the host. The runner records cgroup limits when exposed at `/sys/fs/cgroup`; no cgroup limit fields were present in this run, so inherited container quotas were not verified.
-- Gunicorn: two workers, four threads each. PostgreSQL max connections: 120; Django connection reuse: 60 seconds.
-- Base revision `321c7924e372b56c0e4098df5623ff2241feaec5` plus this implementation's uncommitted changes at execution. [Source manifest](evidence/20261115T065402Z/source-manifest.json) identifies the exact Python/requirements contents tested; this is not a measurement of the unchanged base commit.
-- [Dataset](evidence/20261115T065402Z/dataset.json): 1,500 synthetic events, 1,233 published, 233 published matches for `Sample`, 3,000 ticket tiers, no registrations/payments.
+Base revision: `2b15e952326437df2be6cd89821a183a780891c2` plus the container implementation present at execution. [Source manifest](evidence/20261115T071135Z-container/source-manifest.json) captures the exact Python/requirements/Containerfile hashes, so these results are not attributed to the unchanged base revision. App image ID: `42be559748a163e3d77b8048f048fc4269fe71d339950ada2e9eb9fb052f6f3e`. Database image ID and registry digests are in environment JSON. [Host packages](evidence/20261115T071135Z-container/host-python-packages.txt) and [app packages](evidence/20261115T071135Z-container/app-python-packages.txt) are separate inventories. All Python dependencies ran in host `.venv` or image `/opt/venv`; no global Python installation was modified.
+
+## 3. Method and dataset
+
+The runner builds the image, provisions a unique source database container, applies migrations, seeds/analyzes data, starts the limited app, verifies cgroup limits/readiness/nonempty search, executes synchronized read-only search bursts, captures stats, stops source traffic, dumps the populated database, provisions a second database server, restores and validates it, starts the restored app, checks migrations/readiness, runs automated tests and removes its own containers/volumes. The [runbook](README.md) contains exact reproduction and credential-free access instructions.
+
+[Dataset evidence](evidence/20261115T071135Z-container/dataset.json): 1,500 synthetic events, 1,233 published, 233 published `Sample` matches, six categories, three venues, varied capacities/prices/statuses, one organizer with an unusable password and 3,000 ticket tiers. No production data, registrations or payments are copied. Fixed future dates use a 2030 anchor. The guard rejects unexpected engines/names/hosts, absent explicit opt-in, existing users/events and repeat seeding.
 
 ## 4. Performance findings
 
-Request: `/api/v1/events/?q=Sample&limit=50&offset=0`. Readiness and nonempty search smoke tests passed first. Each series is one synchronized burst, with no failed requests discarded.
+Request: `/api/v1/events/?q=Sample&limit=50&offset=0`. Readiness and a nonempty matching response were verified first. Each measurement is one synchronized burst, not a sustained-load run. No failed requests were omitted.
 
-| Concurrent clients | HTTP 200 | Failed | p95 | Requests/sec |
-| ---: | ---: | ---: | ---: | ---: |
-| 10 | 10/10 | 0 | 0.112 s | 88.6 |
-| 50 | 50/50 | 0 | 0.178 s | 267.9 |
-| 100 | 100/100 | 0 | 0.347 s | 267.3 |
+| Concurrent clients | HTTP 200 | Failed | p50 | p95 | Requests/sec |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 10 | 10/10 | 0 | 0.158 s | 0.185 s | 54.0 |
+| 50 | 50/50 | 0 | 0.172 s | 0.375 s | 114.0 |
+| 100 | 100/100 | 0 | 0.430 s | 0.833 s | 115.0 |
 
-All 160 requests returned HTTP 200. The local series is below the 2-second optimization target. Full JSON reports: [10](evidence/20261115T065402Z/search-10.json), [50](evidence/20261115T065402Z/search-50.json), [100](evidence/20261115T065402Z/search-100.json). Results are local PostgreSQL evidence; they do not establish production-comparable resources, sustained-load behavior, 500-user registration or 10,000-attempt acceptance.
+All 160 requests returned HTTP 200; transport failures and connection refusals were zero. The two-second optimization target was met in these bursts. Full reports: [10 clients](evidence/20261115T071135Z-container/search-10.json), [50 clients](evidence/20261115T071135Z-container/search-50.json), [100 clients](evidence/20261115T071135Z-container/search-100.json). This does not prove 500-user registration, 10,000 attempts, monthly uptime or accessibility acceptance.
 
-## 5. Recovery findings
+## 5. Backup and recovery findings
 
-- Backup identifier: `20261115T065402Z/staging.dump`. Private dump size: 122,873 bytes. SHA-256 and timestamps are in the environment JSON.
-- Source: `ems_staging`; target: separately created `ems_restore_test` in the same disposable cluster.
-- `pg_restore --exit-on-error`: passed in 0.303 seconds. This is restore-command duration, not an approved end-to-end RTO.
-- Every public table's row count and content SHA-256 matched; zero invalid indexes and zero unvalidated constraints. See [comparison](evidence/20261115T065402Z/restore-validation.json).
-- `pg_amcheck --heapallindexed --parent-check`: passed; [verbose log](evidence/20261115T065402Z/restore-integrity.log). This checks supported heap/B-tree structures, not every PostgreSQL index access method.
-- Restored migrations current, Django checks passed, restored application readiness HTTP 200.
+| Record | Result |
+| --- | --- |
+| Source/target | `ems_staging` → `ems_restore_test`, in separate PostgreSQL containers and volumes |
+| Operator | `rahulb` |
+| Backup identifier | `20261115T071135Z-container/staging.dump` |
+| Backup timestamp | `2026-11-15T07:12:08.856113+00:00` to `2026-11-15T07:12:09.015275+00:00` |
+| Backup size/SHA-256 | 122,169 bytes; `3077f88d8b45ffc4f1b34c846aea3886fee9cd30ee700f3dc1fb68a065fa5483` |
+| Restore timestamp | `2026-11-15T07:12:11.988131+00:00` to `2026-11-15T07:12:12.425356+00:00` |
+| Restore-command duration | 0.437 seconds; not an end-to-end incident RTO |
+| Data validation | All public-table counts and ordered row-content SHA-256 hashes exactly matched |
+| Schema integrity | Zero invalid indexes, zero unvalidated constraints; `pg_amcheck` passed |
+| App validation | Restored migrations current, Django checks passed, restored app readiness HTTP 200 |
 
-## 6. Automated validation
+[Data comparison](evidence/20261115T071135Z-container/restore-validation.json), [heap/B-tree checks](evidence/20261115T071135Z-container/restore-integrity.log), [Django checks](evidence/20261115T071135Z-container/restored-check.log), [migration check](evidence/20261115T071135Z-container/restored-migrations.log) and environment JSON retain the detailed record. `pg_amcheck` covers supported heap/B-tree structures, not every index access method. The backup is custom-format and restored with `--exit-on-error --no-owner --no-acl`. It is never restored over the source.
 
-- [95 Django tests passed on PostgreSQL](evidence/20261115T065402Z/postgres-tests.log), including seed guard/refusal/exact-count tests and existing audit, row-lock capacity and idempotency tests.
-- [Two benchmark regression tests passed](evidence/20261115T065402Z/script-tests.log): HTTP 503 responses produce a complete error report, and connection refusals are counted.
-- Migration drift check and dependency consistency check passed. The separate RBAC project was not changed or rerun.
+## 6. Actual backup, retention and audit arrangements (#33)
 
-## 7. Backup and audit operations inventory
+| Control | Actual local configuration |
+| --- | --- |
+| Provider/operator | Local rootless Podman; official PostgreSQL 16 image; Rahul operates the session |
+| Backup frequency | One on-demand logical dump per verification session after source traffic stops; no recurring scheduler |
+| Retention | Manual owner-managed retention under ignored `.staging/`; no automatic expiry or guaranteed duration |
+| Access | Random SCRAM password, loopback published ports, owner-only private files; disposable database administrator |
+| Encryption | No harness-managed TLS, dump encryption or verified disk encryption; loopback-only use |
+| RPO | Recovery to the recorded dump snapshot; no guaranteed time-based RPO or continuous recovery |
+| RTO | Restore-command duration measured above; full incident recovery objective is not configured |
+| Audit retention | Explicit 1,095-day application setting; audit access/immutability/retention tests passed |
+| Archival/deletion | No archive or scheduled purge; application `purge_audit_events` is a manual command |
 
-These are observed local settings, not approved production policy.
+The task is to document the actual arrangements, including missing controls. No daily backup, encrypted storage, automatic expiry, audit scheduler or approved numerical recovery guarantee is invented. These controls would need separate approval/configuration before a hosted production launch and are outside the owner's revised local acceptance scope.
 
-| Control | Observed setup | Evidence / limitation |
+## 7. Validation and cleanup
+
+- [95 Django tests passed against containerized PostgreSQL 16](evidence/20261115T071135Z-container/postgres-tests.log), including seed-safety, audit, capacity-lock and idempotency tests.
+- [Five script regressions passed](evidence/20261115T071135Z-container/script-tests.log): HTTP/transport error reporting plus acceptance/rejection of actual CPU/memory limits.
+- Source hashes, local documentation links and whitespace checks were verified before commit. No application behavior changed after this measured run.
+- Evidence confirms all four run-owned containers and volumes were removed. Private dumps/env/logs remain outside Git; cached images are intentionally retained for reproduction. No unrelated containers were changed.
+- Project bytecode caches were removed. Retained Python files implement repeatable setup/probing or regression checks; no one-off scratch Python files are included.
+
+## 8. Revised acceptance traceability
+
+| Revised criterion | Evidence | Disposition |
 | --- | --- | --- |
-| Provider/operator | Native PostgreSQL 18.6, local operator `rahulb` | Environment JSON; no deployed provider confirmed |
-| Backup frequency | One on-demand dump per successful harness session | Backup log and timestamps; no recurring scheduler |
-| Backup retention | Manual retention in ignored `.staging/`; no configured expiry | Local file lifecycle; no approved retention duration |
-| Backup integrity | SHA-256, successful separate-database restore, table hashes/counts and `pg_amcheck` | Raw evidence linked above |
-| Encryption | SCRAM authentication; no harness-managed TLS or encrypted dump | Loopback-only service; disk encryption unverified |
-| Access | Random password, owner-only run directories, disposable administrator | Harness source; deployed least-privilege role unverified |
-| RPO | No approved objective | Local recovery point is the dump snapshot; scheduled recovery-point coverage unverified |
-| RTO | No approved objective | Restore command took 0.303 seconds; full incident recovery unmeasured |
-| Audit retention | Explicit 1,095-day setting | Harness and existing audit-boundary tests |
-| Audit archival/deletion | No archive or purge scheduler configured | Application purge command exists; deployed configuration unavailable |
+| #32: isolated PostgreSQL and production-comparable local resource baseline, source/environment recorded | Independent enforced quotas, image IDs/digests, source manifest, environment JSON | Complete |
+| #32: representative synthetic published events and matching query | Dataset and nonempty search smoke test | Complete for public event search |
+| #32: authorized local test window/rate; Rahul executes tests | Owner-approved local scope and self-execution; timestamped 10/50/100-client reports | Complete |
+| #32: access process and setup/evidence PR | Runbook, one-command local access, PR #34 | Complete; PR review/merge next |
+| #33: identify local database/provider/operator | Podman/image/version/operator evidence | Complete |
+| #33: document actual backup frequency, retention, encryption/access and recovery objectives | Inventory above and environment JSON; absent controls explicitly disclosed | Complete |
+| #33: document actual audit retention/archive/deletion | Explicit application setting distinguished from absent archive/scheduler | Complete |
+| #33: authorized restore into a separate isolated database with required record | Separate server/container restore, backup metadata, timing, data/integrity/migration/readiness evidence | Complete |
+| #33: documentation/evidence PR, unavailable hosted evidence clearly excluded | This report, runbook, raw evidence and PR #34 | Complete; PR review/merge next |
 
-## 8. Acceptance traceability and delivery
-
-Criteria were read from GitHub on 2026-11-15. A passed local test does not override a requirement for a deployed system or an agreement with other operators.
-
-| Issue / criterion | Assessment | Evidence or remaining action |
-| --- | --- | --- |
-| #32: isolated PostgreSQL, production-comparable limits, revision/environment | Partial | Isolation and source/environment evidence supplied; comparable production baseline absent |
-| #32: synthetic published events and matching benchmark query | Verified locally | Dataset JSON and search smoke test; broader distribution suitability requires review |
-| #32: agreed test window/request rate with Rajath and deployment owner | Pending external agreement | Rahul executed local bursts as requested; no deployment owner or recorded team agreement supplied |
-| #32: documented access and setup/evidence PR | Delivered for review | Runbook and draft PR #34; loopback access through local reproduction, no persistent shared endpoint |
-| #33: deployed database/provider and operator | Pending | No deployment supplied; local engine/operator identified |
-| #33: actual deployed backup configuration and recovery objectives | Pending | Local inventory recorded above; deployed controls and approved RPO/RTO absent |
-| #33: deployed audit retention and archival/deletion | Pending | Application retention distinguished from missing operational scheduler/archive |
-| #33: authorized isolated restore and complete verification record | Verified locally; deployed-backup evidence pending | Source/target names, operator, timestamp, revision, backup identifier, duration, checks and readiness captured |
-| #33: documentation/evidence PR, unavailable evidence pending | Delivered for review | Draft PR #34 and this report |
-
-Both GitHub issues remain open. PR #34's Django CI and PostgreSQL NFR checks passed for implementation commit `56d2bae`: [Django CI](https://github.com/Raksha269/Event-Management-System/actions/runs/43688089590) and [PostgreSQL CI](https://github.com/Raksha269/Event-Management-System/actions/runs/43688089642). The PostgreSQL CI uses version 16, complementing the local version-18 run; CI does not execute the full local staging harness.
-
-### Repository organization and cleanup
-
-- `config/staging_settings.py`: guarded loopback staging configuration.
-- `events/management/commands/seed_postgres_staging.py`: repeatable guarded fixture generator.
-- `events/test_staging.py`: database guard and dataset regression checks.
-- `scripts/run_postgres_staging.py`: reusable staging/benchmark/restore orchestration.
-- `scripts/nfr_search_benchmark.py` and `scripts/test_nfr_search_benchmark.py`: reusable probe and failure-reporting checks.
-- `docs/staging/README.md`: operating instructions; this report: findings and acceptance traceability; `implementation-plan.md`: execution plan; `evidence/<run-id>/`: raw records.
-- Python bytecode caches outside `.venv` were removed. No temporary one-off Python source files were found; the retained Python files are required implementation or tests. The superseded PR-description scratch document was removed after PR publication.
-- `.venv` and ignored `.staging/` are intentionally retained: they contain dependencies and isolated database/backup artifacts needed for reproduction and evidence retention. None are committed. Historical evidence is preserved unchanged.
-
-## 9. Conclusion and remaining decisions
-
-No current deployed database/provider or approved production baseline has been supplied. Production-comparable staging, coordinated test-window/baseline approval, provider backup frequency/retention/encryption/access, approved RPO/RTO, deployed audit archive/deletion scheduling and team evidence review remain pending. See the [policy inventory and acceptance matrix](README.md). This work supplies a repeatable local environment, measured search results and isolated logical restore evidence. Do not close Issue #9 or represent #32/#33's external criteria as complete.
+Both assigned sub-issues are ready for completion under the explicitly revised local scope. Their GitHub criteria should record this amendment, and closure should follow PR merge. Parent #9 remains open for its other NFR verification. Original unrestricted native results remain in the [historical report](history/native-verification-report.md) with unchanged raw evidence; they are superseded as acceptance evidence by this quota-controlled run.

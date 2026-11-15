@@ -120,6 +120,10 @@ The application now includes implementation support for the NFRs. Production tar
 
 Audit entries exclude passwords, raw payment details, and request bodies. A server-generated `X-Request-ID` is included in responses and stored with audit events created within a request. Retention defaults to the SRS minimum of three years. The purge command permanently deletes expired records, so schedule it only after any required external archival is configured.
 
+### Completed local staging scope (#32 / #33)
+
+The owner approved local PostgreSQL as the revised scope on 2026-11-15. Resource-limited Podman staging (app: 1 CPU/512 MiB; PostgreSQL 16: 1 CPU/1 GiB) completed 160/160 successful search requests, with p95 of 0.185s/0.375s/0.833s at 10/50/100 clients. Separate-container backup restoration and 95 Django plus five script tests passed. See the [verification report](docs/staging/report.md) and [reproduction runbook](docs/staging/README.md). These complete the two local sub-issues' implementation; other Issue #9 acceptance and future hosted operations remain separate.
+
 ### Production configuration
 
 Set `DJANGO_DEBUG=false`, a unique `DJANGO_SECRET_KEY`, and comma-separated `DJANGO_ALLOWED_HOSTS`. For PostgreSQL set `EMS_DB_ENGINE=postgresql`, `EMS_DB_NAME`, `EMS_DB_USER`, `EMS_DB_PASSWORD`, `EMS_DB_HOST`, and optionally `EMS_DB_PORT`, `EMS_DB_CONN_MAX_AGE`, and `EMS_DB_SSLMODE`. Keep the database on a private network and provision recurring backups and an external uptime monitor. Configure the TLS-terminating proxy for TLS 1.2+ and forward the HTTPS protocol header.

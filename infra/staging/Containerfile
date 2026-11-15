@@ -1,0 +1,14 @@
+FROM docker.io/library/python:3.12-slim-bookworm
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PATH="/opt/venv/bin:$PATH"
+WORKDIR /app
+COPY requirements.txt ./
+RUN python -m venv /opt/venv && /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt \
+    && groupadd --gid 10001 ems && useradd --uid 10001 --gid ems --no-create-home ems
+COPY config ./config
+COPY events ./events
+COPY RBAC/accounts ./RBAC/accounts
+COPY templates ./templates
+COPY manage.py ./
+RUN mkdir -p /app/.staging/media /app/.staging/static && chown -R ems:ems /app/.staging
+USER ems
+CMD ["/opt/venv/bin/python", "-m", "gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "4"]

@@ -1,27 +1,26 @@
-# Issues #32 and #33 implementation plan
+# Issues #32 and #33 — implementation and completion plan
 
-Owner: Rahul. Execution and evidence review: Rahul, with Rajath/team review requested through the PR.
+Owner/operator: Rahul. Delivery: [PR #34](https://github.com/Raksha269/Event-Management-System/pull/34). Formal findings: [report](report.md); reproduction: [runbook](README.md).
 
-1. Use `.venv` for all Python dependencies, Django, Gunicorn and orchestration. PostgreSQL runs as an isolated native service; a Python virtual environment does not isolate a database server.
-2. Provision an unprivileged, loopback-only PostgreSQL cluster under ignored `.staging/`, with separate source and restore databases. Use the installed PostgreSQL version and capture it. Never use existing deployment credentials or databases.
-3. Add a guarded repeatable seed command for a known synthetic dataset: 1,500 events, 1,233 published, 233 published matches for `Sample`, category/status/date/venue variation, organizer and ticket tiers. Reject unexpected databases and pre-existing unrelated events.
-4. Run migrations and Django checks on PostgreSQL, seed, analyze, start Gunicorn, verify readiness and nonempty search results. Capture revision, hardware, application configuration and dataset counts.
-5. Run synchronized search probes with 10, 50 and 100 clients; retain full JSON including failures. Correct the probe's HTTP-error handling and test it.
-6. Dump the populated source, restore into a distinct empty database, compare public-table row counts and database integrity indicators, check migration state and restored application readiness. Record backup identity, timestamps, duration and operator. Keep private dump/data outside Git.
-7. Run meaningful PostgreSQL tests and seed-safety tests. Save sanitized evidence and document reproduction, access, resource assumptions and backup/audit policy gaps.
-8. Package a reviewable PR addressing both issues. Do not claim deployed backups, production-comparable staging, monthly availability, full accessibility, high-volume registration testing or overall Issue #9 acceptance. No deployed database or approved production baseline is currently available according to the owner. Leave unsupported criteria pending.
+## Approved scope amendment
 
-## Documentation and PR scope
+On 2026-11-15 the owner instructed: “Use local PostgreSQL as the revised acceptance scope” and requested a production-comparable container environment with performance execution/documentation. Rahul executes the work directly. Hosted deployment/provider verification is superseded for these two sub-issues; no real production equivalence or hosted backup guarantee is asserted.
 
-- This plan, `docs/staging/README.md`, sanitized execution evidence and a current status matrix.
-- Repeatable local orchestration, synthetic-data command and regression tests.
-- Update the Issue #9 runbook with an explicit link to new evidence and its limits.
-- One PR referencing #32 and #33 (without auto-close keywords while deployment-specific criteria remain pending). No automatic messages, issue comments or reviewer notifications. Remote PR publication is the final review step; local preparation and validation come first.
+## Completed implementation
 
-## Acceptance boundary
+- [x] Run host Python in `.venv` and served app Python in container `/opt/venv`.
+- [x] Create an isolated PostgreSQL 16 source container and Gunicorn app image, with loopback-only published access and random protected credentials.
+- [x] Establish the local baseline: app 1 CPU/512 MiB; database 1 CPU/1 GiB; no swap; verify actual cgroup limits rather than relying on requested CLI settings.
+- [x] Seed 1,500 synthetic events (1,233 published, 233 published `Sample` matches) and 3,000 ticket tiers, with explicit database/opt-in/empty-dataset guards.
+- [x] Apply migrations, analyze, check readiness/nonempty search and execute timestamped 10/50/100-client bursts outside service quotas; retain all errors and full reports.
+- [x] Dump source and restore into a second isolated PostgreSQL server/container/volume; compare row counts/content hashes, verify constraints/indexes, run heap/B-tree checks, and verify restored migrations/readiness.
+- [x] Document actual local backup frequency, retention, encryption/access, RPO/RTO and audit retention/archive/deletion, including absent controls.
+- [x] Pass 95 Django tests on PostgreSQL 16 and five script regressions, including resource-limit validation.
+- [x] Retain source/image/package evidence; remove run-owned containers/volumes and project bytecode caches; keep private dumps/credentials out of Git.
+- [x] Deliver the formal report, organized operating instructions, implementation and raw evidence on the issue branch.
 
-Local PostgreSQL setup, benchmark execution and isolated recovery verification can be completed here. Team agreement on a production baseline/test window, provider backup settings, deployed audit scheduling/archival, production recovery objectives and independent evidence review require external decisions. Document these as pending, never substitute proposed settings for verified policy.
+## PR and issue handoff
 
-## Execution status — 2026-11-15
+Update PR #34 and both issue bodies to record the scope amendment and completed local acceptance. PR #34 should close #32 and #33 on merge, leaving review/merge to the owner. Parent #9 stays open for its other requirements. Do not label absent scheduled backups, encryption, archives, recovery objectives or future hosted controls as implemented.
 
-Steps 1–7 are implemented and locally verified: 95 PostgreSQL Django tests, two benchmark regression tests, all 160 search requests successful, and separate-database restore checks passed. See `report.md` and the authoritative run's source manifest. Step 8 is delivered as [draft PR #34](https://github.com/Raksha269/Event-Management-System/pull/34), with both CI workflows passing for commit `56d2bae`. The formal findings and acceptance traceability are in `report.md`; the superseded PR-description scratch file has been removed. External acceptance items in the boundary above remain pending.
+The initial native PostgreSQL run is retained as historical evidence. The authoritative resource-limited run is `20261115T071135Z-container`; see the report for exact metrics and validation.

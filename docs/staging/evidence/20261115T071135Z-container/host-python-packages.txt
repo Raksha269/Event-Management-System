@@ -1,0 +1,11 @@
+asgiref==3.13.0
+coverage==7.17.3
+Django==5.2.19
+djangorestframework==3.18.3
+gunicorn==27.0.1
+pillow==13.0.0
+psycopg==3.3.9
+psycopg-binary==3.3.9
+qrcode==8.2
+sqlparse==0.6.1
+whitenoise==6.12.0

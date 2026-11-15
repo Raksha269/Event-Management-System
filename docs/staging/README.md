@@ -1,75 +1,60 @@
-# Isolated PostgreSQL staging and recovery
+# Local PostgreSQL staging operations
 
-Start with the [formal verification report](report.md) for findings, the backup/audit inventory, acceptance traceability and outstanding decisions. This file contains operating and reproduction instructions.
+The owner approved **local PostgreSQL as the revised acceptance scope for #32 and #33** on 2026-11-15. The [formal report](report.md) records the acceptance baseline, measurements, backup/audit inventory and traceability. No hosted deployment or provider backup policy is claimed.
 
-This implements the local environment and evidence portion of issues #32 and #33. The owner reports there is no deployed application/database. Historical Render references in the main runbook and monitoring workflow are not confirmation of current ownership, configuration or database availability. Do not infer a production backup policy from them.
+## Resource-controlled baseline
+
+| Service | CPU quota | RAM ceiling | Configuration |
+| --- | --- | --- | --- |
+| Django/Gunicorn | 1 CPU | 512 MiB | DEBUG=false; 2 workers, 4 threads/worker; non-root app user |
+| PostgreSQL source | 1 CPU | 1 GiB | PostgreSQL 16; 64 connections; 128 MiB shared buffers |
+| PostgreSQL restore | 1 CPU | 1 GiB | Separate container/server with its own data volume |
+| Restored application | 1 CPU | 512 MiB | Same application image and Gunicorn configuration |
+
+Swap is disabled in each container. The runner reads `cpu.max`, `memory.max` and `memory.swap.max` inside each service and fails if limits are missing or differ from the baseline. CPU quota is scheduler time equivalent to one core, not a dedicated physical core. The load generator runs in the host `.venv` outside service quotas; all containers still share the physical workstation, kernel and storage.
+
+This is the project's selected local production-comparable baseline, not measured equivalence to a future cloud service. Source and restore database containers share no database volume. Only randomly allocated loopback ports are published; application containers share their respective database container's network namespace, preserving the guarded `127.0.0.1` database configuration. There is no public URL or TLS proxy.
 
 ## Reproduce
 
-Python must run in the repository virtual environment. Native PostgreSQL is a separate isolated database service, not a Python package. Required native utilities: `initdb`, `pg_ctl`, `pg_dump`, `pg_restore` and `pg_amcheck`, plus matching `pg_trgm` and `amcheck` extensions. PostgreSQL 16 with contrib matches CI; this workstation has PostgreSQL 18.6.
+Prerequisites: rootless Podman with delegated cgroup-v2 CPU/memory controllers, or Docker on Linux with equivalent controls. Runtime access and image downloads may require permission. No system Python packages are installed.
 
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python scripts/run_postgres_staging.py
+podman pull docker.io/library/postgres:16-bookworm
+.venv/bin/python scripts/run_container_staging.py --runtime podman
 ```
 
-For exact Python versions used in the recorded run, use its `python-packages.txt` in a fresh virtual environment. Existing `requirements.txt` remains the application's supported dependency range.
+For Docker, replace the pull command with `docker pull ...` and select `--runtime docker`. Podman was actually tested; Docker compatibility is provided by the common CLI flags but was not independently executed here. Run one staging job at a time because the local app image tag is shared.
 
-The command provisions a fresh cluster for every run. It binds only `127.0.0.1`, chooses free TCP ports, disables Unix sockets, uses a random SCRAM password, and creates `ems_staging` and `ems_restore_test`. No existing database or cloud credentials are used. It runs migrations, seeds, collects static assets, checks readiness/search, executes 10/50/100-client probes, dumps/restores, verifies row counts/content hashes/indexes/constraints, runs `pg_amcheck`, checks restored migrations/readiness, then runs the full Django suite on PostgreSQL and script regression tests. It stops Gunicorn and PostgreSQL on completion or failure. Check `environment.json` for the result and cleanup status.
+The app image recipe is `infra/staging/Containerfile`. It creates `/opt/venv`, installs the project requirements there, copies only application source and runs as user `ems` (UID 10001). `.containerignore` and `.dockerignore` exclude credentials, databases, host virtual environments, Git metadata and evidence from build context. The host orchestrator, seeder, migrations, probes and tests all use `.venv`; the served application uses the container `/opt/venv`.
 
-There is no long-lived shared URL: this is a self-contained local test session. Rahul executes it and Rajath/team review the evidence. Sharing a hosted environment later requires a separate deployment and access arrangement. Agree on an idle local test window; no external service is targeted by this runner. `--clients 10` can shorten an investigative run; `--skip-tests` explicitly records skipped tests and must not be represented as full verification.
+The workflow builds the app image, records image IDs/digests and source hashes, starts isolated PostgreSQL, migrates/seeds/analyzes it, starts Gunicorn, verifies quotas/readiness/search, runs 10/50/100-client bursts, captures service stats, stops source traffic, takes a custom-format backup, restores to the second server, compares public-table counts/content hashes, checks constraints/indexes/heap integrity, starts the restored app, checks migrations/readiness and runs the Django and script regression suites. Normal completion/failure cleanup removes only uniquely named containers and anonymous volumes created by that run. Check the evidence's `containers_removed` field. Abrupt termination such as host power loss may require manual removal of the uniquely named `ems-*` containers identified in that run's private logs; never remove unrelated containers.
 
-Private cluster data, generated credentials, application logs, media and dumps remain under ignored `.staging/`, with owner-only permissions. Evidence is written to `docs/staging/evidence/<UTC-run-id>/`. Review evidence before committing; do not commit dumps, private logs or real data. The staging settings bypass HTTPS only for this loopback harness; do not use them for an internet-facing deployment. The cluster user is its disposable administrator so it can create databases/extensions/test databases; a deployed application needs a separate restricted role.
+## Data, access and evidence
 
-### This Fedora workstation's isolated contrib package
+The seed command requires `EMS_ISOLATED_STAGING=synthetic-only`, loopback PostgreSQL, exact database name `ems_staging`, and an empty user/event dataset. It refuses a repeat invocation. The fixed fixture contains 1,500 events, 1,233 published, 233 published matches for `Sample`, six categories, three venues, varied capacities/prices, mixed statuses, one organizer with an unusable password and 3,000 ticket tiers. It has no registrations/payments and uses a fixed 2030 date anchor. This dataset represents public event search, not all production workloads.
 
-The installed server lacked contrib. A matching `postgresql-contrib-18.6-1.fc44.x86_64.rpm` was downloaded without system installation and extracted under `.staging/pg-extra`. To reproduce on the same Fedora version, download the matching package with `dnf download` into `.staging/packages`, with DNF cache/log/persistent directories also redirected under `.staging`, then:
+Access is through the local command above. Rahul owns and executes this environment and its read-only probe within the test window recorded in the environment JSON. The owner authorized self-execution in place of Rajath's original handoff. Results can be reviewed through the report/PR without sharing secrets. No persistent shared staging endpoint is required under the revised scope.
 
-```bash
-mkdir -p .staging/pg-extra
-rpm2cpio .staging/packages/postgresql-contrib-18.6-1.fc44.x86_64.rpm | cpio -id --quiet -D .staging/pg-extra
-```
+Sanitized evidence lives in `docs/staging/evidence/<UTC-run-id>-container/`. Private environment files, random credentials, dumps and service logs live in ignored `.staging/<run-id>/`, with owner-only permissions. Container images remain cached locally for reproduction; database volumes are removed after validation. A retained dump can be restored by a new verification session; re-creating that session starts with fresh credentials and data. Do not commit private artifacts. Review all raw logs before publishing evidence.
 
-The runner detects that layout, rewrites only the private `pg_trgm`/`amcheck` control files to their extracted libraries, and sets PostgreSQL 18's private extension search path. The configured search entries contain an `extension` subdirectory, as required by [PostgreSQL's documentation](https://www.postgresql.org/docs/18/runtime-config-client.html#GUC-EXTENSION-CONTROL-PATH). This fallback is Fedora/PostgreSQL-18-specific. On PostgreSQL 16, use matching installed contrib utilities and omit the private extraction directory. Never mix server/library major versions.
+Host and app Python dependency inventories are recorded separately; tags/requirements are not immutable over time, so retain the recorded image digests and package inventories for historical comparisons. Search results are synchronized bursts, not sustained-load or registration throughput measurements. Preserve all failed responses and latencies. A p95 below two seconds applies to the recorded local bursts only.
 
-## Dataset and benchmark interpretation
+## Actual local backup and audit arrangements
 
-The guarded `seed_postgres_staging` command requires explicit `EMS_ISOLATED_STAGING=synthetic-only`, loopback PostgreSQL, the exact database name `ems_staging`, and no existing users/events. A second invocation refuses to change data. To regenerate, run the harness again, creating a fresh cluster; do not clear an existing database.
+- Backup frequency: one on-demand `pg_dump` per verification session, after the source app stops; no recurring scheduler.
+- Retention: private dump retained until the owner manually removes it; no automatic expiry or guaranteed retention duration.
+- Access/encryption: random SCRAM password, loopback-only connections, protected local files. No harness-managed TLS, encrypted dump or verified disk encryption. The disposable database administrator can create test databases/extensions; it is not a production least-privilege role design.
+- RPO: recover to the recorded dump snapshot; no guaranteed time-based RPO or point-in-time recovery.
+- RTO: measured restore-command duration in the report; no full incident-recovery guarantee.
+- Audit: explicit 1,095-day application setting, with existing access/immutability/retention-boundary regression tests. No archive or purge scheduler is installed; `purge_audit_events` is manual. Do not imply that the application setting creates a scheduler or archive.
 
-The fixture has 1,500 events, 1,233 published, 233 published matches for `Sample`, six categories, three venues, varied capacities/prices, mixed statuses, one organizer with an unusable password and 3,000 ticket tiers. Dates use a fixed 2030 anchor for reproducibility. It contains no registrations/payments and does not model heavy attendee histories or all production distributions. Revisit the fixture before claiming broader representativeness.
+These are documented observations, including absent controls, and satisfy the revised task to document the local setup. A hosted production launch would require a separately approved recurring backup/retention, encryption/access, archival/deletion and recovery-objective policy.
 
-Gunicorn uses two workers with four threads each. Database connection limit: 120; Django connection reuse: 60 seconds. No harness-imposed CPU/RAM quotas exist. Database, application and load generator share the workstation and OS scheduling. This is a synchronized burst search probe, not sustained load, 500 concurrent registrations or 10,000 attempts. Preserve failed-request counts and full latency reports. The recorded local p95 values do not establish hosted or production performance or overall Issue #9 acceptance.
+## Historical native setup
 
-## Backup, recovery and audit policy inventory (#33)
+`scripts/run_postgres_staging.py` remains a reusable non-container fallback. It requires matching installed PostgreSQL server/client/contrib utilities and does not impose service CPU/RAM quotas. It is not the acceptance baseline. The workstation's native PostgreSQL 18.6 required a matching Fedora contrib RPM extracted under `.staging/pg-extra`, without system installation. Its private extension search uses PostgreSQL 18's [extension-control path](https://www.postgresql.org/docs/18/runtime-config-client.html#GUC-EXTENSION-CONTROL-PATH). Do not use that extraction with PostgreSQL 16. The container run avoids this workstation-specific setup entirely.
 
-| Item | Verified local setup | Deployed configuration |
-| --- | --- | --- |
-| Database/operator | Disposable native PostgreSQL; local OS user recorded per run | No deployed database/provider/operator confirmed; pending |
-| Backup frequency | One on-demand `pg_dump` per successful harness run; no scheduler | Pending |
-| Backup retention | Private dump retained until manually removed; no automatic expiry | Pending approved retention policy |
-| Encryption | SCRAM authentication; loopback transport and dump are not encrypted by this harness; host disk encryption unverified | Pending encryption-at-rest/in-transit evidence |
-| Access | Loopback listener, random password, owner-only staging directory; disposable DB administrator | Pending deployed role/access review |
-| Recovery point objective | No approved target; dump snapshot is the local recovery point | Pending approved RPO and measured backup age |
-| Recovery time objective | Restore duration measured; excludes infrastructure provisioning, incident detection and traffic cutover | Pending approved RTO and full recovery timing |
-| Audit retention | Explicit 1,095-day application setting in harness; audit boundary tests in main suite | Pending deployed environment inspection |
-| Audit deletion | `purge_audit_events` exists; not scheduled by harness | Pending scheduler/operator evidence |
-| Audit archive | No archive configured by harness | Pending archival/deletion policy |
-
-The runner restores a custom-format backup into `ems_restore_test` with `--exit-on-error --no-owner --no-acl`. It compares every public table's row count and ordered row-content SHA-256 against the source, checks validated constraints/indexes, runs `pg_amcheck`, checks pending migrations, and starts the restored app to verify `/health/ready/`. Backup ID/SHA-256, source revision, operator, timestamps, duration and validation are recorded. Backup files contain synthetic data only. This verifies logical recovery within the same local PostgreSQL cluster, not provider failover or disaster recovery on another host.
-
-No production purge, live restore, external messages or monitoring configuration changes are performed. Do not configure an archival/deletion schedule until the team approves the policy. Manual dump retention is an observed local fact, not a proposed production policy.
-
-## Completion and PR review
-
-| Acceptance item | Status |
-| --- | --- |
-| Isolated PostgreSQL, repeatable synthetic seed, matching search, benchmark execution | Implemented and locally verified; see evidence summary |
-| Recorded revision/environment and credential-free access process | Implemented; source starts/stops locally, no shared credentials |
-| Production-comparable resource baseline | Pending team agreement; no production environment exists |
-| Test scope/window agreement and independent evidence review | Pending Rajath/team review; only local resources were exercised |
-| Isolated backup/restore evidence | Locally verified, with synthetic data |
-| Actual deployed backups, retention, encryption/access, RPO/RTO | Pending deployment and operator evidence |
-| Deployed audit retention/archive/deletion | Pending deployment and policy approval |
-
-Use one PR referencing #32 and #33, with no auto-close keywords while the external criteria remain pending. Include the plan, harness, seed command/tests, benchmark error fix/regressions, runbook and sanitized evidence. Rajath/team should review dataset suitability, baseline, accepted NFR document version and whether local evidence satisfies any criteria. Issue #9 remains open for other verification, including accessibility/availability and any required registration load tests.
+The original report and unchanged raw evidence remain as historical records. Issue #9's other NFRs, including monthly availability, accessibility and any required registration stress tests, are outside these two revised sub-issues.
