@@ -1,0 +1,16 @@
+{
+  "attempt": 1,
+  "conclusion": "failure",
+  "createdAt": "2026-11-15T16:39:08Z",
+  "databaseId": 43736667439,
+  "displayTitle": "Render Uptime Monitoring",
+  "event": "schedule",
+  "headBranch": "main",
+  "headSha": "f862d75a2b62a5c3719c860d47cab62ec469dfc8",
+  "number": 8,
+  "startedAt": "2026-11-15T16:39:08Z",
+  "status": "completed",
+  "updatedAt": "2026-11-15T16:39:15Z",
+  "url": "https://github.com/Raksha269/Event-Management-System/actions/runs/43736667439",
+  "workflowName": "Render Uptime Monitoring"
+}

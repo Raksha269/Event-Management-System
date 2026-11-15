@@ -1,6 +1,6 @@
 {
   "snapshot": {
-    "captured_at_utc": "2026-11-15T16:38:12Z",
+    "captured_at_utc": "2026-11-15T16:47:59Z",
     "base_revision": "f862d75a2b62a5c3719c860d47cab62ec469dfc8",
     "workflow_state": "active",
     "default_branch": "main",
@@ -12,18 +12,22 @@
     "pr43_merged_at_utc": "2026-11-15T15:55:43Z",
     "observation_plan": "Pending team confirmation; not inferred from a default selection",
     "submission_deadline_utc": "2026-11-16T03:30:00Z",
-    "previous_snapshot": "snapshot-2026-11-15T163255Z.json",
+    "previous_snapshot": "snapshot-2026-11-15T163812Z.json",
     "latest_run_inventory_source": "GitHub Actions API via gh run list",
-    "latest_run_inventory_count": 7,
+    "latest_run_inventory_count": 8,
+    "latest_scheduled_run_id": 43736667439,
     "latest_manual_run_id": 43711931757,
-    "post_pr40_scheduled_runs": 0,
-    "post_pr43_scheduled_runs": 0,
-    "post_pr43_nominal_slots_without_run_record": 3
+    "post_pr40_scheduled_runs": 1,
+    "post_pr43_scheduled_runs": 1,
+    "post_pr43_failed_run_id": 43736667439,
+    "post_pr43_nominal_slots_without_health_measurement": 3
   },
-  "run_count": 7,
-  "scheduled_run_count": 4,
+  "run_count": 8,
+  "scheduled_run_count": 5,
   "manual_run_count": 3,
-  "unsuccessful_workflow_runs": [],
+  "unsuccessful_workflow_runs": [
+    43736667439
+  ],
   "samples": [
     {
       "timestamp_utc": "2026-11-14T13:45:07Z",
@@ -83,7 +87,8 @@
   "scheduled_samples": 4,
   "failed_samples": [],
   "runs_without_archived_csv": [
-    43566650792
+    43566650792,
+    43736667439
   ],
   "scheduled_run_creation_gaps": [
     {
@@ -100,6 +105,11 @@
       "from_run": 43650227798,
       "to_run": 43667292046,
       "minutes": 209.08333333333334
+    },
+    {
+      "from_run": 43667292046,
+      "to_run": 43736667439,
+      "minutes": 858.9833333333333
     }
   ],
   "scheduled_sample_intervals": [
@@ -120,6 +130,10 @@
     }
   ],
   "job_start_delays": [
+    {
+      "run_id": 43736667439,
+      "seconds_after_run_creation": 2.0
+    },
     {
       "run_id": 43711931757,
       "seconds_after_run_creation": 3.0
@@ -149,7 +163,9 @@
       "seconds_after_run_creation": 3.0
     }
   ],
-  "post_change_scheduled_runs": [],
+  "post_change_scheduled_runs": [
+    43736667439
+  ],
   "nominal_post_change_cron_slots": [
     {
       "nominal_time_utc": "2026-11-15T09:52:00Z",
@@ -265,4 +281,4 @@
     }
   ],
   "interpretation": "Missing observations are UNKNOWN. Nominal cron slots are expected trigger times, not observed health checks or proven dropped events. Manual runs are separate. No uptime percentage, downtime duration, or continuous-availability claim is supported by this evidence."
-}
+}\n

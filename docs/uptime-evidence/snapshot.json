@@ -1,5 +1,5 @@
 {
-  "captured_at_utc": "2026-11-15T16:38:12Z",
+  "captured_at_utc": "2026-11-15T16:47:59Z",
   "base_revision": "f862d75a2b62a5c3719c860d47cab62ec469dfc8",
   "workflow_state": "active",
   "default_branch": "main",
@@ -11,11 +11,13 @@
   "pr43_merged_at_utc": "2026-11-15T15:55:43Z",
   "observation_plan": "Pending team confirmation; not inferred from a default selection",
   "submission_deadline_utc": "2026-11-16T03:30:00Z",
-  "previous_snapshot": "snapshot-2026-11-15T163255Z.json",
+  "previous_snapshot": "snapshot-2026-11-15T163812Z.json",
   "latest_run_inventory_source": "GitHub Actions API via gh run list",
-  "latest_run_inventory_count": 7,
+  "latest_run_inventory_count": 8,
+  "latest_scheduled_run_id": 43736667439,
   "latest_manual_run_id": 43711931757,
-  "post_pr40_scheduled_runs": 0,
-  "post_pr43_scheduled_runs": 0,
-  "post_pr43_nominal_slots_without_run_record": 3
+  "post_pr40_scheduled_runs": 1,
+  "post_pr43_scheduled_runs": 1,
+  "post_pr43_failed_run_id": 43736667439,
+  "post_pr43_nominal_slots_without_health_measurement": 3
 }
