@@ -39,7 +39,7 @@ After PR #24 was merged, the same SQLite dataset, Waitress configuration, and qu
 | 50 | 50 | 50 | 0 | 1.585 s | 1.591 s | 1.810 s | 1.826 s | 27.31 req/s |
 | 100 | 100 | 100 | 0 | 2.900 s | 3.020 s | 3.603 s | 3.614 s | 27.51 req/s |
 
-The v1.2 document set in [PR #29](https://github.com/Raksha269/Event-Management-System/pull/29) labels the revised acceptance as a reproducible report with no unreported errors; p95 <= 2 seconds is an optimization goal, not a pass condition. It still calls the representative PostgreSQL staging series pending. This local SQLite series is reproducible evidence, but it does not replace that staging run. PR #29 is a candidate pending team/faculty approval, so do not treat its revised criteria as formally adopted until approved.
+The v1.2 document set in [PR #29](https://github.com/Raksha269/Event-Management-System/pull/29) is merged. It labels the revised acceptance as a reproducible report with no unreported errors; p95 <= 2 seconds is an optimization goal, not a pass condition. The representative PostgreSQL staging series remains pending. This local SQLite series is reproducible evidence, but it does not replace that staging run. Confirm with the team/faculty whether any separate approval of the revised baseline is required.
 
 ## Availability monitoring
 
@@ -94,6 +94,12 @@ Automated template tests verify that the discovery search, category, location, a
 
 PR #26 reports muted text contrast improved from 4.39:1 to 6.99:1. The previous local responsive spot checks and filter-label tests are useful supporting evidence, but the v1.2 candidate's documented full breakpoint/keyboard checklist remains incomplete.
 
+### Live public-page spot check (2026-11-15)
+
+The deployed Render site was manually checked at viewport widths 360 px, 768 px, and 1440 px for the event discovery, login, and registration pages. All three pages loaded, had a document title, `lang="en"`, and a primary heading; none showed horizontal overflow. The live DOM inspection found no interactive controls without accessible names and no images missing `alt` text on those pages. Keyboard traversal was checked on registration: navigation links, all four form fields, submit, and sign-in link were reachable, and each focused element showed a visible focus indicator. The login page exposed associated Username and Password fields and a Log in button in the accessibility tree.
+
+This is a limited manual spot check of public pages. It did not cover authenticated attendee/organizer flows, screen-reader operation, 200% zoom/reflow, or a complete color-contrast audit, so EMS-NF-004 remains partial until the full checklist above is completed.
+
 ## Current verification boundary
 
-Current local verification: 90 Django tests and 24 RBAC tests passed on 2026-11-15. PostgreSQL CI also passed with the capacity/idempotency concurrency assertions and the disposable backup/restore rehearsal. Local SQLite restore validation passed on 1,500 events. Remaining v1.2 candidate evidence: representative PostgreSQL staging performance run; review of monitoring cadence and a suitable observation window; deployed database recovery/retention policy review; full responsive/keyboard/accessibility checklist; and team/faculty approval of PR #29's revised baseline. Record results in Issue #9; do not close it until the accepted criteria and evidence are reviewed.
+Current local verification: 90 Django tests and 24 RBAC tests passed on 2026-11-15. PostgreSQL CI also passed with the capacity/idempotency concurrency assertions and the disposable backup/restore rehearsal. Local SQLite restore validation passed on 1,500 events. The v1.2 documents in PR #29 and evidence update in PR #30 are merged. Remaining evidence: representative PostgreSQL staging performance run; review of monitoring cadence and a suitable observation window; deployed database recovery/retention policy review; full responsive/keyboard/accessibility checklist; and confirmation whether a separate team/faculty approval of the revised baseline is needed. Record results in Issue #9; do not close it until the accepted criteria and evidence are reviewed.
