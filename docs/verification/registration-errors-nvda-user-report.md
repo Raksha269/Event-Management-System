@@ -27,4 +27,21 @@ Confirm password: This field is required. link same page
 
 Line wrapping is normalized and duplicated trailing speech/unrelated Speech Viewer UI is omitted. The transcript supports automatic error-summary announcement after submission, including its heading and three linked required-field errors. Email has no required-field error in this result; do not infer that it was validated as required.
 
-This transcript alone does not establish the exact focused DOM node, successful error-link focus transfer, individual field descriptions, invalid-email or password-mismatch behavior, successful registration, other form errors, or a production deployment result. Local browser automation separately verified error-summary focus/description IDs; keep that method distinct from this NVDA result. Follow up on the summary links and field-level speech. #36, #37 and parent #9 remain open for remaining agreed checks and review.
+## Subsequent error-link and field-level speech
+
+The user followed the guided steps to activate each summary error link and report the focused control with NVDA+Tab. Relevant supplied excerpts:
+
+```text
+Username: This field is required. same page link
+Username edit required invalid entry Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. This field is required. Choose a username blank
+
+Password: This field is required. same page link
+Password edit protected required invalid entry This field is required. blank
+
+Confirm password: This field is required. same page link
+Confirm password edit protected required invalid entry This field is required. blank
+```
+
+These user-supplied speech observations support each of the three error links reaching its corresponding editable field, announcing invalid/required states and the associated required-field error; both password fields also announce protected state. The username includes its help text. Unrelated app output and repeated attempts focusing Username were excluded. These observations are limited to empty required-field validation and are not independently reproduced NVDA results.
+
+They do not establish invalid-email or password-mismatch behavior, typed-password masking, successful registration, other form errors, or a production deployment result. Local browser automation separately verified error-summary focus/description IDs; keep that method distinct from these NVDA results. #36, #37 and parent #9 remain open for remaining agreed checks and review.
