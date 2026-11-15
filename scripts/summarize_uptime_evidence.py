@@ -13,7 +13,8 @@ LEGACY_FIELDS = {
     'timestamp_utc', 'url', 'http_status', 'response_seconds', 'result',
 }
 CURRENT_FIELDS = LEGACY_FIELDS | {
-    'run_id', 'event', 'transport_exit_code', 'transport_error', 'error_detail',
+    'run_id', 'event', 'curl_exit_code', 'latency_source',
+    'transport_error', 'error_detail',
 }
 SCHEDULE_MINUTES = (7, 22, 37, 52)
 
@@ -68,15 +69,17 @@ def validate_sample(row, run_id, record):
         raise ValueError(f'CSV run id does not match archive directory for {run_id}')
     if 'event' in row and row['event'] != record['event']:
         raise ValueError(f'CSV event does not match run history for {run_id}')
-    if 'transport_exit_code' in row:
+    if 'curl_exit_code' in row:
         try:
-            client_exit = int(row['transport_exit_code'])
+            client_exit = int(row['curl_exit_code'])
         except ValueError as exc:
-            raise ValueError(f'Invalid transport exit code for {run_id}') from exc
-        if (client_exit == 0) != (not error):
-            raise ValueError(f'Inconsistent exit code/transport error for {run_id}')
-        if client_exit == 0 and status == '000':
+            raise ValueError(f'Invalid curl exit code for {run_id}') from exc
+        if client_exit != 0 and not error:
+            raise ValueError(f'Missing transport error for failed curl run {run_id}')
+        if client_exit == 0 and status == '000' and not row.get('error_detail'):
             raise ValueError(f'No HTTP status despite successful request for {run_id}')
+        if row.get('latency_source') not in ('curl', 'monotonic_fallback'):
+            raise ValueError(f'Invalid latency source for {run_id}')
 
 
 def summarize(root):

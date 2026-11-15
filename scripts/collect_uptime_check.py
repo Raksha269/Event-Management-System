@@ -1,57 +1,92 @@
 """Collect one HTTP readiness observation without losing transport failures."""
 import argparse
 import csv
+import math
+import os
+import subprocess
 import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
 
 
 FIELDS = (
     'timestamp_utc', 'url', 'http_status', 'response_seconds', 'result',
-    'run_id', 'event', 'transport_exit_code', 'transport_error', 'error_detail',
+    'run_id', 'event', 'curl_exit_code', 'latency_source',
+    'transport_error', 'error_detail',
 )
 
 
-def collect(url, timeout, run_id, event, *, opener=urlopen, clock=time.perf_counter, now=None):
-    """Return one record; response_seconds is measured client elapsed time."""
+def _parse_curl_output(output):
+    if isinstance(output, bytes):
+        output = output.decode('utf-8', errors='replace')
+    parts = output.strip().split(',')
+    if len(parts) != 2 or not parts[0].isdigit() or len(parts[0]) != 3:
+        return None
+    try:
+        latency = float(parts[1])
+    except ValueError:
+        return None
+    if not math.isfinite(latency) or latency < 0:
+        return None
+    return parts[0], latency
+
+
+def collect(url, timeout, run_id, event, *, runner=subprocess.run, clock=time.perf_counter, now=None):
+    """Run curl with a total timeout and retain its actual timing/error output."""
     start = clock()
     timestamp = (now or datetime.now(timezone.utc)).astimezone(timezone.utc).isoformat().replace('+00:00', 'Z')
+    command = [
+        'curl', '--location', '--silent', '--show-error',
+        '--max-time', str(timeout), '--output', os.devnull,
+        '--write-out', '%{http_code},%{time_total}', url,
+    ]
     status = '000'
     transport_error = ''
     error_detail = ''
     exit_code = 0
+    latency_source = 'curl'
+    curl_latency = None
     try:
-        request = Request(url, headers={'User-Agent': 'EMS-Uptime-Monitor/1.0'})
-        with opener(request, timeout=timeout) as response:
-            status = str(response.status)
-    except HTTPError as exc:
-        # HTTP errors are valid server responses, not transport failures.
-        status = str(exc.code)
-        error_detail = f'HTTPError: {exc.reason}'
-        exit_code = 0
-    except (URLError, TimeoutError, OSError) as exc:
-        reason = getattr(exc, 'reason', exc)
-        transport_error = f'{type(reason).__name__}: {reason}'
+        completed = runner(command, capture_output=True, text=True, check=False, timeout=timeout + 10)
+        parsed = _parse_curl_output(completed.stdout or '')
+        if parsed:
+            status, curl_latency = parsed
+        else:
+            latency_source = 'monotonic_fallback'
+            error_detail = 'curl did not return a parseable HTTP status and time_total'
+        exit_code = completed.returncode
+        stderr = completed.stderr or ''
+        if exit_code:
+            transport_error = stderr.strip() or f'curl exited with code {exit_code}'
+            error_detail = transport_error
+    except subprocess.TimeoutExpired as exc:
+        latency_source = 'monotonic_fallback'
+        parsed = _parse_curl_output(exc.stdout or '')
+        if parsed:
+            status = parsed[0]
+        exit_code = 28
+        transport_error = f'curl exceeded the {timeout + 10:g}-second process timeout'
         error_detail = transport_error
-        exit_code = 28 if isinstance(reason, (TimeoutError,)) else 7
-    except Exception as exc:  # preserve unexpected collector failures too
+    except OSError as exc:
+        latency_source = 'monotonic_fallback'
+        exit_code = 127
         transport_error = f'{type(exc).__name__}: {exc}'
         error_detail = transport_error
-        exit_code = 1
+
     elapsed = max(0.0, clock() - start)
-    result = 'UP' if status.isdigit() and 200 <= int(status) < 300 and not transport_error else 'DOWN'
+    response_seconds = curl_latency if curl_latency is not None else elapsed
+    result = 'UP' if exit_code == 0 and status.isdigit() and 200 <= int(status) < 300 else 'DOWN'
     return {
         'timestamp_utc': timestamp,
         'url': url,
         'http_status': status,
-        'response_seconds': f'{elapsed:.6f}',
+        'response_seconds': f'{response_seconds:.6f}',
         'result': result,
         'run_id': str(run_id),
         'event': event,
-        'transport_exit_code': str(exit_code),
+        'curl_exit_code': str(exit_code),
+        'latency_source': latency_source,
         'transport_error': transport_error,
         'error_detail': error_detail,
     }
@@ -79,7 +114,7 @@ def main(argv=None):
     print(f"Timestamp (UTC): {record['timestamp_utc']}")
     print(f"Readiness endpoint: {record['url']}")
     print(f"HTTP status: {record['http_status']}")
-    print(f"Response time (seconds): {record['response_seconds']}")
+    print(f"Response time (seconds): {record['response_seconds']} ({record['latency_source']})")
     print(f"Result: {record['result']}")
     if record['error_detail']:
         print(f"Error: {record['error_detail']}")

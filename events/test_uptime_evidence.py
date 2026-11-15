@@ -1,11 +1,11 @@
 import csv
 import hashlib
 import json
+import subprocess
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from unittest import TestCase
-from urllib.error import HTTPError, URLError
 
 from django.test import SimpleTestCase
 
@@ -13,26 +13,19 @@ from scripts.collect_uptime_check import collect, write_record
 from scripts.summarize_uptime_evidence import summarize
 
 
-class FakeResponse:
-    def __init__(self, status):
-        self.status = status
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args):
-        return False
-
-
 class UptimeCollectorTests(TestCase):
     def clock(self):
         values = iter((10.0, 12.345678))
         return lambda: next(values)
 
+    @staticmethod
+    def completed(returncode=0, stdout='200,2.345678', stderr=''):
+        return subprocess.CompletedProcess(['curl'], returncode, stdout, stderr)
+
     def test_http_success_records_elapsed_time_and_identity(self):
         record = collect(
             'https://example.test/health/', 120, '321', 'schedule',
-            opener=lambda request, timeout: FakeResponse(200),
+            runner=lambda *args, **kwargs: self.completed(),
             clock=self.clock(),
             now=datetime(2026, 11, 15, tzinfo=timezone.utc),
         )
@@ -41,43 +34,46 @@ class UptimeCollectorTests(TestCase):
         self.assertEqual(record['result'], 'UP')
         self.assertEqual(record['event'], 'schedule')
         self.assertEqual(record['run_id'], '321')
-        self.assertEqual(record['transport_error'], '')
+        self.assertEqual(record['curl_exit_code'], '0')
+        self.assertEqual(record['latency_source'], 'curl')
 
     def test_http_failure_is_down_but_not_a_transport_failure(self):
-        def fail(request, timeout):
-            raise HTTPError(request.full_url, 503, 'unavailable', {}, None)
-
-        record = collect('https://example.test/', 5, '322', 'schedule', opener=fail, clock=self.clock())
+        record = collect(
+            'https://example.test/', 5, '322', 'schedule',
+            runner=lambda *args, **kwargs: self.completed(stdout='503,1.500000'),
+            clock=self.clock(),
+        )
         self.assertEqual(record['http_status'], '503')
         self.assertEqual(record['result'], 'DOWN')
         self.assertEqual(record['transport_error'], '')
-        self.assertIn('HTTPError', record['error_detail'])
-        self.assertEqual(record['response_seconds'], '2.345678')
+        self.assertEqual(record['response_seconds'], '1.500000')
 
     def test_connection_failure_keeps_measured_elapsed_time_and_error(self):
-        def fail(request, timeout):
-            raise URLError(ConnectionRefusedError('connection refused'))
-
-        record = collect('https://example.test/', 5, '323', 'schedule', opener=fail, clock=self.clock())
+        record = collect(
+            'https://example.test/', 5, '323', 'schedule',
+            runner=lambda *args, **kwargs: self.completed(7, '000,0.003210', 'curl: connection refused'),
+            clock=self.clock(),
+        )
         self.assertEqual(record['http_status'], '000')
         self.assertEqual(record['result'], 'DOWN')
         self.assertIn('connection refused', record['transport_error'])
-        self.assertEqual(record['transport_exit_code'], '7')
-        self.assertEqual(record['response_seconds'], '2.345678')
+        self.assertEqual(record['curl_exit_code'], '7')
+        self.assertEqual(record['response_seconds'], '0.003210')
 
     def test_timeout_is_recorded_as_transport_failure(self):
-        def fail(request, timeout):
-            raise TimeoutError('request timed out')
+        def fail(*args, **kwargs):
+            raise subprocess.TimeoutExpired(['curl'], 11, output='000,')
 
-        record = collect('https://example.test/', 1, '324', 'schedule', opener=fail, clock=self.clock())
-        self.assertEqual(record['transport_exit_code'], '28')
-        self.assertIn('timed out', record['error_detail'])
-        self.assertNotEqual(record['response_seconds'], '0')
+        record = collect('https://example.test/', 1, '324', 'schedule', runner=fail, clock=self.clock())
+        self.assertEqual(record['curl_exit_code'], '28')
+        self.assertIn('process timeout', record['error_detail'])
+        self.assertEqual(record['response_seconds'], '2.345678')
+        self.assertEqual(record['latency_source'], 'monotonic_fallback')
 
     def test_csv_quotes_error_text_and_keeps_header(self):
         record = collect(
             'https://example.test/', 5, '325', 'workflow_dispatch',
-            opener=lambda request, timeout: (_ for _ in ()).throw(OSError('failed, retry later')),
+            runner=lambda *args, **kwargs: self.completed(7, '000,0.5', 'curl: failed, retry later'),
             clock=self.clock(),
         )
         with tempfile.TemporaryDirectory() as directory:
@@ -85,7 +81,7 @@ class UptimeCollectorTests(TestCase):
             write_record(path, record)
             with path.open(newline='', encoding='utf-8') as source:
                 row = next(csv.DictReader(source))
-            self.assertEqual(row['error_detail'], 'OSError: failed, retry later')
+            self.assertEqual(row['error_detail'], 'curl: failed, retry later')
             self.assertEqual(row['event'], 'workflow_dispatch')
 
 
@@ -100,7 +96,8 @@ class UptimeEvidenceSummaryTests(SimpleTestCase):
         metadata = []
         for run_id, event, row in rows:
             row = dict(row, run_id=str(run_id), event=event,
-                       transport_exit_code='0' if not row.get('transport_error') else '7',
+                       curl_exit_code='0' if not row.get('transport_error') else '7',
+                       latency_source='curl',
                        transport_error=row.get('transport_error', ''),
                        error_detail=row.get('error_detail', ''))
             directory = root / str(run_id)
