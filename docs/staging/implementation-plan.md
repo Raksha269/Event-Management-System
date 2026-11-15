@@ -24,4 +24,4 @@ Local PostgreSQL setup, benchmark execution and isolated recovery verification c
 
 ## Execution status — 2026-11-15
 
-Steps 1–7 are implemented and locally verified: 95 PostgreSQL Django tests, two benchmark regression tests, all 160 search requests successful, and separate-database restore checks passed. See `results.md` and the authoritative run's source manifest. Step 8 has a prepared PR description in `pr-description.md`; publishing status is reported in the task handoff. External acceptance items in the boundary above remain pending.
+Steps 1–7 are implemented and locally verified: 95 PostgreSQL Django tests, two benchmark regression tests, all 160 search requests successful, and separate-database restore checks passed. See `report.md` and the authoritative run's source manifest. Step 8 is delivered as [draft PR #34](https://github.com/Raksha269/Event-Management-System/pull/34), with both CI workflows passing for commit `56d2bae`. The formal findings and acceptance traceability are in `report.md`; the superseded PR-description scratch file has been removed. External acceptance items in the boundary above remain pending.

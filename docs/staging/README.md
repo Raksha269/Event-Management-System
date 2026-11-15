@@ -1,5 +1,7 @@
 # Isolated PostgreSQL staging and recovery
 
+Start with the [formal verification report](report.md) for findings, the backup/audit inventory, acceptance traceability and outstanding decisions. This file contains operating and reproduction instructions.
+
 This implements the local environment and evidence portion of issues #32 and #33. The owner reports there is no deployed application/database. Historical Render references in the main runbook and monitoring workflow are not confirmation of current ownership, configuration or database availability. Do not infer a production backup policy from them.
 
 ## Reproduce
