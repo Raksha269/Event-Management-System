@@ -1,0 +1,15 @@
+# Local attendee empty dashboard: user-performed checks
+
+Tester: Raksha269. URL: http://localhost:8765/events/my-registrations/ . The user created the synthetic local account `a11y_attendee` in `.accessibility/test.sqlite3`, with in-memory email, and logged in. A supplied screenshot shows that username in the navigation and the empty-registration message. This is the user's isolated PR #39 checkout, not Render.
+
+Environment supplied earlier in the session: NVDA 2026.3.1 (2026.3.1.58288), Edge 157.0.4341.46 (64-bit), Windows 11 Home Single Language 26H2 (26300.9974). Exact test time, viewport dimensions and local revision were not separately captured.
+
+The screenshot's Speech Viewer text includes `main landmark heading level 1 My Registrations`. Subsequent supplied speech includes named `gather.`, `Discover Events` and `My Profile` links and `Log out button`. The user was instructed to traverse forwards/backwards with Tab/Shift+Tab and subsequently reported no keyboard trap. The transcript does not provide a complete per-control traversal or separately establish the Explore Events control's announcement.
+
+The supplied transcript shows browser zoom stepping through several levels before returning to `Zoom 200%` / `Zoomed out, 200 percent`. The user then confirmed no overlapping text, missing controls or horizontal scrolling on the webpage at 200%. That layout result is user-reported; no 200%-zoom screenshot or measured viewport width was supplied. Browser toolbar/menu controls in the transcript are not counted as application controls.
+
+Scope: authenticated attendee dashboard with zero registrations. It does not verify populated registrations, payment, tickets, cancellation/refund, profile actions, other authenticated pages, full keyboard operability, manual contrast, or all reflow criteria. The original screenshot shows the empty state at an unrecorded zoom level. No production account or production data was used. These are user-performed observations, not independently reproduced NVDA speech.
+
+Login usability finding: a successful login led to Create Account before the user navigated manually to My Registrations. Source inspection confirms `login_view` redirects successful logins to `register` and does not honor the requested dashboard destination. The authenticated dashboard subsequently loaded. Do not misclassify that intermediate page as an authentication failure; the redirect remains a separate usability finding, not fixed by this evidence update.
+
+#36, #37 and parent #9 remain open for the remaining agreed workflow scope and evidence review.

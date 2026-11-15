@@ -36,6 +36,8 @@ The user then configured a separate local SQLite/in-memory-email instance of the
 
 A subsequent [local invalid-login check](login-errors-nvda-user-report.md) captured an announced alert after synthetic invalid credentials and a follow-up read of the full generic error message. Automatic full-message speech and the post-submit focus destination are not established by the supplied transcript.
 
+The user also [checked the local authenticated attendee empty dashboard](attendee-nvda-user-report.md), capturing its level-1 heading and named navigation controls and reporting no keyboard trap or layout problems at 200% zoom. Populated attendee workflows remain outside this sample. The report records the existing successful-login redirect to registration as a separate usability finding.
+
 ## Uptime (#38)
 
 The user-supplied revised SRS PDF page 15 and Test Plan PDF page 25 state: scheduled readiness monitoring, with schedule, endpoint, timestamped results and failures documented over the available project observation window. They explicitly call 99.5% monthly uptime a longer-term objective rather than academic prototype acceptance. Revised SAD PDF page 18 describes retained timestamped external readiness checks. These documents retain candidate/approval caveats: record which baseline and observation window the team accepts; this report supplies no faculty approval.
