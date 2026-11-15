@@ -30,6 +30,8 @@ Use the [Windows/NVDA worksheet](nvda-worksheet.md) for the remaining manual che
 
 The user also [reported successful NVDA and forward/reverse keyboard checks on discovery and login](discovery-login-nvda-user-report.md). Exact per-control speech and page-specific execution metadata were not supplied, so this confirmation is kept separate from the registration transcript and does not establish full accessibility completion.
 
+In a subsequent [user-reported 200% browser zoom check](zoom-user-report.md), registration, login and discovery had no reported overlapping text, missing controls or horizontal scrolling. Viewport measurements/captures and independent reproduction were not supplied; this does not establish all reflow criteria or authenticated-workflow zoom behavior.
+
 ## Uptime (#38)
 
 The user-supplied revised SRS PDF page 15 and Test Plan PDF page 25 state: scheduled readiness monitoring, with schedule, endpoint, timestamped results and failures documented over the available project observation window. They explicitly call 99.5% monthly uptime a longer-term objective rather than academic prototype acceptance. Revised SAD PDF page 18 describes retained timestamped external readiness checks. These documents retain candidate/approval caveats: record which baseline and observation window the team accepts; this report supplies no faculty approval.
