@@ -12,4 +12,23 @@ Scope: authenticated attendee dashboard with zero registrations. It does not ver
 
 Login usability finding: a successful login led to Create Account before the user navigated manually to My Registrations. Source inspection confirms `login_view` redirects successful logins to `register` and does not honor the requested dashboard destination. The authenticated dashboard subsequently loaded. Do not misclassify that intermediate page as an authentication failure; the redirect remains a separate usability finding, not fixed by this evidence update.
 
+## Subsequent populated local registration
+
+An initial event-detail transcript still contained organizer-only Edit Event/Manage Tickets/Unpublish actions and was not counted as attendee evidence. The user subsequently logged in as attendee; a screenshot at `localhost:8765/events/1/` shows `Welcome, a11y_attendee`. Before submission, speech captures `Select Ticket Type combo box General Admission collapsed`, `Quantity spin button required editable selected 1` and `Register Now button`, with organizer actions absent.
+
+The user activated Register Now once on this synthetic local event. The supplied screenshot shows a green result banner (partly obscured), total capacity 10 and `9 Spots Available`. The selected control still announces General Admission; do not infer that the named `general` ticket tier was selected. Its relationship to the configured tier is not established by this check. No production registration was created.
+
+Manual navigation to `http://localhost:8765/events/my-registrations/` then produced:
+
+```text
+My Registrations | Gather
+My Registrations heading level 1
+View and manage your event registrations.
+Discover Events visited link
+Accessibility Test Event visited link heading level 2
+Pay Now button
+```
+
+This supports a populated local attendee registration card and named payment action, not completed payment or ticket issuance. An additional generic `clickable button` remains unidentified. No populated-dashboard zoom/reverse traversal or automatic full success-message speech is established by this extract. Payment/ticket/refund behavior and other agreed checks remain pending.
+
 #36, #37 and parent #9 remain open for the remaining agreed workflow scope and evidence review.
