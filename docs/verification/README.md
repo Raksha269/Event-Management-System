@@ -28,6 +28,8 @@ Still pending: real screen-reader announcements; real browser 200% zoom/reflow; 
 
 Use the [Windows/NVDA worksheet](nvda-worksheet.md) for the remaining manual checks. A [new user-performed registration report](registration-nvda-user-report.md) records actual Speech Viewer text with NVDA, Windows and Edge versions. It has not been independently reproduced. The worksheet's unexecuted items remain pending; the older registration report is not retroactively verified by this separate check. Accessibility-tree names and HTML password types do not prove spoken announcements.
 
+The user also [reported successful NVDA and forward/reverse keyboard checks on discovery and login](discovery-login-nvda-user-report.md). Exact per-control speech and page-specific execution metadata were not supplied, so this confirmation is kept separate from the registration transcript and does not establish full accessibility completion.
+
 ## Uptime (#38)
 
 The user-supplied revised SRS PDF page 15 and Test Plan PDF page 25 state: scheduled readiness monitoring, with schedule, endpoint, timestamped results and failures documented over the available project observation window. They explicitly call 99.5% monthly uptime a longer-term objective rather than academic prototype acceptance. Revised SAD PDF page 18 describes retained timestamped external readiness checks. These documents retain candidate/approval caveats: record which baseline and observation window the team accepts; this report supplies no faculty approval.
