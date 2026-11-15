@@ -58,6 +58,8 @@ These four samples verify that scheduled checks and artifact uploads are working
 
 The workflow is configured for the repository's Render URL. If the deployment URL changes, update the workflow and check the readiness route before relying on it. A successful HTTP response is one sample, not proof of a 99.5% monthly SLO.
 
+The GitHub Actions history inspected on 2026-11-15 contained four successful scheduled runs and two manual runs. The scheduled runs were 310.52, 235.50, and 209.08 minutes apart, despite the 15-minute cron. GitHub documents that scheduled events can be delayed or dropped during high workflow load, especially at the start of an hour. The schedule is therefore staggered to minutes 7, 22, 37, and 52 as a mitigation. This does not establish why the earlier runs were absent and does not guarantee cadence; missing run records are unknown monitoring samples, not proof that the service was up or down. Continue collecting the agreed observation period and retain the CSV artifacts before their 35-day expiry. Do not calculate an availability percentage from the incomplete history.
+
 ## Backup and restore
 
 ### PostgreSQL
