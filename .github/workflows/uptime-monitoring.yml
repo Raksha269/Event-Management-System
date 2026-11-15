@@ -3,7 +3,8 @@ name: Render Uptime Monitoring
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    # Avoid the top of the hour, when GitHub documents higher schedule load.
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
 
 permissions:
