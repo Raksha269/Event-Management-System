@@ -1,0 +1,8 @@
+{
+  "templates/base.html": "4217b98bbb65e78876ddabccf706b74a6f8875e99e0f22f0a484b5126b8f9305",
+  "templates/events/register.html": "2b45e9b5871e1a08162a6d4ef817ce9e9448cb0fa7b067ead974683139a6df96",
+  "templates/events/attendee_dashboard.html": "68ab11468b266cb70513111ff7b455c878019439d3e8d7a8510ffa64cf0c3f95",
+  "templates/events/login.html": "07fe89315805ccb3153831c92052ca5bd96ba04007ed5ca3adae43882fe8bd62",
+  "templates/events/event_form.html": "a773c8301b9cde87cb483983ec62bd2f4839295ba83da6d59becf391c75dc403",
+  "templates/events/ticket_types.html": "614d20642df85ccb67843d6ccd868f16becbd02b483a1e74cf4a498aa1437479"
+}

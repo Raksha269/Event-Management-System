@@ -1,0 +1,2167 @@
+{
+  "date_utc": "2026-11-15T08:53:39.016155+00:00",
+  "revision": "5d2e8ab0b6301bd5aee106872876ab5abc23368d",
+  "environment": "Isolated local SQLite, synthetic users/events, locmem email; no production traffic",
+  "screen_reader": null,
+  "checks": [
+    {
+      "page": "discovery",
+      "path": "/events/discover/",
+      "role": null,
+      "status": 200,
+      "final_path": "/events/discover/",
+      "widths": [
+        {
+          "width": 360,
+          "scrollWidth": 360,
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "overflow": false
+        }
+      ],
+      "tab_order": [
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-search",
+          "name": "Search events",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "SELECT",
+          "id": "event-category",
+          "name": "All Categories\nGeneral",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-location",
+          "name": "Location",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-date",
+          "name": "Date",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-date",
+          "name": "Date",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-date",
+          "name": "Date",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-date",
+          "name": "Date",
+          "outline": "rgb(0, 0, 0) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Search",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "View Event",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "View Event",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "View Event",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nSign in\nCreate account\nDiscover Upcoming Events\n\nFind an",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-search",
+          "name": "Search events",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "SELECT",
+          "id": "event-category",
+          "name": "All Categories\nGeneral",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-location",
+          "name": "Location",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-date",
+          "name": "Date",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "event-date",
+          "name": "Date",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        }
+      ],
+      "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"Sign in\":\n      - /url: /accounts/login/\n    - link \"Create account\":\n      - /url: /accounts/register/\n- main:\n  - heading \"Discover Upcoming Events\" [level=1]\n  - paragraph: Find and register for summits, workshops, hackathons, and gatherings.\n  - text: Search events\n  - textbox \"Search events\":\n    - /placeholder: Search by title, topic, venue...\n  - text: Category\n  - combobox \"Category\":\n    - option \"All Categories\" [selected]\n    - option \"General\"\n  - text: Location\n  - textbox \"Location\":\n    - /placeholder: Filter by location...\n  - text: Date\n  - textbox \"Date\"\n  - button \"Search\"\n  - text: General 50 spots left\n  - heading \"Accessibility sample event 1\" [level=2]\n  - paragraph: \ud83d\udccd Local test venue \ud83d\udcc5 December 15, 2026, 8:52 a.m.\n  - paragraph: Synthetic local event for populated discovery checks.\n  - text: Starting from\n  - strong: \u20b910.00\n  - link \"View Event\":\n    - /url: /events/1/\n  - text: General 50 spots left\n  - heading \"Accessibility sample event 2\" [level=2]\n  - paragraph: \ud83d\udccd Local test venue \ud83d\udcc5 December 17, 2026, 8:52 a.m.\n  - paragraph: Synthetic local event.\n  - text: Starting from\n  - strong: \u20b910.00\n  - link \"View Event\":\n    - /url: /events/2/\n  - text: General 50 spots left\n  - heading \"Accessibility sample event 3\" [level=2]\n  - paragraph: \ud83d\udccd Local test venue \ud83d\udcc5 December 18, 2026, 8:52 a.m.\n  - paragraph: Synthetic local event.\n  - text: Starting from\n  - strong: \u20b910.00\n  - link \"View Event\":\n    - /url: /events/3/\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+      "axe": {
+        "version": "4.14.0",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "tags": [
+              "cat.color",
+              "wcag2aa",
+              "wcag143",
+              "TTv5",
+              "TT13.c",
+              "EN-301-549",
+              "EN-9.1.4.3",
+              "ACT",
+              "RGAAv4",
+              "RGAA-3.2.1"
+            ],
+            "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "any": [
+                  {
+                    "id": "color-contrast",
+                    "data": {
+                      "fgColor": "#172554",
+                      "bgColor": "#2563eb",
+                      "contrastRatio": 2.84,
+                      "fontSize": "10.5pt (14px)",
+                      "fontWeight": "normal",
+                      "messageKey": null,
+                      "expectedContrastRatio": "4.5:1",
+                      "shadowColor": null,
+                      "colorParse": null
+                    },
+                    "relatedNodes": [
+                      {
+                        "html": "<a class=\"button\" href=\"/accounts/register/\">\n                        Create account\n                    </a>",
+                        "target": [
+                          "a[href$=\"register/\"]"
+                        ]
+                      }
+                    ],
+                    "impact": "serious",
+                    "message": "Element has insufficient color contrast of 2.84 (foreground color: #172554, background color: #2563eb, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                  }
+                ],
+                "all": [],
+                "none": [],
+                "impact": "serious",
+                "html": "<a class=\"button\" href=\"/accounts/register/\">\n                        Create account\n                    </a>",
+                "target": [
+                  "a[href$=\"register/\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #172554, background color: #2563eb, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ],
+        "incomplete": [],
+        "passed_rule_ids": [
+          "aria-hidden-body",
+          "avoid-inline-spacing",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "duplicate-id-aria",
+          "form-field-multiple-labels",
+          "html-has-lang",
+          "html-lang-valid",
+          "label",
+          "link-name",
+          "meta-viewport",
+          "nested-interactive",
+          "select-name"
+        ]
+      }
+    },
+    {
+      "page": "login",
+      "path": "/accounts/login/",
+      "role": null,
+      "status": 200,
+      "final_path": "/accounts/login/",
+      "widths": [
+        {
+          "width": 360,
+          "scrollWidth": 360,
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "overflow": false
+        }
+      ],
+      "tab_order": [
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_username",
+          "name": "Username ",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_password",
+          "name": "Password ",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create one",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nSign in\nCreate account\nWelcome back\n\nLog in to your Gath",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_username",
+          "name": "Username ",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_password",
+          "name": "Password ",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create one",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nSign in\nCreate account\nWelcome back\n\nLog in to your Gath",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_username",
+          "name": "Username ",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_password",
+          "name": "Password ",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        }
+      ],
+      "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"Sign in\":\n      - /url: /accounts/login/\n    - link \"Create account\":\n      - /url: /accounts/register/\n- main:\n  - heading \"Welcome back\" [level=1]\n  - paragraph: Log in to your Gather account.\n  - text: Username\n  - textbox \"Username\":\n    - /placeholder: Enter your username\n  - text: Password\n  - textbox \"Password\":\n    - /placeholder: Enter your password\n  - button \"Log in\"\n  - paragraph:\n    - text: Don't have an account?\n    - link \"Create one\":\n      - /url: /accounts/register/\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+      "axe": {
+        "version": "4.14.0",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "tags": [
+              "cat.color",
+              "wcag2aa",
+              "wcag143",
+              "TTv5",
+              "TT13.c",
+              "EN-301-549",
+              "EN-9.1.4.3",
+              "ACT",
+              "RGAAv4",
+              "RGAA-3.2.1"
+            ],
+            "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "any": [
+                  {
+                    "id": "color-contrast",
+                    "data": {
+                      "fgColor": "#172554",
+                      "bgColor": "#2563eb",
+                      "contrastRatio": 2.84,
+                      "fontSize": "10.5pt (14px)",
+                      "fontWeight": "normal",
+                      "messageKey": null,
+                      "expectedContrastRatio": "4.5:1",
+                      "shadowColor": null,
+                      "colorParse": null
+                    },
+                    "relatedNodes": [
+                      {
+                        "html": "<a class=\"button\" href=\"/accounts/register/\">\n                        Create account\n                    </a>",
+                        "target": [
+                          ".button"
+                        ]
+                      }
+                    ],
+                    "impact": "serious",
+                    "message": "Element has insufficient color contrast of 2.84 (foreground color: #172554, background color: #2563eb, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                  }
+                ],
+                "all": [],
+                "none": [],
+                "impact": "serious",
+                "html": "<a class=\"button\" href=\"/accounts/register/\">\n                        Create account\n                    </a>",
+                "target": [
+                  ".button"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #172554, background color: #2563eb, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          },
+          {
+            "id": "link-in-text-block",
+            "impact": "serious",
+            "tags": [
+              "cat.color",
+              "wcag2a",
+              "wcag141",
+              "TTv5",
+              "TT13.a",
+              "EN-301-549",
+              "EN-9.1.4.1",
+              "RGAAv4",
+              "RGAA-10.6.1"
+            ],
+            "description": "Ensure links are distinguished from surrounding text in a way that does not rely on color",
+            "help": "Links must be distinguishable without relying on color",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/link-in-text-block?application=axeAPI",
+            "nodes": [
+              {
+                "any": [
+                  {
+                    "id": "link-in-text-block",
+                    "data": {
+                      "messageKey": "fgContrast",
+                      "contrastRatio": 2.84,
+                      "requiredContrastRatio": 3,
+                      "nodeColor": "#2563eb",
+                      "parentColor": "#172554"
+                    },
+                    "relatedNodes": [
+                      {
+                        "html": "<p>\n        Don't have an account?\n        <a href=\"/accounts/register/\">Create one</a>\n    </p>",
+                        "target": [
+                          "p:nth-child(4)"
+                        ]
+                      }
+                    ],
+                    "impact": "serious",
+                    "message": "The link has insufficient color contrast of 2.84:1 with the surrounding text. (Minimum contrast is 3:1, link text: #2563eb, surrounding text: #172554)"
+                  },
+                  {
+                    "id": "link-in-text-block-style",
+                    "data": null,
+                    "relatedNodes": [
+                      {
+                        "html": "<p>\n        Don't have an account?\n        <a href=\"/accounts/register/\">Create one</a>\n    </p>",
+                        "target": [
+                          "p:nth-child(4)"
+                        ]
+                      }
+                    ],
+                    "impact": "serious",
+                    "message": "The link has no styling (such as underline) to distinguish it from the surrounding text"
+                  }
+                ],
+                "all": [],
+                "none": [],
+                "impact": "serious",
+                "html": "<a href=\"/accounts/register/\">Create one</a>",
+                "target": [
+                  "p:nth-child(4) > a[href$=\"register/\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  The link has insufficient color contrast of 2.84:1 with the surrounding text. (Minimum contrast is 3:1, link text: #2563eb, surrounding text: #172554)\n  The link has no styling (such as underline) to distinguish it from the surrounding text"
+              }
+            ]
+          }
+        ],
+        "incomplete": [],
+        "passed_rule_ids": [
+          "aria-hidden-body",
+          "avoid-inline-spacing",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "duplicate-id-aria",
+          "form-field-multiple-labels",
+          "html-has-lang",
+          "html-lang-valid",
+          "label",
+          "link-name",
+          "meta-viewport",
+          "nested-interactive"
+        ]
+      }
+    },
+    {
+      "page": "registration",
+      "path": "/accounts/register/",
+      "role": null,
+      "status": 200,
+      "final_path": "/accounts/register/",
+      "widths": [
+        {
+          "width": 360,
+          "scrollWidth": 360,
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "overflow": false
+        }
+      ],
+      "tab_order": [
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_username",
+          "name": "Username",
+          "outline": "rgb(147, 197, 253) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_email",
+          "name": "Email address",
+          "outline": "rgb(147, 197, 253) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_password1",
+          "name": "Password",
+          "outline": "rgb(147, 197, 253) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_password2",
+          "name": "Confirm password",
+          "outline": "rgb(147, 197, 253) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nSign in\nCreate account\n\nJOIN GATHER\n\nCreate your account",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_username",
+          "name": "Username",
+          "outline": "rgb(147, 197, 253) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_email",
+          "name": "Email address",
+          "outline": "rgb(147, 197, 253) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_password1",
+          "name": "Password",
+          "outline": "rgb(147, 197, 253) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_password2",
+          "name": "Confirm password",
+          "outline": "rgb(147, 197, 253) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nSign in\nCreate account\n\nJOIN GATHER\n\nCreate your account",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        }
+      ],
+      "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"Sign in\":\n      - /url: /accounts/login/\n    - link \"Create account\":\n      - /url: /accounts/register/\n- main:\n  - paragraph: JOIN GATHER\n  - heading \"Create your account\" [level=1]\n  - paragraph: Discover events and start making memorable connections.\n  - text: Username\n  - textbox \"Username\":\n    - /placeholder: Choose a username\n  - text: Email address\n  - textbox \"Email address\":\n    - /placeholder: you@example.com\n  - text: Password\n  - textbox \"Password\"\n  - text: Confirm password\n  - textbox \"Confirm password\"\n  - button \"Create account\"\n  - paragraph:\n    - text: Already have an account?\n    - link \"Sign in\":\n      - /url: /accounts/login/\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+      "axe": {
+        "version": "4.14.0",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "tags": [
+              "cat.color",
+              "wcag2aa",
+              "wcag143",
+              "TTv5",
+              "TT13.c",
+              "EN-301-549",
+              "EN-9.1.4.3",
+              "ACT",
+              "RGAAv4",
+              "RGAA-3.2.1"
+            ],
+            "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "any": [
+                  {
+                    "id": "color-contrast",
+                    "data": {
+                      "fgColor": "#172554",
+                      "bgColor": "#2563eb",
+                      "contrastRatio": 2.84,
+                      "fontSize": "10.5pt (14px)",
+                      "fontWeight": "normal",
+                      "messageKey": null,
+                      "expectedContrastRatio": "4.5:1",
+                      "shadowColor": null,
+                      "colorParse": null
+                    },
+                    "relatedNodes": [
+                      {
+                        "html": "<a class=\"button\" href=\"/accounts/register/\">\n                        Create account\n                    </a>",
+                        "target": [
+                          ".button"
+                        ]
+                      }
+                    ],
+                    "impact": "serious",
+                    "message": "Element has insufficient color contrast of 2.84 (foreground color: #172554, background color: #2563eb, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                  }
+                ],
+                "all": [],
+                "none": [],
+                "impact": "serious",
+                "html": "<a class=\"button\" href=\"/accounts/register/\">\n                        Create account\n                    </a>",
+                "target": [
+                  ".button"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #172554, background color: #2563eb, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ],
+        "incomplete": [
+          {
+            "id": "aria-valid-attr-value",
+            "impact": "critical",
+            "tags": [
+              "cat.aria",
+              "wcag2a",
+              "wcag412",
+              "EN-301-549",
+              "EN-9.4.1.2",
+              "RGAAv4",
+              "RGAA-7.1.1"
+            ],
+            "description": "Ensure all ARIA attributes have valid values",
+            "help": "ARIA attributes must conform to valid values",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/aria-valid-attr-value?application=axeAPI",
+            "nodes": [
+              {
+                "any": [],
+                "all": [
+                  {
+                    "id": "aria-valid-attr-value",
+                    "data": {
+                      "messageKey": "noId",
+                      "needsReview": "aria-describedby=\"id_username_helptext\""
+                    },
+                    "relatedNodes": [],
+                    "impact": "critical",
+                    "message": "ARIA attribute element ID does not exist on the page: aria-describedby=\"id_username_helptext\""
+                  }
+                ],
+                "none": [],
+                "impact": "critical",
+                "html": "<input type=\"text\" name=\"username\" placeholder=\"Choose a username\" maxlength=\"150\" required=\"\" aria-describedby=\"id_username_helptext\" id=\"id_username\">",
+                "target": [
+                  "#id_username"
+                ],
+                "failureSummary": "Fix all of the following:\n  ARIA attribute element ID does not exist on the page: aria-describedby=\"id_username_helptext\""
+              }
+            ]
+          }
+        ],
+        "passed_rule_ids": [
+          "aria-allowed-attr",
+          "aria-conditional-attr",
+          "aria-hidden-body",
+          "aria-prohibited-attr",
+          "aria-valid-attr",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "duplicate-id-aria",
+          "form-field-multiple-labels",
+          "html-has-lang",
+          "html-lang-valid",
+          "label",
+          "link-in-text-block",
+          "link-name",
+          "meta-viewport",
+          "nested-interactive"
+        ]
+      },
+      "empty_submit": {
+        "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"Sign in\":\n      - /url: /accounts/login/\n    - link \"Create account\":\n      - /url: /accounts/register/\n- main:\n  - paragraph: JOIN GATHER\n  - heading \"Create your account\" [level=1]\n  - paragraph: Discover events and start making memorable connections.\n  - text: Username\n  - textbox \"Username\" [invalid]:\n    - /placeholder: Choose a username\n  - paragraph: This field is required.\n  - text: Email address\n  - textbox \"Email address\":\n    - /placeholder: you@example.com\n  - text: Password\n  - textbox \"Password\" [invalid]\n  - paragraph: This field is required.\n  - text: Confirm password\n  - textbox \"Confirm password\" [invalid]\n  - paragraph: This field is required.\n  - button \"Create account\"\n  - paragraph:\n    - text: Already have an account?\n    - link \"Sign in\":\n      - /url: /accounts/login/\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+        "focus": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "invalid_fields": [
+          {
+            "id": "id_username",
+            "describedby": "id_username_helptext id_username_error",
+            "descriptionFound": false
+          },
+          {
+            "id": "id_password1",
+            "describedby": "id_password1_error",
+            "descriptionFound": false
+          },
+          {
+            "id": "id_password2",
+            "describedby": "id_password2_error",
+            "descriptionFound": false
+          }
+        ]
+      }
+    },
+    {
+      "page": "event-detail",
+      "path": "/events/1/",
+      "role": null,
+      "status": 200,
+      "final_path": "/events/1/",
+      "widths": [
+        {
+          "width": 360,
+          "scrollWidth": 360,
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "overflow": false
+        }
+      ],
+      "tab_order": [
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "\u2190 Back to Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nSign in\nCreate account\n\u2190 Back to Events\nGeneral\nAccessib",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "\u2190 Back to Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nSign in\nCreate account\n\u2190 Back to Events\nGeneral\nAccessib",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "\u2190 Back to Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Sign in",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Create account",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nSign in\nCreate account\n\u2190 Back to Events\nGeneral\nAccessib",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        }
+      ],
+      "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"Sign in\":\n      - /url: /accounts/login/\n    - link \"Create account\":\n      - /url: /accounts/register/\n- main:\n  - link \"\u2190 Back to Events\":\n    - /url: /events/discover/\n  - text: General\n  - heading \"Accessibility sample event 1\" [level=1]\n  - paragraph: \ud83d\udccd Local test venue \u2022 \ud83d\udcc5 December 15, 2026, 8:52 a.m.\n  - paragraph:\n    - text: Organized by\n    - strong: a11y_organizer\n  - text: \"50 Spots Available Total Capacity: 50\"\n  - separator\n  - heading \"About This Event\" [level=3]\n  - paragraph: Synthetic local event for populated discovery checks.\n  - heading \"Tickets & Registration\" [level=2]\n  - paragraph: Please log in or create an account to register for this event.\n  - link \"Sign in\":\n    - /url: /accounts/login/?next=/events/1/\n  - link \"Create account\":\n    - /url: /accounts/register/\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+      "axe": {
+        "version": "4.14.0",
+        "violations": [
+          {
+            "id": "color-contrast",
+            "impact": "serious",
+            "tags": [
+              "cat.color",
+              "wcag2aa",
+              "wcag143",
+              "TTv5",
+              "TT13.c",
+              "EN-301-549",
+              "EN-9.1.4.3",
+              "ACT",
+              "RGAAv4",
+              "RGAA-3.2.1"
+            ],
+            "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+            "help": "Elements must meet minimum color contrast ratio thresholds",
+            "helpUrl": "https://dequeuniversity.com/rules/axe/4.14/color-contrast?application=axeAPI",
+            "nodes": [
+              {
+                "any": [
+                  {
+                    "id": "color-contrast",
+                    "data": {
+                      "fgColor": "#172554",
+                      "bgColor": "#2563eb",
+                      "contrastRatio": 2.84,
+                      "fontSize": "10.5pt (14px)",
+                      "fontWeight": "normal",
+                      "messageKey": null,
+                      "expectedContrastRatio": "4.5:1",
+                      "shadowColor": null,
+                      "colorParse": null
+                    },
+                    "relatedNodes": [
+                      {
+                        "html": "<a class=\"button\" href=\"/accounts/register/\">\n                        Create account\n                    </a>",
+                        "target": [
+                          ".nav-links > .button[href$=\"register/\"]"
+                        ]
+                      }
+                    ],
+                    "impact": "serious",
+                    "message": "Element has insufficient color contrast of 2.84 (foreground color: #172554, background color: #2563eb, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+                  }
+                ],
+                "all": [],
+                "none": [],
+                "impact": "serious",
+                "html": "<a class=\"button\" href=\"/accounts/register/\">\n                        Create account\n                    </a>",
+                "target": [
+                  ".nav-links > .button[href$=\"register/\"]"
+                ],
+                "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.84 (foreground color: #172554, background color: #2563eb, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1"
+              }
+            ]
+          }
+        ],
+        "incomplete": [],
+        "passed_rule_ids": [
+          "aria-hidden-body",
+          "avoid-inline-spacing",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "html-has-lang",
+          "html-lang-valid",
+          "link-name",
+          "meta-viewport",
+          "nested-interactive"
+        ]
+      }
+    },
+    {
+      "page": "attendee",
+      "path": "/events/my-registrations/",
+      "role": "attendee",
+      "status": 200,
+      "final_path": "/events/my-registrations/",
+      "widths": [
+        {
+          "width": 360,
+          "scrollWidth": 360,
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "overflow": false
+        }
+      ],
+      "tab_order": [
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Explore Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nMy Profile\nWelcome, a11y_attendee\nLog out\nMy Registratio",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Explore Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nMy Profile\nWelcome, a11y_attendee\nLog out\nMy Registratio",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Explore Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nMy Profile\nWelcome, a11y_attendee\nLog out\nMy Registratio",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        }
+      ],
+      "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"My Profile\":\n      - /url: /accounts/profile/\n    - text: Welcome, a11y_attendee\n    - button \"Log out\"\n- main:\n  - heading \"My Registrations\" [level=1]\n  - paragraph: View and manage your event registrations.\n  - link \"Discover Events\":\n    - /url: /events/discover/\n  - heading \"You haven't registered for any events yet.\" [level=3]\n  - paragraph: Discover events and register to see them here.\n  - link \"Explore Events\":\n    - /url: /events/discover/\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+      "axe": {
+        "version": "4.14.0",
+        "violations": [],
+        "incomplete": [],
+        "passed_rule_ids": [
+          "aria-hidden-body",
+          "avoid-inline-spacing",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "html-has-lang",
+          "html-lang-valid",
+          "link-name",
+          "meta-viewport",
+          "nested-interactive"
+        ]
+      }
+    },
+    {
+      "page": "profile",
+      "path": "/accounts/profile/",
+      "role": "attendee",
+      "status": 200,
+      "final_path": "/accounts/profile/",
+      "widths": [
+        {
+          "width": 360,
+          "scrollWidth": 360,
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "overflow": false
+        }
+      ],
+      "tab_order": [
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nMy Profile\nWelcome, a11y_attendee\nLog out\nMy Profile\n\nVi",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nMy Profile\nWelcome, a11y_attendee\nLog out\nMy Profile\n\nVi",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nMy Profile\nWelcome, a11y_attendee\nLog out\nMy Profile\n\nVi",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nMy Profile\nWelcome, a11y_attendee\nLog out\nMy Profile\n\nVi",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        }
+      ],
+      "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"My Profile\":\n      - /url: /accounts/profile/\n    - text: Welcome, a11y_attendee\n    - button \"Log out\"\n- main:\n  - heading \"My Profile\" [level=1]\n  - paragraph: View your account information.\n  - heading \"Account Details\" [level=2]\n  - paragraph:\n    - strong: \"Username:\"\n    - text: a11y_attendee\n  - paragraph:\n    - strong: \"Email:\"\n    - text: attendee@example.invalid\n  - paragraph:\n    - strong: \"Full Name:\"\n    - text: Not provided\n  - paragraph:\n    - strong: \"Role:\"\n    - text: Attendee\n  - paragraph:\n    - strong: \"Email Verified:\"\n    - text: \"Yes\"\n  - paragraph:\n    - strong: \"Date Joined:\"\n    - text: 15 Nov 2026\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+      "axe": {
+        "version": "4.14.0",
+        "violations": [],
+        "incomplete": [],
+        "passed_rule_ids": [
+          "aria-hidden-body",
+          "avoid-inline-spacing",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "html-has-lang",
+          "html-lang-valid",
+          "link-name",
+          "meta-viewport",
+          "nested-interactive"
+        ]
+      }
+    },
+    {
+      "page": "organizer",
+      "path": "/events/",
+      "role": "organizer",
+      "status": 200,
+      "final_path": "/events/",
+      "widths": [
+        {
+          "width": 360,
+          "scrollWidth": 360,
+          "overflow": false
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "overflow": false
+        }
+      ],
+      "tab_order": [
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "+ Create New Event",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Accessibility sample event 3",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "View",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Edit",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Tickets (0)",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Report",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Unpublish",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Accessibility sample event 2",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "View",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Edit",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Tickets (0)",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Report",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Unpublish",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Accessibility sample event 1",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "View",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Edit",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Tickets (0)",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Report",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Unpublish",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nMy Events\nMy Profile\nWelcome, a11y_organizer\nLog out\nOrg",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        }
+      ],
+      "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"My Events\":\n      - /url: /events/\n    - link \"My Profile\":\n      - /url: /accounts/profile/\n    - text: Welcome, a11y_organizer\n    - button \"Log out\"\n- main:\n  - heading \"Organizer Dashboard\" [level=1]\n  - paragraph: Manage your events, configure ticket tiers, monitor capacities, and publish to attendees.\n  - link \"+ Create New Event\":\n    - /url: /events/create/\n  - text: Published General\n  - heading \"Accessibility sample event 3\" [level=2]:\n    - link \"Accessibility sample event 3\":\n      - /url: /events/3/\n  - paragraph: \ud83d\udcc5 Dec 18, 2026, 8:52 a.m. \u2022 \ud83d\udccd Local test venue\n  - text: Registered / Capacity\n  - strong: 0 / 50\n  - text: 50 spots left\n  - link \"View\":\n    - /url: /events/3/\n  - link \"Edit\":\n    - /url: /events/3/edit/\n  - link \"Tickets (0)\":\n    - /url: /events/3/tickets/\n  - link \"Report\":\n    - /url: /events/3/report/\n  - button \"Unpublish\"\n  - text: Published General\n  - heading \"Accessibility sample event 2\" [level=2]:\n    - link \"Accessibility sample event 2\":\n      - /url: /events/2/\n  - paragraph: \ud83d\udcc5 Dec 17, 2026, 8:52 a.m. \u2022 \ud83d\udccd Local test venue\n  - text: Registered / Capacity\n  - strong: 0 / 50\n  - text: 50 spots left\n  - link \"View\":\n    - /url: /events/2/\n  - link \"Edit\":\n    - /url: /events/2/edit/\n  - link \"Tickets (0)\":\n    - /url: /events/2/tickets/\n  - link \"Report\":\n    - /url: /events/2/report/\n  - button \"Unpublish\"\n  - text: Published General\n  - heading \"Accessibility sample event 1\" [level=2]:\n    - link \"Accessibility sample event 1\":\n      - /url: /events/1/\n  - paragraph: \ud83d\udcc5 Dec 15, 2026, 8:52 a.m. \u2022 \ud83d\udccd Local test venue\n  - text: Registered / Capacity\n  - strong: 0 / 50\n  - text: 50 spots left\n  - link \"View\":\n    - /url: /events/1/\n  - link \"Edit\":\n    - /url: /events/1/edit/\n  - link \"Tickets (0)\":\n    - /url: /events/1/tickets/\n  - link \"Report\":\n    - /url: /events/1/report/\n  - button \"Unpublish\"\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+      "axe": {
+        "version": "4.14.0",
+        "violations": [],
+        "incomplete": [],
+        "passed_rule_ids": [
+          "aria-hidden-body",
+          "avoid-inline-spacing",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "html-has-lang",
+          "html-lang-valid",
+          "link-name",
+          "meta-viewport",
+          "nested-interactive"
+        ]
+      }
+    },
+    {
+      "page": "event-create",
+      "path": "/events/create/",
+      "role": "organizer",
+      "status": 200,
+      "final_path": "/events/create/",
+      "widths": [
+        {
+          "width": 360,
+          "scrollWidth": 377,
+          "overflow": true
+        },
+        {
+          "width": 768,
+          "scrollWidth": 768,
+          "overflow": false
+        },
+        {
+          "width": 1440,
+          "scrollWidth": 1440,
+          "overflow": false
+        }
+      ],
+      "tab_order": [
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Profile",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Log out",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "\u2190 Back to Organizer Dashboard",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_title",
+          "name": "Event Title *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "TEXTAREA",
+          "id": "id_description",
+          "name": "Description",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_category",
+          "name": "Category *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_venue",
+          "name": "Venue *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_date",
+          "name": "Date & Time *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_date",
+          "name": "Date & Time *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_date",
+          "name": "Date & Time *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_date",
+          "name": "Date & Time *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_date",
+          "name": "Date & Time *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_date",
+          "name": "Date & Time *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_date",
+          "name": "Date & Time *",
+          "outline": "rgb(0, 0, 0) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_capacity",
+          "name": "Event Capacity (Max Attendees) *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "INPUT",
+          "id": "id_ticket_price",
+          "name": "Base Ticket Price (\u20b9) *",
+          "outline": "rgb(191, 219, 254) solid 2px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BUTTON",
+          "id": "",
+          "name": "Create Event (Save as Draft)",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Cancel",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "BODY",
+          "id": "",
+          "name": "gather.\nDiscover Events\nMy Events\nMy Profile\nWelcome, a11y_organizer\nLog out\n\u2190 B",
+          "outline": "rgb(23, 37, 84) none 3px",
+          "focusVisible": false
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "gather.",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "Discover Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        },
+        {
+          "tag": "A",
+          "id": "",
+          "name": "My Events",
+          "outline": "rgb(16, 16, 16) auto 1px",
+          "focusVisible": true
+        }
+      ],
+      "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"My Events\":\n      - /url: /events/\n    - link \"My Profile\":\n      - /url: /accounts/profile/\n    - text: Welcome, a11y_organizer\n    - button \"Log out\"\n- main:\n  - link \"\u2190 Back to Organizer Dashboard\":\n    - /url: /events/\n  - heading \"Create New Event\" [level=1]\n  - paragraph: Fill in the event details below. Events are saved as drafts until published.\n  - text: Event Title *\n  - textbox \"Event Title *\":\n    - /placeholder: e.g., Tech Innovations Summit 2026\n  - text: Description\n  - textbox \"Description\":\n    - /placeholder: Detailed description of the event...\n  - text: Category *\n  - textbox \"Category *\":\n    - /placeholder: e.g., Technology, Business, Workshop\n    - text: General\n  - text: Venue *\n  - textbox \"Venue *\":\n    - /placeholder: e.g., Bangalore International Exhibition Centre\n  - text: Date & Time *\n  - textbox \"Date & Time *\"\n  - text: Event Capacity (Max Attendees) *\n  - spinbutton \"Event Capacity (Max Attendees) *\": \"100\"\n  - text: Base Ticket Price (\u20b9) *\n  - spinbutton \"Base Ticket Price (\u20b9) *\": \"0.00\"\n  - text: Set to 0.00 for free events. You can also configure specific ticket tiers later.\n  - button \"Create Event (Save as Draft)\"\n  - link \"Cancel\":\n    - /url: /events/\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+      "axe": {
+        "version": "4.14.0",
+        "violations": [],
+        "incomplete": [],
+        "passed_rule_ids": [
+          "aria-hidden-body",
+          "avoid-inline-spacing",
+          "button-name",
+          "bypass",
+          "color-contrast",
+          "document-title",
+          "duplicate-id-aria",
+          "form-field-multiple-labels",
+          "html-has-lang",
+          "html-lang-valid",
+          "label",
+          "link-name",
+          "meta-viewport",
+          "nested-interactive"
+        ]
+      },
+      "empty_submit": {
+        "tree": "- banner:\n  - navigation:\n    - link \"gather.\":\n      - /url: /\n    - link \"Discover Events\":\n      - /url: /\n    - link \"My Events\":\n      - /url: /events/\n    - link \"My Profile\":\n      - /url: /accounts/profile/\n    - text: Welcome, a11y_organizer\n    - button \"Log out\"\n- main:\n  - link \"\u2190 Back to Organizer Dashboard\":\n    - /url: /events/\n  - heading \"Create New Event\" [level=1]\n  - paragraph: Fill in the event details below. Events are saved as drafts until published.\n  - text: Event Title *\n  - textbox \"Event Title *\":\n    - /placeholder: e.g., Tech Innovations Summit 2026\n  - text: Description\n  - textbox \"Description\":\n    - /placeholder: Detailed description of the event...\n  - text: Category *\n  - textbox \"Category *\":\n    - /placeholder: e.g., Technology, Business, Workshop\n    - text: General\n  - text: Venue *\n  - textbox \"Venue *\" [invalid]:\n    - /placeholder: e.g., Bangalore International Exhibition Centre\n  - paragraph: This field is required.\n  - text: Date & Time *\n  - textbox \"Date & Time *\" [invalid]\n  - paragraph: This field is required.\n  - text: Event Capacity (Max Attendees) *\n  - spinbutton \"Event Capacity (Max Attendees) *\": \"100\"\n  - text: Base Ticket Price (\u20b9) *\n  - spinbutton \"Base Ticket Price (\u20b9) *\": \"0.00\"\n  - text: Set to 0.00 for free events. You can also configure specific ticket tiers later.\n  - button \"Create Event (Save as Draft)\"\n  - link \"Cancel\":\n    - /url: /events/\n- contentinfo:\n  - paragraph: Gather \u2014 Discover events. Create memories.\n  - paragraph: \u00a9 2026 Gather. All rights reserved.",
+        "focus": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "invalid_fields": [
+          {
+            "id": "id_venue",
+            "describedby": "id_venue_error",
+            "descriptionFound": false
+          },
+          {
+            "id": "id_date",
+            "describedby": "id_date_error",
+            "descriptionFound": false
+          }
+        ]
+      }
+    }
+  ],
+  "browser": "Chromium 156.0.8078.79"
+}
