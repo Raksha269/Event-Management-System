@@ -25,7 +25,9 @@ Shared `.form-control` and registration inputs now use a distinct darker control
 
 ## Repeated attendee actions
 
-The guided user test selected the wrong event's Pay Now button when multiple cards had the same name. The attendee template now exposes `Pay Now for <event title>` and `View Ticket for <event title>` as accessible names while retaining the visible action text. A local render check using three distinct synthetic pending-event cards verified three distinct Pay Now names. Duplicate event titles can still produce duplicate names; not all repeated actions across the application have been audited. User NVDA retesting and any further disambiguation remain pending.
+The guided user test selected the wrong event's Pay Now button when multiple cards had the same name. The attendee template now exposes `Pay Now for <event title>` and `View Ticket for <event title>` as accessible names while retaining the visible action text. A local render check using three distinct synthetic pending-event cards verified three distinct Pay Now names. Duplicate event titles can still produce duplicate names; not all repeated actions across the application have been audited.
+
+After guided git pull and server restart, the user supplied NVDA speech on local My Registrations containing `View Ticket for Local Paid Accessibility Test visited link` and `Pay Now for Accessibility Test Event button`, with both event headings also present. This is a user-performed retest confirming event-specific names for those two controls, not independent reproduction or evidence for every repeated action. Additional generic `clickable button` / `button` speech remained unidentified and is not attributed to an application defect or counted as a verified named control. No new payment or ticket activation was requested in this naming retest.
 
 ## Verification and boundaries
 

@@ -48,7 +48,7 @@ The [attendee report](attendee-nvda-user-report.md) now also records a user-perf
 
 Subsequent [payment/ticket evidence](payment-ticket-nvda-user-report.md) records a separate ₹1 synthetic fixture's confirmed mock payment and ticket page, textual ticket details and QR alternative. The earlier ₹0 fixture remains Pending; zero-value rejection and repeated Pay Now label ambiguity are retained as findings. This later result updates only the paid fixture's status, not the earlier free registration or all payment/accessibility cases.
 
-The user subsequently reported no layout or keyboard problems at 200% on the ticket and populated registration pages; see the payment/ticket report for the evidence limits. A later [sampled contrast/action-name follow-up](contrast-and-action-names.md) strengthens control borders/focus/error colors and gives attendee Pay Now/View Ticket controls event-specific accessible names. The separate local eight-page browser rerun and three-test results support these changes; user NVDA retesting and complete manual contrast review remain pending.
+The user subsequently reported no layout or keyboard problems at 200% on the ticket and populated registration pages; see the payment/ticket report for the evidence limits. A later [sampled contrast/action-name follow-up](contrast-and-action-names.md) strengthens control borders/focus/error colors and gives attendee Pay Now/View Ticket controls event-specific accessible names. The separate local eight-page browser rerun and three-test results support these changes. Subsequent user-supplied NVDA speech confirms the event-specific names for the local pending and confirmed cards; complete manual contrast review and wider repeated-action coverage remain pending.
 
 ## Uptime (#38)
 
