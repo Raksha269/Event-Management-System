@@ -53,6 +53,21 @@ list item 2 of 2 level 1
 Date: This field is required. link same page
 ```
 
-This supports automatic error-summary announcement for missing Venue and Date. It does not independently establish the exact focused DOM node, error-link focus transfer, field-level error descriptions or database row counts. A successful event creation was not evidenced. No production service was used.
+This supports automatic error-summary announcement for missing Venue and Date. It does not independently establish the exact focused DOM node or database row counts. A successful event creation was not evidenced. No production service was used.
 
-These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: error-link/field speech follow-up, organizer 200% zoom observations, complete forward/reverse keyboard interactions, populated organizer workflows, ticket tiers, publication/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.
+## Subsequent error-link and field speech
+
+Following instructions to activate each summary link and report the focused control with NVDA+Tab, the user supplied:
+
+```text
+Venue: This field is required. same page link
+Venue * edit required invalid entry This field is required. e.g., Bangalore International Exhibition Centre blank
+
+Date: This field is required. same page link
+Date & Time * date edit required invalid entry This field is required.
+Day Date & Time * spin button 0 This field is required.
+```
+
+These user-supplied speech sequences support Venue and Date summary links reaching their corresponding controls and exposing the required/invalid states and associated required-field descriptions. They also capture the native date control's Day subcontrol speech. This does not establish all date-picker interactions or validation of populated values.
+
+These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: organizer 200% zoom observations, complete forward/reverse keyboard interactions, populated organizer workflows, ticket tiers, publication/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.

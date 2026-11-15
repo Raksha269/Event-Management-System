@@ -38,7 +38,7 @@ A subsequent [local invalid-login check](login-errors-nvda-user-report.md) captu
 
 The user also [checked the local authenticated attendee empty dashboard](attendee-nvda-user-report.md), capturing its level-1 heading and named navigation controls and reporting no keyboard trap or layout problems at 200% zoom. Populated attendee workflows remain outside this sample. The report records the existing successful-login redirect to registration as a separate usability finding.
 
-Subsequent [organizer observations](organizer-nvda-user-report.md) cover the empty dashboard's named links, default event form controls and NVDA's Venue/Date error-summary announcements after invalid submission. They retain uncertain generic button speech and required-state inconsistencies as review findings, not passes. Other organizer interactions and zoom checks remain pending.
+Subsequent [organizer observations](organizer-nvda-user-report.md) cover the empty dashboard's named links, default event form controls and NVDA's Venue/Date error-summary announcements after invalid submission. Follow-up speech supports both error links reaching the matching controls and announcing their required/invalid states and error descriptions. The report retains uncertain generic button speech and required-state inconsistencies as review findings, not passes. Other organizer interactions and zoom checks remain pending.
 
 ## Uptime (#38)
 
