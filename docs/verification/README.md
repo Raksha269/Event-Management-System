@@ -48,6 +48,8 @@ The [attendee report](attendee-nvda-user-report.md) now also records a user-perf
 
 Subsequent [payment/ticket evidence](payment-ticket-nvda-user-report.md) records a separate ₹1 synthetic fixture's confirmed mock payment and ticket page, textual ticket details and QR alternative. The earlier ₹0 fixture remains Pending; zero-value rejection and repeated Pay Now label ambiguity are retained as findings. This later result updates only the paid fixture's status, not the earlier free registration or all payment/accessibility cases.
 
+The user subsequently reported no layout or keyboard problems at 200% on the ticket and populated registration pages; see the payment/ticket report for the evidence limits. A later [sampled contrast/action-name follow-up](contrast-and-action-names.md) strengthens control borders/focus/error colors and gives attendee Pay Now/View Ticket controls event-specific accessible names. The separate local eight-page browser rerun and three-test results support these changes; user NVDA retesting and complete manual contrast review remain pending.
+
 ## Uptime (#38)
 
 The user-supplied revised SRS PDF page 15 and Test Plan PDF page 25 state: scheduled readiness monitoring, with schedule, endpoint, timestamped results and failures documented over the available project observation window. They explicitly call 99.5% monthly uptime a longer-term objective rather than academic prototype acceptance. Revised SAD PDF page 18 describes retained timestamped external readiness checks. These documents retain candidate/approval caveats: record which baseline and observation window the team accepts; this report supplies no faculty approval.

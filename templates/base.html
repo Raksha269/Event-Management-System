@@ -14,9 +14,10 @@
             --background: #f3f6fb;
             --surface: #ffffff;
             --border: #e1e8f2;
+            --control-border: #64748b;
             --muted: #475569;
             --success: #15803d;
-            --danger: #dc2626;
+            --danger: #b91c1c;
         }
 
         * {
@@ -152,14 +153,14 @@
         .form-control {
             width: 100%;
             padding: 11px 12px;
-            border: 1px solid var(--border);
+            border: 1px solid var(--control-border);
             border-radius: 8px;
             font: inherit;
             background: white;
         }
 
         .form-control:focus {
-            outline: 2px solid #bfdbfe;
+            outline: 2px solid var(--blue);
             border-color: var(--blue);
         }
 

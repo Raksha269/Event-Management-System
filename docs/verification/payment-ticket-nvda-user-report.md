@@ -48,4 +48,8 @@ Attendee: a11y_attendee
 
 The synthetic UUID is replaced with a placeholder here; labels/values are grouped for readability rather than asserted as the original reading order. The raw user text repeated some values and read others out of label/value order. This supports access to those textual ticket details and a QR alternative identifying the ticket code. It does not establish visual/reading-order correctness, successful QR scanning/check-in, every graphic-navigation step, or actual typed-password masking.
 
-This is user-performed evidence, not independent NVDA reproduction. Ticket/populated-dashboard 200% layout, full keyboard interaction, manual contrast, refund/cancellation and other agreed cases remain pending. #36, #37 and parent #9 remain open for remaining scope, findings and evidence review.
+## Subsequent 200% zoom and keyboard report
+
+Following instructions to inspect both the ticket page and populated My Registrations at 200% zoom, scroll through them and use Tab/Shift+Tab, the user reported `done no issues` in response to a request to report overlapping text, missing content, horizontal scrolling or keyboard traps. This records a user-reported pass for those sampled checks on both pages. No new 200% screenshots, measured viewport dimensions or per-control reverse sequence were supplied. Do not infer full reflow conformance or QR-scanning success.
+
+This is user-performed evidence, not independent NVDA reproduction. Complete keyboard/control interaction, manual contrast, refund/cancellation and other agreed cases remain pending. #36, #37 and parent #9 remain open for remaining scope, findings and evidence review.
