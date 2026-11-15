@@ -59,10 +59,17 @@ def validate_sample(row, run_id, record):
     status = row.get('http_status', '')
     if status != '000' and (not status.isdigit() or not 100 <= int(status) <= 599):
         raise ValueError(f'Invalid HTTP status for {run_id}: {status}')
-    if row.get('result') not in ('UP', 'DOWN'):
+    if row.get('result') not in ('UP', 'DOWN', 'UNKNOWN'):
         raise ValueError(f'Invalid result for {run_id}: {row.get("result")}')
     error = row.get('transport_error', '')
-    expected = 'UP' if status.isdigit() and status != '000' and 200 <= int(status) < 300 and not error else 'DOWN'
+    try:
+        client_exit = int(row.get('curl_exit_code', '0'))
+    except ValueError as exc:
+        raise ValueError(f'Invalid curl exit code for {run_id}') from exc
+    if status == '000' or error or client_exit != 0:
+        expected = 'UNKNOWN'
+    else:
+        expected = 'UP' if 200 <= int(status) < 300 else 'DOWN'
     if row['result'] != expected:
         raise ValueError(f'Inconsistent status/result for {run_id}')
     if 'run_id' in row and str(row['run_id']) != str(run_id):
@@ -70,10 +77,6 @@ def validate_sample(row, run_id, record):
     if 'event' in row and row['event'] != record['event']:
         raise ValueError(f'CSV event does not match run history for {run_id}')
     if 'curl_exit_code' in row:
-        try:
-            client_exit = int(row['curl_exit_code'])
-        except ValueError as exc:
-            raise ValueError(f'Invalid curl exit code for {run_id}') from exc
         if client_exit != 0 and not error:
             raise ValueError(f'Missing transport error for failed curl run {run_id}')
         if client_exit == 0 and status == '000' and not row.get('error_detail'):
@@ -169,6 +172,7 @@ def summarize(root):
         'samples': sorted(samples, key=lambda s: instant(s['timestamp_utc'])),
         'scheduled_samples': len(scheduled_samples),
         'failed_samples': [s['run_id'] for s in samples if s['result'] == 'DOWN'],
+        'unknown_samples': [s['run_id'] for s in samples if s['result'] == 'UNKNOWN'],
         'runs_without_archived_csv': missing_csv,
         'scheduled_run_creation_gaps': creation_gaps,
         'scheduled_sample_intervals': sample_intervals,

@@ -48,14 +48,14 @@ class UptimeCollectorTests(TestCase):
         self.assertEqual(record['transport_error'], '')
         self.assertEqual(record['response_seconds'], '1.500000')
 
-    def test_connection_failure_keeps_measured_elapsed_time_and_error(self):
+    def test_connection_failure_is_unknown_and_keeps_measured_time_and_error(self):
         record = collect(
             'https://example.test/', 5, '323', 'schedule',
             runner=lambda *args, **kwargs: self.completed(7, '000,0.003210', 'curl: connection refused'),
             clock=self.clock(),
         )
         self.assertEqual(record['http_status'], '000')
-        self.assertEqual(record['result'], 'DOWN')
+        self.assertEqual(record['result'], 'UNKNOWN')
         self.assertIn('connection refused', record['transport_error'])
         self.assertEqual(record['curl_exit_code'], '7')
         self.assertEqual(record['response_seconds'], '0.003210')
@@ -66,6 +66,7 @@ class UptimeCollectorTests(TestCase):
 
         record = collect('https://example.test/', 1, '324', 'schedule', runner=fail, clock=self.clock())
         self.assertEqual(record['curl_exit_code'], '28')
+        self.assertEqual(record['result'], 'UNKNOWN')
         self.assertIn('process timeout', record['error_detail'])
         self.assertEqual(record['response_seconds'], '2.345678')
         self.assertEqual(record['latency_source'], 'monotonic_fallback')
@@ -154,6 +155,21 @@ class UptimeEvidenceSummaryTests(SimpleTestCase):
             root = Path(directory)
             self.make_evidence(root, [(101, 'schedule', self.sample('503', '1.5', 'DOWN'))])
             self.assertEqual(summarize(root)['failed_samples'], [101])
+            self.assertEqual(summarize(root)['unknown_samples'], [])
+
+    def test_transport_failure_is_unknown_not_counted_as_downtime(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_evidence(root, [(
+                101, 'schedule', self.sample(
+                    '000', '0.25', 'UNKNOWN',
+                    transport_error='curl: connection refused',
+                    error_detail='curl: connection refused',
+                ),
+            )])
+            summary = summarize(root)
+            self.assertEqual(summary['failed_samples'], [])
+            self.assertEqual(summary['unknown_samples'], [101])
 
     def test_failed_workflow_without_csv_is_not_hidden(self):
         with tempfile.TemporaryDirectory() as directory:
