@@ -42,6 +42,8 @@ Subsequent [organizer observations](organizer-nvda-user-report.md) cover the emp
 
 For that local invalid event-form state, the user subsequently reported no overlap, missing controls, horizontal scrolling or keyboard trap at 200% zoom. Broader organizer workflow zoom/interaction coverage remains pending; this updates only the sampled form result.
 
+Later local steps created a General tier, visually retested the corrected capacity summary, and published the synthetic event. The [populated Discovery report](populated-discovery-user-report.md) records named filters/Search/View Event speech and the user's report of no layout/traversal problems at 200% zoom. These sampled states do not establish full authenticated-workflow or contrast completion.
+
 ## Uptime (#38)
 
 The user-supplied revised SRS PDF page 15 and Test Plan PDF page 25 state: scheduled readiness monitoring, with schedule, endpoint, timestamped results and failures documented over the available project observation window. They explicitly call 99.5% monthly uptime a longer-term objective rather than academic prototype acceptance. Revised SAD PDF page 18 describes retained timestamped external readiness checks. These documents retain candidate/approval caveats: record which baseline and observation window the team accepts; this report supplies no faculty approval.

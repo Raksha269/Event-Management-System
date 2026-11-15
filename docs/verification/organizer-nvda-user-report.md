@@ -113,4 +113,10 @@ On the local ticket page, speech captures forward/reverse navigation through `Ti
 
 The screenshot also shows malformed Unallocated Capacity text `9 10 10` with event capacity 10 and allocation 10. Template inspection found three unrelated expressions producing those values. The PR now computes `event.capacity - configured_capacity` in the view and renders the single value with a tickets label. A local regression test covers zero, partial and full allocation (expected remaining values 10, 6 and 0); the three-test focused module passed. See `ticket-summary-tests.txt` for the log. User-side visual/NVDA retesting of this new fix remains pending. The earlier browser scans and template manifest predate this ticket-summary change; do not attribute them to it.
 
-These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: complete control interactions (including native date picker), retest of the ticket-summary fix, publication/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.
+## Ticket-summary visual retest and local publication
+
+After guided git pull and server restart, a new user screenshot at `localhost:8765/events/1/tickets/` shows Unallocated Capacity `0 tickets`, allocation `10 tickets` and the existing General tier. This is a user-supplied visual retest of the display fix; NVDA reading of that value was not supplied. The exact checkout hash was not captured on the user's machine.
+
+The user then activated the local event's Publish button. Supplied speech shows `Publish button`, page loading and then `Unpublish` as a button on the returned dashboard. A subsequent screenshot at `localhost:8765/events/discover/` shows the synthetic Accessibility Test Event card with Workshop, local test hall, 14 November 2030 at 4:53 p.m., and 10 spots left. This supports local publication and catalogue visibility. It is not production publication evidence or proof of automatic success-message announcement.
+
+These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: complete control interactions (including native date picker), publication reversal/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.
