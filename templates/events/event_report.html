@@ -49,6 +49,7 @@
             <h2 style="font-size: 18px; margin-top: 0; margin-bottom: 16px;">Ticket Tier Breakdown</h2>
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <caption class="visually-hidden">Ticket tier sales and revenue for {{ event.event_title }}</caption>
                     <thead>
                         <tr style="border-bottom: 2px solid var(--border); text-align: left;">
                             <th style="padding: 10px 12px;">Tier Name</th>
@@ -84,6 +85,7 @@
         {% if report.attendee_records %}
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <caption class="visually-hidden">Attendees and registration details for {{ event.event_title }}</caption>
                     <thead>
                         <tr style="border-bottom: 2px solid var(--border); text-align: left;">
                             <th style="padding: 10px 12px;">ID</th>
