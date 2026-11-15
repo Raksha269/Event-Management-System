@@ -23,11 +23,7 @@
         <div>
             <span class="muted" style="font-size: 13px;">Unallocated Capacity</span>
             <strong style="display: block; font-size: 20px; color: {% if event.capacity >= configured_capacity %}#15803d{% else %}#b91c1c{% endif %};">
-                {{ event.capacity|add:"-1"|default:0 }}
-                {{ event.capacity|floatformat:0 }}
-                {% with remaining_alloc=event.capacity|add:"-0" %}
-                    {{ remaining_alloc }}
-                {% endwith %}
+                {{ unallocated_capacity }} tickets
             </strong>
         </div>
     </div>

@@ -105,4 +105,12 @@ Discover Events link
 
 This supports named card controls and traversal in both directions through this segment. It is not evidence that each action was activated, every interaction is free of traps, or that names remain distinguishable with multiple event cards. Unrelated browser/tab speech was excluded. No populated-card 200% zoom result was supplied at this point.
 
-These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: complete control interactions (including native date picker), populated-card zoom observations, ticket tiers, publication/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.
+## Populated-card zoom and local ticket-tier creation
+
+Following instructions to inspect the populated organizer dashboard at 200% zoom, the user reported no overlap, missing controls or horizontal scrolling. This is a user-reported result without captured zoom/viewport measurements, not an independent reproduction.
+
+On the local ticket page, speech captures forward/reverse navigation through `Ticket Tier Name * edit required`, `Price (₹) * spin button required`, `Quantity Limit (Max Tickets) * spin button required` and `Add Ticket Tier button`. The user then entered a synthetic General tier, price 0.00 and quantity 10, and submitted. A screenshot at `localhost:8765/events/1/tickets/` shows tier `general`, ₹0.00, quantity 10, sold 0 and `10 Available`. This supports local tier creation, not publication or purchase. The supplied post-submit speech does not establish automatic success-message announcement.
+
+The screenshot also shows malformed Unallocated Capacity text `9 10 10` with event capacity 10 and allocation 10. Template inspection found three unrelated expressions producing those values. The PR now computes `event.capacity - configured_capacity` in the view and renders the single value with a tickets label. A local regression test covers zero, partial and full allocation (expected remaining values 10, 6 and 0); the three-test focused module passed. See `ticket-summary-tests.txt` for the log. User-side visual/NVDA retesting of this new fix remains pending. The earlier browser scans and template manifest predate this ticket-summary change; do not attribute them to it.
+
+These are user-performed reports/transcripts, not independent NVDA reproduction. Still pending: complete control interactions (including native date picker), retest of the ticket-summary fix, publication/edit/reporting and other agreed flows, manual contrast and independent/review evidence. #36, #37 and parent #9 remain open.

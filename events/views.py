@@ -493,6 +493,7 @@ def ticket_types_manage(request, pk):
             "ticket_types": ticket_types,
             "form": form,
             "configured_capacity": configured_capacity,
+            "unallocated_capacity": event.capacity - configured_capacity,
         },
     )
 
