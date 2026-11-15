@@ -1,0 +1,188 @@
+uptime-check	Set up job	﻿2026-11-15T16:39:11.0863318Z Current runner version: '2.338.2'
+uptime-check	Set up job	2026-11-15T16:39:11.0882725Z ##[group]Runner Image Provisioner
+uptime-check	Set up job	2026-11-15T16:39:11.0883371Z Hosted Compute Agent
+uptime-check	Set up job	2026-11-15T16:39:11.0883720Z Version: 20261103.629
+uptime-check	Set up job	2026-11-15T16:39:11.0884156Z Commit: 15dbd9ccb5dbf34fae002b6ed1a2670f52df37bc
+uptime-check	Set up job	2026-11-15T16:39:11.0884600Z Build Date: 2026-11-03T17:26:59Z
+uptime-check	Set up job	2026-11-15T16:39:11.0885035Z Worker ID: {f0b225f5-e30c-4bba-8b21-012b7626d4ce}
+uptime-check	Set up job	2026-11-15T16:39:11.0885506Z Region: centralus
+uptime-check	Set up job	2026-11-15T16:39:11.0885849Z Cloud: Azure
+uptime-check	Set up job	2026-11-15T16:39:11.0886245Z ##[endgroup]
+uptime-check	Set up job	2026-11-15T16:39:11.0887028Z ##[group]Operating System
+uptime-check	Set up job	2026-11-15T16:39:11.0887436Z Ubuntu
+uptime-check	Set up job	2026-11-15T16:39:11.0887799Z 26.04.1
+uptime-check	Set up job	2026-11-15T16:39:11.0888113Z LTS
+uptime-check	Set up job	2026-11-15T16:39:11.0888459Z ##[endgroup]
+uptime-check	Set up job	2026-11-15T16:39:11.0888841Z ##[group]Runner Image
+uptime-check	Set up job	2026-11-15T16:39:11.0889198Z Image: ubuntu-26.04
+uptime-check	Set up job	2026-11-15T16:39:11.0889620Z Version: 20261111.196.1
+uptime-check	Set up job	2026-11-15T16:39:11.0890372Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261111.196/images/ubuntu/Ubuntu2604-Readme.md
+uptime-check	Set up job	2026-11-15T16:39:11.0891437Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261111.196
+uptime-check	Set up job	2026-11-15T16:39:11.0891992Z ##[endgroup]
+uptime-check	Set up job	2026-11-15T16:39:11.0892770Z ##[group]GITHUB_TOKEN Permissions
+uptime-check	Set up job	2026-11-15T16:39:11.0893935Z Contents: read
+uptime-check	Set up job	2026-11-15T16:39:11.0894374Z Metadata: read
+uptime-check	Set up job	2026-11-15T16:39:11.0894710Z ##[endgroup]
+uptime-check	Set up job	2026-11-15T16:39:11.0896109Z Secret source: Actions
+uptime-check	Set up job	2026-11-15T16:39:11.0896651Z Cache mode: write
+uptime-check	Set up job	2026-11-15T16:39:11.0897104Z Prepare workflow directory
+uptime-check	Set up job	2026-11-15T16:39:11.1153684Z Prepare all required actions
+uptime-check	Set up job	2026-11-15T16:39:11.1185920Z Getting action download info
+uptime-check	Set up job	2026-11-15T16:39:11.3573135Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+uptime-check	Set up job	2026-11-15T16:39:11.4743489Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+uptime-check	Set up job	2026-11-15T16:39:11.6103589Z Complete job name: uptime-check
+uptime-check	Check out repository	﻿2026-11-15T16:39:11.6669066Z ##[group]Run actions/checkout@v7
+uptime-check	Check out repository	2026-11-15T16:39:11.6669552Z with:
+uptime-check	Check out repository	2026-11-15T16:39:11.6669849Z   repository: Raksha269/Event-Management-System
+uptime-check	Check out repository	2026-11-15T16:39:11.6672033Z   token: ***
+uptime-check	Check out repository	2026-11-15T16:39:11.6672283Z   ssh-strict: true
+uptime-check	Check out repository	2026-11-15T16:39:11.6672541Z   ssh-user: git
+uptime-check	Check out repository	2026-11-15T16:39:11.6672803Z   persist-credentials: true
+uptime-check	Check out repository	2026-11-15T16:39:11.6673084Z   clean: true
+uptime-check	Check out repository	2026-11-15T16:39:11.6673347Z   sparse-checkout-cone-mode: true
+uptime-check	Check out repository	2026-11-15T16:39:11.6673652Z   fetch-depth: 1
+uptime-check	Check out repository	2026-11-15T16:39:11.6673906Z   fetch-tags: false
+uptime-check	Check out repository	2026-11-15T16:39:11.6674167Z   show-progress: true
+uptime-check	Check out repository	2026-11-15T16:39:11.6674426Z   lfs: false
+uptime-check	Check out repository	2026-11-15T16:39:11.6674667Z   submodules: false
+uptime-check	Check out repository	2026-11-15T16:39:11.6674932Z   set-safe-directory: true
+uptime-check	Check out repository	2026-11-15T16:39:11.6675228Z   allow-unsafe-pr-checkout: false
+uptime-check	Check out repository	2026-11-15T16:39:11.6675610Z ##[endgroup]
+uptime-check	Check out repository	2026-11-15T16:39:11.9072677Z Syncing repository: Raksha269/Event-Management-System
+uptime-check	Check out repository	2026-11-15T16:39:11.9074740Z ##[group]Getting Git version info
+uptime-check	Check out repository	2026-11-15T16:39:11.9075500Z Working directory is '/home/runner/work/Event-Management-System/Event-Management-System'
+uptime-check	Check out repository	2026-11-15T16:39:11.9076625Z [command]/usr/bin/git version
+uptime-check	Check out repository	2026-11-15T16:39:11.9102551Z git version 2.56.1
+uptime-check	Check out repository	2026-11-15T16:39:11.9116086Z ##[endgroup]
+uptime-check	Check out repository	2026-11-15T16:39:11.9124336Z Temporarily overriding HOME='/home/runner/work/_temp/84ecf58a-c36c-495d-aa11-56640796d31c' before making global git config changes
+uptime-check	Check out repository	2026-11-15T16:39:11.9125682Z Adding repository directory to the temporary git global config as a safe directory
+uptime-check	Check out repository	2026-11-15T16:39:11.9128942Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Event-Management-System/Event-Management-System
+uptime-check	Check out repository	2026-11-15T16:39:11.9193570Z Deleting the contents of '/home/runner/work/Event-Management-System/Event-Management-System'
+uptime-check	Check out repository	2026-11-15T16:39:11.9195892Z ##[group]Determining repository object format
+uptime-check	Check out repository	2026-11-15T16:39:11.9196996Z ##[endgroup]
+uptime-check	Check out repository	2026-11-15T16:39:11.9197759Z ##[group]Initializing the repository
+uptime-check	Check out repository	2026-11-15T16:39:11.9201351Z [command]/usr/bin/git init /home/runner/work/Event-Management-System/Event-Management-System
+uptime-check	Check out repository	2026-11-15T16:39:11.9314216Z hint: Using 'master' as the name for the initial branch. This default branch name
+uptime-check	Check out repository	2026-11-15T16:39:11.9315223Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+uptime-check	Check out repository	2026-11-15T16:39:11.9316117Z hint: to use in all of your new repositories, which will suppress this warning,
+uptime-check	Check out repository	2026-11-15T16:39:11.9316826Z hint: call:
+uptime-check	Check out repository	2026-11-15T16:39:11.9317216Z hint:
+uptime-check	Check out repository	2026-11-15T16:39:11.9317773Z hint: 	git config --global init.defaultBranch <name>
+uptime-check	Check out repository	2026-11-15T16:39:11.9318449Z hint:
+uptime-check	Check out repository	2026-11-15T16:39:11.9319050Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+uptime-check	Check out repository	2026-11-15T16:39:11.9321140Z hint: 'development'. The just-created branch can be renamed via this command:
+uptime-check	Check out repository	2026-11-15T16:39:11.9322771Z hint:
+uptime-check	Check out repository	2026-11-15T16:39:11.9323205Z hint: 	git branch -m <name>
+uptime-check	Check out repository	2026-11-15T16:39:11.9323646Z hint:
+uptime-check	Check out repository	2026-11-15T16:39:11.9324367Z hint: Disable this message with "git config set advice.defaultBranchName false"
+uptime-check	Check out repository	2026-11-15T16:39:11.9330391Z Initialized empty Git repository in /home/runner/work/Event-Management-System/Event-Management-System/.git/
+uptime-check	Check out repository	2026-11-15T16:39:11.9355799Z [command]/usr/bin/git remote add origin https://github.com/Raksha269/Event-Management-System
+uptime-check	Check out repository	2026-11-15T16:39:11.9458322Z ##[endgroup]
+uptime-check	Check out repository	2026-11-15T16:39:11.9459074Z ##[group]Disabling automatic garbage collection
+uptime-check	Check out repository	2026-11-15T16:39:11.9463031Z [command]/usr/bin/git config --local gc.auto 0
+uptime-check	Check out repository	2026-11-15T16:39:11.9504143Z ##[endgroup]
+uptime-check	Check out repository	2026-11-15T16:39:11.9505207Z ##[group]Setting up auth
+uptime-check	Check out repository	2026-11-15T16:39:11.9508820Z Removing SSH command configuration
+uptime-check	Check out repository	2026-11-15T16:39:11.9511118Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+uptime-check	Check out repository	2026-11-15T16:39:11.9547252Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+uptime-check	Check out repository	2026-11-15T16:39:11.9971868Z Removing HTTP extra header
+uptime-check	Check out repository	2026-11-15T16:39:11.9977338Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+uptime-check	Check out repository	2026-11-15T16:39:12.0005961Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+uptime-check	Check out repository	2026-11-15T16:39:12.0237098Z Removing includeIf entries pointing to credentials config files
+uptime-check	Check out repository	2026-11-15T16:39:12.0242090Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+uptime-check	Check out repository	2026-11-15T16:39:12.0272859Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+uptime-check	Check out repository	2026-11-15T16:39:12.0512273Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+uptime-check	Check out repository	2026-11-15T16:39:12.0547298Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Event-Management-System/Event-Management-System/.git.path /home/runner/work/_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config
+uptime-check	Check out repository	2026-11-15T16:39:12.0576612Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/Event-Management-System/Event-Management-System/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config
+uptime-check	Check out repository	2026-11-15T16:39:12.0607491Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config
+uptime-check	Check out repository	2026-11-15T16:39:12.0635575Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config
+uptime-check	Check out repository	2026-11-15T16:39:12.0662372Z ##[endgroup]
+uptime-check	Check out repository	2026-11-15T16:39:12.0663048Z ##[group]Fetching the repository
+uptime-check	Check out repository	2026-11-15T16:39:12.0667598Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +f862d75a2b62a5c3719c860d47cab62ec469dfc8:refs/remotes/origin/main
+uptime-check	Check out repository	2026-11-15T16:39:12.7323088Z From https://github.com/Raksha269/Event-Management-System
+uptime-check	Check out repository	2026-11-15T16:39:12.7324433Z  * [new ref]         f862d75a2b62a5c3719c860d47cab62ec469dfc8 -> origin/main
+uptime-check	Check out repository	2026-11-15T16:39:12.7341527Z [command]/usr/bin/git branch --list --remote origin/main
+uptime-check	Check out repository	2026-11-15T16:39:12.7358174Z   origin/main
+uptime-check	Check out repository	2026-11-15T16:39:12.7365496Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+uptime-check	Check out repository	2026-11-15T16:39:12.7389717Z f862d75a2b62a5c3719c860d47cab62ec469dfc8
+uptime-check	Check out repository	2026-11-15T16:39:12.7393634Z ##[endgroup]
+uptime-check	Check out repository	2026-11-15T16:39:12.7394396Z ##[group]Determining the checkout info
+uptime-check	Check out repository	2026-11-15T16:39:12.7395401Z ##[endgroup]
+uptime-check	Check out repository	2026-11-15T16:39:12.7398453Z [command]/usr/bin/git sparse-checkout disable
+uptime-check	Check out repository	2026-11-15T16:39:12.7450539Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+uptime-check	Check out repository	2026-11-15T16:39:12.7485952Z ##[group]Checking out the ref
+uptime-check	Check out repository	2026-11-15T16:39:12.7488393Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+uptime-check	Check out repository	2026-11-15T16:39:12.7815346Z Switched to a new branch 'main'
+uptime-check	Check out repository	2026-11-15T16:39:12.7819039Z branch 'main' set up to track 'origin/main'.
+uptime-check	Check out repository	2026-11-15T16:39:12.7828628Z ##[endgroup]
+uptime-check	Check out repository	2026-11-15T16:39:12.7876941Z [command]/usr/bin/git log -1 --format=%H
+uptime-check	Check out repository	2026-11-15T16:39:12.7902909Z f862d75a2b62a5c3719c860d47cab62ec469dfc8
+uptime-check	Check Render website availability	﻿2026-11-15T16:39:12.8120687Z ##[group]Run URL="https://event-management-system-cqxx.onrender.com/health/ready/"
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8122377Z ^[[36;1mURL="https://event-management-system-cqxx.onrender.com/health/ready/"^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8123452Z ^[[36;1mset +e^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8124024Z ^[[36;1mpython scripts/collect_uptime_check.py \^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8124785Z ^[[36;1m  --url "$URL" \^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8125357Z ^[[36;1m  --timeout 120 \^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8125939Z ^[[36;1m  --run-id "$RUN_ID" \^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8126562Z ^[[36;1m  --event "$TRIGGER_EVENT" \^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8127539Z ^[[36;1m  --output uptime-results/check.csv > uptime-results/collector.log 2>&1^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8128575Z ^[[36;1mCOLLECTOR_STATUS=$?^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8129136Z ^[[36;1mset -e^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8129678Z ^[[36;1mcat uptime-results/collector.log^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8130714Z ^[[36;1mcat uptime-results/collector.log >> "$GITHUB_STEP_SUMMARY"^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8131617Z ^[[36;1mexit "$COLLECTOR_STATUS"^[[0m
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8178318Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8179164Z env:
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8179590Z   RUN_ID: 43736667439
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8180282Z   TRIGGER_EVENT: schedule
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8180816Z ##[endgroup]
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8275943Z /home/runner/work/_temp/17f51e68-1e68-4b15-af5a-d3e33a614400.sh: line 3: uptime-results/collector.log: No such file or directory
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8300387Z cat: uptime-results/collector.log: No such file or directory
+uptime-check	Check Render website availability	2026-11-15T16:39:12.8315288Z ##[error]Process completed with exit code 1.
+uptime-check	Archive uptime result	﻿2026-11-15T16:39:12.8427759Z ##[group]Run actions/upload-artifact@v4
+uptime-check	Archive uptime result	2026-11-15T16:39:12.8428452Z with:
+uptime-check	Archive uptime result	2026-11-15T16:39:12.8428899Z   name: uptime-check-43736667439
+uptime-check	Archive uptime result	2026-11-15T16:39:12.8429480Z   path: uptime-results/
+uptime-check	Archive uptime result	2026-11-15T16:39:12.8430146Z   if-no-files-found: ignore
+uptime-check	Archive uptime result	2026-11-15T16:39:12.8430675Z   retention-days: 35
+uptime-check	Archive uptime result	2026-11-15T16:39:12.8431148Z   compression-level: 6
+uptime-check	Archive uptime result	2026-11-15T16:39:12.8431625Z   overwrite: false
+uptime-check	Archive uptime result	2026-11-15T16:39:12.8432100Z   include-hidden-files: false
+uptime-check	Archive uptime result	2026-11-15T16:39:12.8432642Z ##[endgroup]
+uptime-check	Archive uptime result	2026-11-15T16:39:12.9691648Z (node:2272) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+uptime-check	Archive uptime result	2026-11-15T16:39:12.9694419Z (Use `node --trace-deprecation ...` to show where the warning was created)
+uptime-check	Archive uptime result	2026-11-15T16:39:12.9720717Z No files were found with the provided path: uptime-results/. No artifacts will be uploaded.
+uptime-check	Post Check out repository	﻿2026-11-15T16:39:13.0080336Z Post job cleanup.
+uptime-check	Post Check out repository	2026-11-15T16:39:13.0718776Z [command]/usr/bin/git version
+uptime-check	Post Check out repository	2026-11-15T16:39:13.0767369Z git version 2.56.1
+uptime-check	Post Check out repository	2026-11-15T16:39:13.0795445Z Temporarily overriding HOME='/home/runner/work/_temp/138377c5-2e77-4aec-9f49-fea32cef1d40' before making global git config changes
+uptime-check	Post Check out repository	2026-11-15T16:39:13.0798786Z Adding repository directory to the temporary git global config as a safe directory
+uptime-check	Post Check out repository	2026-11-15T16:39:13.0801203Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/Event-Management-System/Event-Management-System
+uptime-check	Post Check out repository	2026-11-15T16:39:13.0850538Z Removing SSH command configuration
+uptime-check	Post Check out repository	2026-11-15T16:39:13.0856821Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+uptime-check	Post Check out repository	2026-11-15T16:39:13.0895871Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1148864Z Removing HTTP extra header
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1154310Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1206617Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1446673Z Removing includeIf entries pointing to credentials config files
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1451100Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1475135Z includeif.gitdir:/home/runner/work/Event-Management-System/Event-Management-System/.git.path
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1477155Z includeif.gitdir:/home/runner/work/Event-Management-System/Event-Management-System/.git/worktrees/*.path
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1478564Z includeif.gitdir:/github/workspace/.git.path
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1479474Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1482587Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Event-Management-System/Event-Management-System/.git.path
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1505900Z /home/runner/work/_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1516163Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Event-Management-System/Event-Management-System/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-36d6e80e\-b402\-4bf3\-899f\-7adf31b16aaa\.config
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1551872Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/Event-Management-System/Event-Management-System/.git/worktrees/*.path
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1573224Z /home/runner/work/_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1587261Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/Event-Management-System/Event-Management-System/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-36d6e80e\-b402\-4bf3\-899f\-7adf31b16aaa\.config
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1620941Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1641282Z /github/runner_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1648275Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-36d6e80e\-b402\-4bf3\-899f\-7adf31b16aaa\.config
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1678168Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1699748Z /github/runner_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1707172Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-36d6e80e\-b402\-4bf3\-899f\-7adf31b16aaa\.config
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1742538Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+uptime-check	Post Check out repository	2026-11-15T16:39:13.1982459Z Removing credentials config '/home/runner/work/_temp/git-credentials-36d6e80e-b402-4bf3-899f-7adf31b16aaa.config'
+uptime-check	Complete job	﻿2026-11-15T16:39:13.2112765Z Cleaning up orphan processes
+uptime-check	Complete job	2026-11-15T16:39:13.2420694Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

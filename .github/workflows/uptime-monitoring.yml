@@ -26,6 +26,7 @@ jobs:
           TRIGGER_EVENT: ${{ github.event_name }}
         run: |
           URL="https://event-management-system-cqxx.onrender.com/health/ready/"
+          mkdir -p uptime-results
           set +e
           python scripts/collect_uptime_check.py \
             --url "$URL" \
