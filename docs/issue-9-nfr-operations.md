@@ -97,3 +97,7 @@ PR #26 reports muted text contrast improved from 4.39:1 to 6.99:1. The previous 
 ## Current verification boundary
 
 Current local verification: 90 Django tests and 24 RBAC tests passed on 2026-11-15. PostgreSQL CI also passed with the capacity/idempotency concurrency assertions and the disposable backup/restore rehearsal. Local SQLite restore validation passed on 1,500 events. Remaining v1.2 candidate evidence: representative PostgreSQL staging performance run; review of monitoring cadence and a suitable observation window; deployed database recovery/retention policy review; full responsive/keyboard/accessibility checklist; and team/faculty approval of PR #29's revised baseline. Record results in Issue #9; do not close it until the accepted criteria and evidence are reviewed.
+
+## Rahul's isolated PostgreSQL implementation (#32 / #33)
+
+The owner reports that there is currently no deployed application/database to administer. Existing Render references above are historical evidence, not verification of a current deployed PostgreSQL database or its policy. See [the isolated staging runbook](staging/README.md), [implementation plan](staging/implementation-plan.md) and [local evidence summary](staging/results.md) for the reproducible PostgreSQL environment, synthetic dataset, search measurements and separate-database restore checks. These are local PostgreSQL results and do not establish production comparability, provider-managed backups, deployed audit archival/deletion, or overall Issue #9 completion. Keep those external criteria pending.

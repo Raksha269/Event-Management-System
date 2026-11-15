@@ -35,9 +35,9 @@ def request_once(_):
         with urllib.request.urlopen(URL, timeout=REQUEST_TIMEOUT) as response:
             response.read()
             status = response.status
-    except urllib.error.HTTPError as error:
-        status = error.code
-        error = f"HTTPError: {error.code}"
+    except urllib.error.HTTPError as exception:
+        status = exception.code
+        error = f"HTTPError: {exception.code}"
     except Exception as exception:
         error = f"{type(exception).__name__}: {str(exception)[:120]}"
     return status, error, time.perf_counter() - started
