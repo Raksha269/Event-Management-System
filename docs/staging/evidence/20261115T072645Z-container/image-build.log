@@ -1,0 +1,40 @@
+STEP 1/13: FROM docker.io/library/python:3.12-slim-bookworm
+STEP 2/13: ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PATH="/opt/venv/bin:$PATH"
+--> Using cache 0d42b5ae323aa488e47de1ce57cc8b1a67707c2d4d78b397aa099e1c341da544
+--> 0d42b5ae323a
+STEP 3/13: WORKDIR /app
+--> Using cache 3ee3517f5bc25a0651c5e4d73da2ba13d709ed368213ff4625bab74d1e48904a
+--> 3ee3517f5bc2
+STEP 4/13: COPY requirements.txt ./
+--> Using cache 21283c2d838d6499867ce9a8e18d37c8e72fa827d1c6803f59ad70c85a3e7516
+--> 21283c2d838d
+STEP 5/13: RUN python -m venv /opt/venv && /opt/venv/bin/python -m pip install --no-cache-dir -r requirements.txt     && groupadd --gid 10001 ems && useradd --uid 10001 --gid ems --no-create-home ems
+--> Using cache 600b32d6d3b67ecea33d902ba851f877abe475451546480acfcf8f2b50f10f86
+--> 600b32d6d3b6
+STEP 6/13: COPY config ./config
+--> Using cache 911a7bec2176b69bfabb5413caaf0cde9d5116fca14034615bd678d5f3d000d9
+--> 911a7bec2176
+STEP 7/13: COPY events ./events
+--> Using cache deb689978a3b450ccfcf1ae4f7ce2f32218c36ca0b38267779bdb6f5be105b4a
+--> deb689978a3b
+STEP 8/13: COPY RBAC/accounts ./RBAC/accounts
+--> Using cache 3d29f02f3e8b27b0366a1d8f4dcad235af48859b94b3705f282dea2b9ddf6dce
+--> 3d29f02f3e8b
+STEP 9/13: COPY templates ./templates
+--> Using cache 47def9479010fe67e96e372ae559d188ed7f78ac0e0f0a831579cb7d69b9ce18
+--> 47def9479010
+STEP 10/13: COPY manage.py ./
+--> Using cache c98d8dc1dfaeffb5e4cafcc3403f9f16470a4f05e8121c403775508086fc3017
+--> c98d8dc1dfae
+STEP 11/13: RUN mkdir -p /app/.staging/media /app/.staging/static && chown -R ems:ems /app/.staging
+--> Using cache a4fd1809b33f3486674181877cfd8de64c45d8d760f615f7ab4fcf20d3dfc457
+--> a4fd1809b33f
+STEP 12/13: USER ems
+--> Using cache 35faef70228ad924444f4c32d7af317ad5f69dfb536d52f34972c42b61c9a21e
+--> 35faef70228a
+STEP 13/13: CMD ["/opt/venv/bin/python", "-m", "gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "4"]
+--> Using cache 42be559748a163e3d77b8048f048fc4269fe71d339950ada2e9eb9fb052f6f3e
+COMMIT localhost/ems-staging:local
+--> 42be559748a1
+Successfully tagged localhost/ems-staging:local
+42be559748a163e3d77b8048f048fc4269fe71d339950ada2e9eb9fb052f6f3e

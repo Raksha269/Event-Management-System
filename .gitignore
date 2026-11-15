@@ -29,3 +29,6 @@ db_backup_before_migrations.sqlite3
 staticfiles/
 # Generated media files (ticket QR codes)
 /media/
+
+# Isolated staging cluster, credentials, logs and database dumps
+.staging/

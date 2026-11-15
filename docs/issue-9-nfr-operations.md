@@ -39,7 +39,7 @@ After PR #24 was merged, the same SQLite dataset, Waitress configuration, and qu
 | 50 | 50 | 50 | 0 | 1.585 s | 1.591 s | 1.810 s | 1.826 s | 27.31 req/s |
 | 100 | 100 | 100 | 0 | 2.900 s | 3.020 s | 3.603 s | 3.614 s | 27.51 req/s |
 
-The v1.2 document set in [PR #29](https://github.com/Raksha269/Event-Management-System/pull/29) is merged. It labels the revised acceptance as a reproducible report with no unreported errors; p95 <= 2 seconds is an optimization goal, not a pass condition. The representative PostgreSQL staging series remains pending. This local SQLite series is reproducible evidence, but it does not replace that staging run. Confirm with the team/faculty whether any separate approval of the revised baseline is required.
+The v1.2 document set in [PR #29](https://github.com/Raksha269/Event-Management-System/pull/29) is merged. It labels the revised acceptance as a reproducible report with no unreported errors; p95 <= 2 seconds is an optimization goal, not a pass condition. The representative local PostgreSQL container benchmark is now documented in [PR #35](https://github.com/Raksha269/Event-Management-System/pull/35) and `docs/staging/report.md`. This earlier SQLite series remains separate supporting evidence and does not establish performance on a hosted deployment. Confirm with the team/faculty whether any separate approval of the revised baseline is required.
 
 ## Availability monitoring
 
@@ -62,7 +62,7 @@ The workflow is configured for the repository's Render URL. If the deployment UR
 
 ### PostgreSQL
 
-The PostgreSQL CI workflow rehearses a custom-format `pg_dump` and restores it into a separate disposable database. The latest successful main-branch PostgreSQL run [#43626022835](https://github.com/Raksha269/Event-Management-System/actions/runs/43626022835) completed that rehearsal and the application suite. This verifies the CI backup/restore procedure, not that the Render database is backed up or meets recovery objectives.
+The PostgreSQL CI workflow rehearses a custom-format `pg_dump` and restores it into a separate disposable database. The local PostgreSQL container backup/restore rehearsal in [PR #35](https://github.com/Raksha269/Event-Management-System/pull/35) also restored a populated dataset into a separate server/container and verified data, integrity, migrations, and readiness. These checks document the local procedure and actual local retention/access arrangements; they do not verify provider-managed backups for a hosted database.
 
 The database owner should configure and document provider-managed backups, frequency, retention, encryption, access control, and recovery point/recovery time objectives. For an authorized staging rehearsal:
 
@@ -92,7 +92,7 @@ Local rehearsal completed 2026-11-14 using SQLite's online backup API into a tem
 
 Automated template tests verify that the discovery search, category, location, and date controls have associated labels. These tests do not constitute a WCAG conformance audit. Before marking the review complete, test all public and authenticated workflows with keyboard-only navigation and a screen reader; check visible focus, heading order, link/button names, image alternatives, form errors, zoom/reflow at 200%, and text/UI contrast against WCAG 2.1 AA. Record browser, assistive technology, pages, findings, and screenshots. Fix issues and rerun the checks.
 
-PR #26 reports muted text contrast improved from 4.39:1 to 6.99:1. The previous local responsive spot checks and filter-label tests are useful supporting evidence, but the v1.2 candidate's documented full breakpoint/keyboard checklist remains incomplete.
+PR #26 reports muted text contrast improved from 4.39:1 to 6.99:1. The previous local responsive spot checks and filter-label tests are useful supporting evidence, but the documented full breakpoint/keyboard checklist remains incomplete.
 
 ### Live public-page spot check (2026-11-15)
 
@@ -102,4 +102,10 @@ This is a limited manual spot check of public pages. It did not cover authentica
 
 ## Current verification boundary
 
-Current local verification: 90 Django tests and 24 RBAC tests passed on 2026-11-15. PostgreSQL CI also passed with the capacity/idempotency concurrency assertions and the disposable backup/restore rehearsal. Local SQLite restore validation passed on 1,500 events. The v1.2 documents in PR #29 and evidence update in PR #30 are merged. Remaining evidence: representative PostgreSQL staging performance run; review of monitoring cadence and a suitable observation window; deployed database recovery/retention policy review; full responsive/keyboard/accessibility checklist; and confirmation whether a separate team/faculty approval of the revised baseline is needed. Record results in Issue #9; do not close it until the accepted criteria and evidence are reviewed.
+Current local verification: 90 Django tests and 24 RBAC tests passed on 2026-11-15. PostgreSQL CI passed with the capacity/idempotency concurrency assertions and disposable backup/restore rehearsal. PR #35 records the revised local PostgreSQL 16 performance and isolated restore evidence under the owner-approved local scope; it does not claim hosted-provider equivalence. The earlier local SQLite restore also passed on 1,500 events. Remaining Issue #9 evidence: review monitoring cadence and collect the agreed availability observation window; complete the full responsive/keyboard/screen-reader/accessibility checklist; and confirm whether separate team/faculty approval of the revised baseline is required. Hosted provider backup guarantees are not claimed because no hosted database owner/policy has been established. Keep Issue #9 open until the accepted criteria and evidence are reviewed.
+
+## Rahul's isolated PostgreSQL implementation (#32 / #33)
+
+On 2026-11-15 the owner approved local PostgreSQL as the revised acceptance scope and authorized Rahul to execute the benchmarks directly. A rootless Podman baseline now enforces 1 CPU/512 MiB for Gunicorn and 1 CPU/1 GiB for PostgreSQL 16, with swap disabled and effective cgroup limits verified. All 160 search requests succeeded; p95 was 0.171s, 0.359s and 0.795s at 10/50/100 clients. A populated backup restored into a separate PostgreSQL container; all content/count/integrity/migration/readiness checks passed. All 95 Django tests and five script regression tests passed.
+
+See the [formal report](staging/report.md) and [operating runbook](staging/README.md) for full evidence and revised acceptance traceability. Both sub-issues' implementation is complete under that local scope, with the implementation PR ready for review and closure on merge. The report documents actual local backup frequency/retention and audit arrangements, including absent scheduling/encryption/archive guarantees. It does not assert a hosted deployment, provider policy, cloud equivalence, monthly uptime, accessibility conformance or registration stress-test completion. Parent #9 remains open for its other verification.

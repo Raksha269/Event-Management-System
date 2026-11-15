@@ -1,0 +1,19 @@
+Creating test database for alias 'default'...
+/home/rahulb/University/Sem-5/SE/Event-Management-System/.venv/lib64/python3.14/site-packages/django/core/handlers/base.py:61: UserWarning: No directory at: /home/rahulb/University/Sem-5/SE/Event-Management-System/staticfiles/
+  mw_instance = middleware(adapted_handler)
+...........................................................................security_alert type=ABNORMAL_REGISTRATION_RATE severity=HIGH user=velocity_user_4 details=Abnormal registration spike on event 'Cybersecurity Summit 2026' (id=117): 5 registrations created within the last 60 seconds.
+.security_alert type=ACCOUNT_LOCKOUT severity=HIGH user=sec_attendee details=API alert test.
+.security_alert type=ACCOUNT_LOCKOUT severity=HIGH user=sec_attendee details=User locked out.
+security_alert type=FAILED_LOGIN_BURST severity=MEDIUM user=sec_organizer1 details=Repeated failures.
+.security_alert type=FAILED_LOGIN_BURST severity=MEDIUM user=sec_attendee details=Suspicious login failure burst: 'sec_attendee' has 3 failed login attempts.
+security_alert type=FAILED_LOGIN_BURST severity=MEDIUM user=sec_attendee details=Suspicious login failure burst: 'sec_attendee' has 4 failed login attempts.
+security_alert type=ACCOUNT_LOCKOUT severity=HIGH user=sec_attendee details=Account 'sec_attendee' locked for 15 minutes after 5 consecutive failed login attempts.
+account_lockout user_id=225 failed_attempts=5
+.................
+----------------------------------------------------------------------
+Ran 95 tests in 40.639s
+
+OK
+Destroying test database for alias 'default'...
+Found 95 test(s).
+System check identified no issues (0 silenced).

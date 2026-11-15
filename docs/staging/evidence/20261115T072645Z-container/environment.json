@@ -1,0 +1,120 @@
+{
+  "scope": "Owner-approved local production-comparable baseline; no hosted deployment claimed",
+  "started_at_utc": "2026-11-15T07:26:45.186115+00:00",
+  "operator": "rahulb",
+  "revision": "341413bd982b062261d44d91c23f40b189995e38",
+  "status": "completed",
+  "runtime": "podman",
+  "baseline": {
+    "app": {
+      "cpus": 1,
+      "memory_bytes": 536870912,
+      "workers": 2,
+      "threads": 4
+    },
+    "database": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "max_connections": 64,
+      "shared_buffers": "128MB"
+    },
+    "swap": "disabled for each container",
+    "load_generator": "host .venv, outside service quotas"
+  },
+  "backup_policy": {
+    "frequency": "on demand once per verification session",
+    "retention": "manual; no automatic expiry",
+    "encryption": "no harness-managed TLS/dump encryption; loopback only",
+    "rpo": "no guaranteed time-based RPO",
+    "rto": "measured restore only; no guaranteed incident RTO"
+  },
+  "audit_policy": {
+    "retention_days": 1095,
+    "archive": "none",
+    "purge_schedule": "none; manual command only"
+  },
+  "database_image": {
+    "id": "68beac29d3dda63428173674fa868d5544913658694cd4b09f6f15230a0ba1bb",
+    "digests": [
+      "docker.io/library/postgres@sha256:a49f7438ba03589f9b1ca062f2da82e899b48ea1dc50d2449fa09a70be83ebca",
+      "docker.io/library/postgres@sha256:f45d631d050c2fe068f384ed6c4faac506e9cd7f4da605ce703648e4b0985848"
+    ]
+  },
+  "application_image": {
+    "id": "42be559748a163e3d77b8048f048fc4269fe71d339950ada2e9eb9fb052f6f3e",
+    "digests": [
+      "localhost/ems-staging@sha256:614133fe411b55a020dd2c70e245ed45936a889d97ce79069e28671e31d3c9a1"
+    ]
+  },
+  "source_database_limits": {
+    "cpu.max": "100000 100000",
+    "memory.max": 1073741824,
+    "memory.swap.max": "0"
+  },
+  "postgres_version": "PostgreSQL 16.16 (Debian 16.16-1.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+  "source_readiness": {
+    "status": "ok"
+  },
+  "app_limits": {
+    "cpu.max": "100000 100000",
+    "memory.max": 536870912,
+    "memory.swap.max": "0"
+  },
+  "search_smoke_test": "HTTP 200, nonempty matching records",
+  "service_stats_after_search": [
+    {
+      "id": "8102419e7fd2",
+      "name": "ems-app-88673206",
+      "cpu_time": "2.929645s",
+      "cpu_percent": "45.20%",
+      "avg_cpu": "45.20%",
+      "mem_usage": "121.3MB / 536.9MB",
+      "mem_percent": "22.60%",
+      "net_io": "456B / 856B",
+      "block_io": "0B / 0B",
+      "pids": "11"
+    },
+    {
+      "id": "eb6e3d18a7d4",
+      "name": "ems-source-584336a6",
+      "cpu_time": "2.71305s",
+      "cpu_percent": "23.85%",
+      "avg_cpu": "23.85%",
+      "mem_usage": "51.18MB / 1.074GB",
+      "mem_percent": "4.77%",
+      "net_io": "456B / 856B",
+      "block_io": "0B / 226.7MB",
+      "pids": "14"
+    }
+  ],
+  "backup_started_at_utc": "2026-11-15T07:26:58.791019+00:00",
+  "backup_completed_at_utc": "2026-11-15T07:26:58.943591+00:00",
+  "backup_identifier": "20261115T072645Z-container/staging.dump",
+  "backup_sha256": "7c0a359b926f7e7ccb32d04a0d5ca70839f0c203503d11d6ee42be8e38567ad0",
+  "backup_bytes": 121833,
+  "restore_database_limits": {
+    "cpu.max": "100000 100000",
+    "memory.max": 1073741824,
+    "memory.swap.max": "0"
+  },
+  "restore_started_at_utc": "2026-11-15T07:27:01.929727+00:00",
+  "restore_seconds": 0.4347509360013646,
+  "restore_completed_at_utc": "2026-11-15T07:27:02.364508+00:00",
+  "restored_readiness": {
+    "status": "ok"
+  },
+  "restored_app_limits": {
+    "cpu.max": "100000 100000",
+    "memory.max": 536870912,
+    "memory.swap.max": "0"
+  },
+  "completed_at_utc": "2026-11-15T07:27:50.922034+00:00",
+  "tests": "Django and script regressions passed",
+  "restore_integrity": "table hashes/counts, constraints/indexes, pg_amcheck, migrations and readiness passed",
+  "containers_removed": {
+    "ems-restored-app-f5d47bdc": true,
+    "ems-restore-c2a56c57": true,
+    "ems-app-88673206": true,
+    "ems-source-584336a6": true
+  }
+}

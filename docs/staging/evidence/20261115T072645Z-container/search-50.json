@@ -1,0 +1,23 @@
+{
+  "measured_at_utc": "2026-11-15T07:26:56.196892+00:00",
+  "url": "http://127.0.0.1:58419/api/v1/events/?q=Sample&limit=50&offset=0",
+  "concurrent_clients": 50,
+  "total_requests": 50,
+  "successful_responses": 50,
+  "failed_requests": 0,
+  "connection_refusals": 0,
+  "other_transport_errors": 0,
+  "response_status_counts": {
+    "200": 50
+  },
+  "average_seconds": 0.18030356720002602,
+  "p50_seconds": 0.16911520200119412,
+  "p95_seconds": 0.35880751100012276,
+  "p99_seconds": 0.36443414699897403,
+  "max_seconds": 0.36443414699897403,
+  "wall_time_seconds": 0.3692832390006515,
+  "throughput_requests_per_second": 135.3974259305925,
+  "srs_p95_target_seconds": 2.0,
+  "srs_target_met_in_this_run": true,
+  "error_counts": {}
+}
