@@ -34,6 +34,8 @@ In a subsequent [user-reported 200% browser zoom check](zoom-user-report.md), re
 
 The user then configured a separate local SQLite/in-memory-email instance of the PR branch and supplied [NVDA speech after an empty registration submission](registration-errors-nvda-user-report.md). It announces the error summary and three required-field error links. Subsequent user-supplied speech supports each link reaching the corresponding field and announcing its invalid/required state and error. Other error states remain pending; this local result does not verify production deployment.
 
+A subsequent [local invalid-login check](login-errors-nvda-user-report.md) captured an announced alert after synthetic invalid credentials and a follow-up read of the full generic error message. Automatic full-message speech and the post-submit focus destination are not established by the supplied transcript.
+
 ## Uptime (#38)
 
 The user-supplied revised SRS PDF page 15 and Test Plan PDF page 25 state: scheduled readiness monitoring, with schedule, endpoint, timestamped results and failures documented over the available project observation window. They explicitly call 99.5% monthly uptime a longer-term objective rather than academic prototype acceptance. Revised SAD PDF page 18 describes retained timestamped external readiness checks. These documents retain candidate/approval caveats: record which baseline and observation window the team accepts; this report supplies no faculty approval.
