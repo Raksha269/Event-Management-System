@@ -3,7 +3,7 @@
 [![Django](https://img.shields.io/badge/Django-5.2-green.svg)](https://www.djangoproject.com/)
 [![DRF](https://img.shields.io/badge/Django%20REST%20Framework-3.15+-red.svg)](https://www.django-rest-framework.org/)
 [![Python](https://img.shields.io/badge/Python-3.12%20%7C%203.14-blue.svg)](https://www.python.org/)
-[![Tests](https://img.shields.io/badge/Tests-104%20Passing-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-134%20Passing-brightgreen.svg)]()
 [![Security](https://img.shields.io/badge/Security-TLS%201.2%2B%20%7C%20PCI--DSS%20%7C%20RBAC-success.svg)]()
 
 **Gather** is a full-featured, secure, and robust Event Management System designed to handle event publishing, multi-tier ticketing, high-concurrency attendee registration, mock payment processing with QR e-tickets, comprehensive financial reporting, administrator user governance, and real-time security monitoring.
@@ -108,29 +108,25 @@ The system defines three core roles in `accounts/roles.py`:
 
 ## Non-Functional Requirements & Operations
 
-The application now includes implementation support for the NFRs. Production targets still need measurements from the deployed environment; local SQLite runs cannot establish the 500-user concurrency or monthly availability targets.
+The revised NFR baseline (v1.2) evaluates this academic prototype locally. Hosted-service availability and production operations are outside this scope. Local readiness checks, reproducible search benchmarking, PostgreSQL registration-integrity verification, accessibility review, audit retention behavior, and isolated PostgreSQL backup/restore remain documented. See the [Issue #9 verification report](docs/issue-9-nfr-operations.md) for requirement IDs, implementation, test methods, evidence locations, status and limits.
 
-| Requirement | Application support | Verification target / evidence |
+| Requirement | Implementation and local verification | Status |
 | :--- | :--- | :--- |
-| `EMS-NF-001` Performance | Composite indexes, PostgreSQL trigram indexes for event text search, bounded API pagination, compact paginated list serialization, and annotated registration counts. | `scripts/nfr_search_benchmark.py` reports p95 and error counts for a configured representative dataset; target p95 <= 2 seconds. |
-| `EMS-NF-002` Availability | `/health/ready/` checks database connectivity and returns 503 if unavailable; production HTTPS, secure cookies, HSTS, and configurable database connection reuse are enabled when `DJANGO_DEBUG=false`. | Monitor endpoint and record monthly uptime against the SRS target of 99.5%, excluding scheduled maintenance; retain alert, production backup, failover, and restore evidence. CI rehearses a PostgreSQL dump/restore against an isolated disposable database. |
-| `EMS-NF-003` Scalability | Production PostgreSQL configuration is supported through environment variables; registration transactions use database row locks; idempotency keys prevent duplicate registrations on client retries. | Run 500 concurrent registration attempts and the SRS 10,000-attempt load test against PostgreSQL. SQLite is for local development and does not provide production row-lock semantics. A PostgreSQL 16 GitHub Actions workflow runs checks, migrations, and core tests. |
-| `EMS-NF-004` Usability | Responsive viewport metadata and flexible layouts are included in the web UI. | Capture checks at 360, 768, and 1440 px and record clipping/overflow and accessibility findings. |
-| `EMS-NF-005` Audit retention | Append-only `AuditEvent` records cover authentication, event create/update/publication, registration, payment/refund, security alerts, and administrator user changes. Administrator audit access is read-only. | Records default to 1,095 days (three years). Schedule `python manage.py purge_audit_events`; verify retrieval before expiry and retain archive/deletion-policy evidence. |
+| `EMS-NF-001` Performance | Indexed event search, bounded pagination and compact paginated responses. Isolated PostgreSQL 16 with synthetic published events: 10/50/100 concurrent read-only clients; 160/160 responses succeeded; p95 0.171/0.359/0.795 s. | **Complete for the documented local benchmark scope.** p95 ≤2 s is an optimization goal; results do not establish hosted or sustained-load performance. |
+| `EMS-NF-002` Availability | `/health/ready/` checks local application/database readiness; tests and PostgreSQL restore evidence verify readiness. Scheduled uptime history is tracked separately under [Issue #38](https://github.com/Raksha269/Event-Management-System/issues/38). | **Local readiness verified.** This is not continuous or monthly availability evidence. |
+| `EMS-NF-003` Scalability/integrity | PostgreSQL transactions/row locks enforce capacity; a unique idempotency key prevents duplicate registration retries. Two-worker PostgreSQL tests cover last-ticket contention and concurrent retries. | **Complete for deterministic integrity checks.** No 500/10,000-registration stress result is claimed. |
+| `EMS-NF-004` Usability/accessibility | Responsive template fixes, labels, error descriptions/focus, local browser/axe checks and user-supplied NVDA reports. | **Partial.** Sampled evidence is not a full WCAG 2.1 AA audit. |
+| `EMS-NF-005` Audit/recovery | Append-only audit events, admin-only read access, 1,095-day retention boundary test and isolated PostgreSQL dump/restore rehearsal. | **Complete for the local prototype scope.** Three-year elapsed retention and automatic archiving are not claimed. |
 
-Audit entries exclude passwords, raw payment details, and request bodies. A server-generated `X-Request-ID` is included in responses and stored with audit events created within a request. Retention defaults to the SRS minimum of three years. The purge command permanently deletes expired records, so schedule it only after any required external archival is configured.
+The [local PostgreSQL report](docs/staging/report.md) and [runbook](docs/staging/README.md) capture the resource-limited benchmark, synthetic dataset and separate-database restore. Production configuration guidance below is deployment setup documentation, not an Issue #9 requirement or evidence of an actual hosted production environment. Scheduled uptime evidence remains in Issue #38; this section does not duplicate or replace it.
 
-### Completed local staging scope (#32 / #33)
+### Production configuration reference
 
-The owner approved local PostgreSQL as the revised scope on 2026-11-15. Resource-limited Podman staging (app: 1 CPU/512 MiB; PostgreSQL 16: 1 CPU/1 GiB) completed 160/160 successful search requests, with p95 of 0.171s/0.359s/0.795s at 10/50/100 clients. Separate-container backup restoration and 95 Django plus five script tests passed. See the [verification report](docs/staging/report.md) and [reproduction runbook](docs/staging/README.md). These complete the two local sub-issues' implementation; other Issue #9 acceptance and future hosted operations remain separate.
+Set `DJANGO_DEBUG=false`, a unique `DJANGO_SECRET_KEY`, and comma-separated `DJANGO_ALLOWED_HOSTS`. For PostgreSQL set `EMS_DB_ENGINE=postgresql`, `EMS_DB_NAME`, `EMS_DB_USER`, `EMS_DB_PASSWORD`, `EMS_DB_HOST`, and optionally `EMS_DB_PORT`, `EMS_DB_CONN_MAX_AGE`, and `EMS_DB_SSLMODE`. Keep any database on a private network and protect credentials. These settings are reference guidance; no production deployment, backup policy or uptime target is verified by this local prototype work.
 
-### Production configuration
+### Local verification results
 
-Set `DJANGO_DEBUG=false`, a unique `DJANGO_SECRET_KEY`, and comma-separated `DJANGO_ALLOWED_HOSTS`. For PostgreSQL set `EMS_DB_ENGINE=postgresql`, `EMS_DB_NAME`, `EMS_DB_USER`, `EMS_DB_PASSWORD`, `EMS_DB_HOST`, and optionally `EMS_DB_PORT`, `EMS_DB_CONN_MAX_AGE`, and `EMS_DB_SSLMODE`. Keep the database on a private network and provision recurring backups and an external uptime monitor. Configure the TLS-terminating proxy for TLS 1.2+ and forward the HTTPS protocol header.
-
-Production operational validation is **not complete** in this repository workspace. Record actual PostgreSQL load, monthly availability, production backup/restore, and full accessibility results before marking those NFR verification cases as passed. GitHub Actions performs a disposable PostgreSQL 16 dump/restore rehearsal on every PR; this validates the procedure, not a deployed system's recovery objectives or backup retention.
-
-Local evidence: readiness/request-ID behavior, API and HTML pagination, administrator-only audit retrieval, audit immutability, registration/payment/refund audit records, and the 1,095-day retention deletion boundary are covered by automated tests. Concurrent-registration tests assert one winner for the last ticket and one row for duplicate idempotent retries. On 2026-11-15, 90 Django tests and 24 RBAC tests passed locally. For the revised v1.2 NFR proposal, a synchronized local SQLite search run against 1,500 events (1,233 published; 233 matching `Sample`) returned 10/10, 50/50, and 100/100 HTTP 200. The corresponding p95 values were 2.517s, 1.810s, and 3.603s; there were no failed requests. This reproduces the benchmark locally but is not representative PostgreSQL staging evidence. The revised docs in PR #29 remain a candidate pending team/faculty approval. Four scheduled Render readiness samples have succeeded since the monitoring workflow update; the observed history is sparse and does not establish monthly availability. PostgreSQL backup/restore passed in CI, while deployed recovery policy and full accessibility review remain pending. See [Issue #9 operations runbook](docs/issue-9-nfr-operations.md) for detailed results and remaining evidence.
+On 2026-11-15, `python manage.py check` reported no issues and the full events suite ran 112 tests: 110 passed and two SQLite concurrency cases were skipped. The separate RBAC suite passed 24/24. The isolated PostgreSQL report records the owner-run environment's 160/160 search responses, restore validation and 95 Django tests plus five script regressions. The current Windows review did not rerun that PostgreSQL container test because Podman/Docker is unavailable here. See the [Issue #9 verification report](docs/issue-9-nfr-operations.md) for exact evidence and remaining work.
 
 ---
 
@@ -155,16 +151,16 @@ Automated tests map directly to the IEEE Software Test Plan:
 | **TC-Sec-03**| `EMS-SR-003` | Database inspection confirms modern salted password hashing; rejects plaintext | **PASS** |
 | **TC-Sec-04**| `EMS-SR-004` | RBAC matrix enforcement across roles returns 403 Forbidden on unauthorized endpoints | **PASS** |
 | **TC-Sec-05**| `EMS-SR-005` | 5 failed logins trigger 15m lockout, abnormal velocity alert, admin resolve API | **PASS** |
-| **TC-NF-01** | `EMS-NF-001` | Search p95 at normal load (up to 500 concurrent users; <= 2 sec target) | **PARTIAL (500-client local p95 6.279s; target missed)** |
-| **TC-NF-02** | `EMS-NF-002` | 99.5% monthly uptime (excluding scheduled maintenance), failure recovery and restore evidence | **NOT EXECUTED** |
-| **TC-NF-03** | `EMS-NF-003` | 500 concurrent registrations and 10,000-attempt load on PostgreSQL | **PARTIAL** |
-| **TC-NF-04** | `EMS-NF-004` | Usability at 360, 768, 1440 px | **PARTIAL** |
-| **TC-NF-05** | `EMS-NF-005` | Audit completeness, retrieval, access and retention boundary | **PARTIAL** |
+| **TC-NF-01** | `EMS-NF-001` | Reproducible read-only event-search report at 10/50/100 clients with status, latency and environment recorded | **PASS (owner-run local PostgreSQL scope; p95 goal is optimization only)** |
+| **TC-NF-02** | `EMS-NF-002` | Local application/database readiness check; scheduled uptime evidence handled separately in Issue #38 | **LOCAL READINESS PASS; cadence tracked separately** |
+| **TC-NF-03** | `EMS-NF-003` | PostgreSQL concurrent last-ticket capacity and idempotent retry integrity checks | **PASS for deterministic integrity; no stress-load claim** |
+| **TC-NF-04** | `EMS-NF-004` | Responsive and scoped accessibility verification with documented limitations | **PARTIAL** |
+| **TC-NF-05** | `EMS-NF-005` | Audit access/retention checks and isolated PostgreSQL backup/restore | **PASS for local scope; elapsed 3-year retention not observed** |
 
 ### Test Execution Summary
-- **Main Test Suite (`events`)**: 83 passed in 80.9s (`python manage.py test`)
-- **RBAC Module (`RBAC`)**: 24 passed (`cd RBAC && python manage.py test`)
-- **Total Tests**: **107 passing automated tests** locally; core events suite uses the local SQLite backend.
+- **Main Test Suite (`events`)**: 112 discovered; 110 passed, 2 skipped on SQLite (`python manage.py test`).
+- **RBAC Module (`RBAC`)**: 24/24 passed (`cd RBAC && python manage.py test`).
+- **Total**: 134 passing across these two local suites, with 2 SQLite-only concurrency skips. Isolated PostgreSQL results are documented separately in `docs/staging/report.md`.
 
 ---
 
