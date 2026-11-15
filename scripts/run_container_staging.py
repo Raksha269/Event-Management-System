@@ -5,13 +5,25 @@ import json
 import os
 from pathlib import Path
 import secrets
+import socket
 import shutil
 import subprocess
 import sys
 import time
 from urllib.request import urlopen
+from datetime import datetime, timezone
 
-from run_postgres_staging import ROOT, free_port, timestamp
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def timestamp():
+    return datetime.now(timezone.utc).isoformat()
+
+
+def free_port():
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        return sock.getsockname()[1]
 
 DB_IMAGE = "docker.io/library/postgres:16-bookworm"
 APP_IMAGE = "localhost/ems-staging:local"

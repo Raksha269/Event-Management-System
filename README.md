@@ -122,7 +122,7 @@ Audit entries exclude passwords, raw payment details, and request bodies. A serv
 
 ### Completed local staging scope (#32 / #33)
 
-The owner approved local PostgreSQL as the revised scope on 2026-11-15. Resource-limited Podman staging (app: 1 CPU/512 MiB; PostgreSQL 16: 1 CPU/1 GiB) completed 160/160 successful search requests, with p95 of 0.185s/0.375s/0.833s at 10/50/100 clients. Separate-container backup restoration and 95 Django plus five script tests passed. See the [verification report](docs/staging/report.md) and [reproduction runbook](docs/staging/README.md). These complete the two local sub-issues' implementation; other Issue #9 acceptance and future hosted operations remain separate.
+The owner approved local PostgreSQL as the revised scope on 2026-11-15. Resource-limited Podman staging (app: 1 CPU/512 MiB; PostgreSQL 16: 1 CPU/1 GiB) completed 160/160 successful search requests, with p95 of 0.171s/0.359s/0.795s at 10/50/100 clients. Separate-container backup restoration and 95 Django plus five script tests passed. See the [verification report](docs/staging/report.md) and [reproduction runbook](docs/staging/README.md). These complete the two local sub-issues' implementation; other Issue #9 acceptance and future hosted operations remain separate.
 
 ### Production configuration
 

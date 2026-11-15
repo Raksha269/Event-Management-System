@@ -104,8 +104,7 @@
   "manage.py": "9e055a3ca49f173675232d3f61d1feb89f1350708fb25a002f6d3edefeec6db4",
   "requirements.txt": "451001580b392c438efda86f8feef0627a1b9378180b5c681a537fb4396a9a0f",
   "scripts/nfr_search_benchmark.py": "68b113924e8e2bea6008deef3a18404f73ec5dd8ac4fe6cd1e1c79a8688592bc",
-  "scripts/run_container_staging.py": "95803725d807fcacc54bf40d4617169901b44f74f91ce5a5be9288abefa1136d",
-  "scripts/run_postgres_staging.py": "dfa2f90202ef02383b1846fac8778c0e8a4731cf6fda03c7ac108e85a984772d",
+  "scripts/run_container_staging.py": "49cb642a558a5734a5dd8bf1bca054b11eec4d18cbca34e059810d1459fff0db",
   "scripts/test_container_staging.py": "038ebcc8c766728c306ef67196465722a7bdf211d3aadcfe6326e1702c71528b",
   "scripts/test_nfr_search_benchmark.py": "029f59f52ad10ab8faad408c23ade00347611717c3cd7c3f14c34805aaba81dd"
 }

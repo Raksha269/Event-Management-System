@@ -53,8 +53,6 @@ Host and app Python dependency inventories are recorded separately; tags/require
 
 These are documented observations, including absent controls, and satisfy the revised task to document the local setup. A hosted production launch would require a separately approved recurring backup/retention, encryption/access, archival/deletion and recovery-objective policy.
 
-## Historical native setup
+## Acceptance and review
 
-`scripts/run_postgres_staging.py` remains a reusable non-container fallback. It requires matching installed PostgreSQL server/client/contrib utilities and does not impose service CPU/RAM quotas. It is not the acceptance baseline. The workstation's native PostgreSQL 18.6 required a matching Fedora contrib RPM extracted under `.staging/pg-extra`, without system installation. Its private extension search uses PostgreSQL 18's [extension-control path](https://www.postgresql.org/docs/18/runtime-config-client.html#GUC-EXTENSION-CONTROL-PATH). Do not use that extraction with PostgreSQL 16. The container run avoids this workstation-specific setup entirely.
-
-The original report and unchanged raw evidence remain as historical records. Issue #9's other NFRs, including monthly availability, accessibility and any required registration stress tests, are outside these two revised sub-issues.
+The formal report and current container evidence are the acceptance record. Superseded native scripts, execution plans and historical run files have been removed. Parent #9's other NFRs, including monthly availability, accessibility and any required registration stress tests, remain outside these two revised sub-issues.

@@ -1,8 +1,8 @@
 {
   "scope": "Owner-approved local production-comparable baseline; no hosted deployment claimed",
-  "started_at_utc": "2026-11-15T07:11:35.801509+00:00",
+  "started_at_utc": "2026-11-15T07:26:45.186115+00:00",
   "operator": "rahulb",
-  "revision": "2b15e952326437df2be6cd89821a183a780891c2",
+  "revision": "341413bd982b062261d44d91c23f40b189995e38",
   "status": "completed",
   "runtime": "podman",
   "baseline": {
@@ -63,43 +63,43 @@
   "search_smoke_test": "HTTP 200, nonempty matching records",
   "service_stats_after_search": [
     {
-      "id": "011edd4f0c90",
-      "name": "ems-app-fb49c258",
-      "cpu_time": "2.963631s",
-      "cpu_percent": "45.00%",
-      "avg_cpu": "45.00%",
-      "mem_usage": "120.8MB / 536.9MB",
-      "mem_percent": "22.50%",
-      "net_io": "456B / 926B",
+      "id": "8102419e7fd2",
+      "name": "ems-app-88673206",
+      "cpu_time": "2.929645s",
+      "cpu_percent": "45.20%",
+      "avg_cpu": "45.20%",
+      "mem_usage": "121.3MB / 536.9MB",
+      "mem_percent": "22.60%",
+      "net_io": "456B / 856B",
       "block_io": "0B / 0B",
       "pids": "11"
     },
     {
-      "id": "dadb030d098a",
-      "name": "ems-source-b15c94b8",
-      "cpu_time": "2.706135s",
-      "cpu_percent": "23.51%",
-      "avg_cpu": "23.51%",
-      "mem_usage": "50.25MB / 1.074GB",
-      "mem_percent": "4.68%",
-      "net_io": "456B / 926B",
-      "block_io": "0B / 230MB",
+      "id": "eb6e3d18a7d4",
+      "name": "ems-source-584336a6",
+      "cpu_time": "2.71305s",
+      "cpu_percent": "23.85%",
+      "avg_cpu": "23.85%",
+      "mem_usage": "51.18MB / 1.074GB",
+      "mem_percent": "4.77%",
+      "net_io": "456B / 856B",
+      "block_io": "0B / 226.7MB",
       "pids": "14"
     }
   ],
-  "backup_started_at_utc": "2026-11-15T07:12:08.856113+00:00",
-  "backup_completed_at_utc": "2026-11-15T07:12:09.015275+00:00",
-  "backup_identifier": "20261115T071135Z-container/staging.dump",
-  "backup_sha256": "3077f88d8b45ffc4f1b34c846aea3886fee9cd30ee700f3dc1fb68a065fa5483",
-  "backup_bytes": 122169,
+  "backup_started_at_utc": "2026-11-15T07:26:58.791019+00:00",
+  "backup_completed_at_utc": "2026-11-15T07:26:58.943591+00:00",
+  "backup_identifier": "20261115T072645Z-container/staging.dump",
+  "backup_sha256": "7c0a359b926f7e7ccb32d04a0d5ca70839f0c203503d11d6ee42be8e38567ad0",
+  "backup_bytes": 121833,
   "restore_database_limits": {
     "cpu.max": "100000 100000",
     "memory.max": 1073741824,
     "memory.swap.max": "0"
   },
-  "restore_started_at_utc": "2026-11-15T07:12:11.988131+00:00",
-  "restore_seconds": 0.4371971949985891,
-  "restore_completed_at_utc": "2026-11-15T07:12:12.425356+00:00",
+  "restore_started_at_utc": "2026-11-15T07:27:01.929727+00:00",
+  "restore_seconds": 0.4347509360013646,
+  "restore_completed_at_utc": "2026-11-15T07:27:02.364508+00:00",
   "restored_readiness": {
     "status": "ok"
   },
@@ -108,13 +108,13 @@
     "memory.max": 536870912,
     "memory.swap.max": "0"
   },
-  "completed_at_utc": "2026-11-15T07:13:01.930646+00:00",
+  "completed_at_utc": "2026-11-15T07:27:50.922034+00:00",
   "tests": "Django and script regressions passed",
   "restore_integrity": "table hashes/counts, constraints/indexes, pg_amcheck, migrations and readiness passed",
   "containers_removed": {
-    "ems-restored-app-db875c70": true,
-    "ems-restore-6c64ab82": true,
-    "ems-app-fb49c258": true,
-    "ems-source-b15c94b8": true
+    "ems-restored-app-f5d47bdc": true,
+    "ems-restore-c2a56c57": true,
+    "ems-app-88673206": true,
+    "ems-source-584336a6": true
   }
 }
