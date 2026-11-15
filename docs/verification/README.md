@@ -26,7 +26,7 @@ Still pending: real screen-reader announcements; real browser 200% zoom/reflow; 
 
 ## Screen-reader handoff (#36)
 
-Use the [Windows/NVDA worksheet](nvda-worksheet.md). All announcement fields are deliberately pending. Accessibility-tree names and HTML password types do not prove what NVDA announces. The earlier registration report lacks reader/browser metadata and has not been independently reproduced.
+Use the [Windows/NVDA worksheet](nvda-worksheet.md) for the remaining manual checks. A [new user-performed registration report](registration-nvda-user-report.md) records actual Speech Viewer text with NVDA, Windows and Edge versions. It has not been independently reproduced. The worksheet's unexecuted items remain pending; the older registration report is not retroactively verified by this separate check. Accessibility-tree names and HTML password types do not prove spoken announcements.
 
 ## Uptime (#38)
 
