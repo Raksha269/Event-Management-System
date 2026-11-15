@@ -2,13 +2,13 @@
 
 Owner: Raksha269. **Status: INCOMPLETE.** Issue #38 and parent #9 remain open.
 
-Evidence inventory cutoff: **2026-11-15 16:32:55 UTC (22:02:55 IST)**. PR #43 merged into `main` at **15:55:43 UTC**. The latest available Actions inventory at the cutoff still contains seven runs, all created before PR #43 merged.
+Evidence inventory cutoff: **2026-11-15 16:38:12 UTC (22:08:12 IST)**. PR #43 merged into `main` at **15:55:43 UTC**. The latest available Actions inventory at the cutoff still contains seven runs, all created before PR #43 merged.
 
 ## Acceptance criteria
 
 | Criterion | Status | Current evidence / remaining work |
 | --- | --- | --- |
-| Inspect scheduled Actions history, investigate multi-hour gaps, document findings/corrections | **INCOMPLETE** | Seven-run history and three historical scheduled gaps are documented; PR #40 staggered the cron. The repository Actions policy API returned 403, and no root cause is established. The 16:07 and 16:22 UTC nominal slots after PR #43 have no run record at this cutoff; delay/drop remains possible. |
+| Inspect scheduled Actions history, investigate multi-hour gaps, document findings/corrections | **INCOMPLETE** | Seven-run history and three historical scheduled gaps are documented; PR #40 staggered the cron. The repository Actions policy API returned 403, and no root cause is established. The 16:07, 16:22, and 16:37 UTC nominal slots after PR #43 have no run record at this cutoff; delay/drop remains possible. |
 | Get team agreement on observation period, cadence, availability calculation, missing samples, and maintenance | **WAITING FOR TEAM APPROVAL** | Issue #38 contains a request for these decisions; no team response or approval was present in the inspected comments. |
 | Collect and preserve timestamped status/latency for the observation period, including failures and missed checks | **INCOMPLETE** | Six timestamped CSV rows are preserved across seven runs. Three runs were manual; two have CSV rows and one lacks an archived CSV. Four runs were scheduled, all before PR #40. No scheduled run or collector artifact after PR #43 is available yet. Nominal slots without a run record remain UNKNOWN. |
 | Summarize coverage, downtime, gaps, limitations; calculate availability only when supported | **INCOMPLETE** | The summary validates the six archived CSV rows and reports gaps. It cannot establish downtime duration or availability from these sparse samples. No percentage is claimed. |
@@ -23,11 +23,11 @@ Evidence inventory cutoff: **2026-11-15 16:32:55 UTC (22:02:55 IST)**. PR #43 me
 
 ## Actions history and execution evidence
 
-The read-only GitHub API inventory at the cutoff returned **7 runs: 4 `schedule`, 3 `workflow_dispatch`**. All seven Actions conclusions are success. The last recorded run is manual #7 (`43711931757`), created at 12:03:50 UTC; its archived check row is timestamped 12:03:55 UTC. The latest scheduled run is #5 (`43667292046`), created at 02:20:09 UTC with a check at 02:20:13 UTC. Both predate PR #42 and PR #43. **No scheduled run occurred after PR #43 in the inspected history; the 16:07 and 16:22 UTC nominal slots have no run record as of the cutoff. There are no post-PR #43 logs or artifacts to validate.**
+The read-only GitHub API inventory at the cutoff returned **7 runs: 4 `schedule`, 3 `workflow_dispatch`**. All seven Actions conclusions are success. The last recorded run is manual #7 (`43711931757`), created at 12:03:50 UTC; its archived check row is timestamped 12:03:55 UTC. The latest scheduled run is #5 (`43667292046`), created at 02:20:09 UTC with a check at 02:20:13 UTC. Both predate PR #42 and PR #43. **No scheduled run occurred after PR #43 in the inspected history; the 16:07, 16:22, and 16:37 UTC nominal slots have no run record as of the cutoff. There are no post-PR #43 logs or artifacts to validate.**
 
 Four actual scheduled checks and two manual checks have archived CSV rows. All six report HTTP 200 / UP. The other manual run (#1, `43566650792`) has no CSV in the artifact archive; its successful Actions conclusion is not used as a replacement health result. Existing CSV hashes and GitHub artifact digests validate against the committed manifest/metadata. Run #5 logs show the old collector printing HTTP 200 and 32.817167 seconds and the artifact being successfully uploaded. These records predate the new collector and do not verify it.
 
-Historical scheduled run-creation/sample gaps were **310.52, 235.50, and 209.08 minutes**. Recorded job start delays were 2–3 seconds after run creation; that does not explain why the run-creation events were hours apart. After PR #43 merged at 15:55:43 UTC, the 16:07 and 16:22 UTC nominal cron slots had no run record by the 16:32:55 UTC cutoff. Treat both slots as **UNKNOWN**; a trigger delay or omission cannot be distinguished yet.
+Historical scheduled run-creation/sample gaps were **310.52, 235.50, and 209.08 minutes**. Recorded job start delays were 2–3 seconds after run creation; that does not explain why the run-creation events were hours apart. After PR #43 merged at 15:55:43 UTC, the 16:07, 16:22, and 16:37 UTC nominal cron slots had no run record by the 16:38:12 UTC cutoff. Treat all three slots as **UNKNOWN**; a trigger delay or omission cannot be distinguished yet.
 
 The repository confirms `main` as its default branch and the workflow as active. The repository Actions policy endpoint returned **403** with “You must have repository read permissions or have the repository Actions policies fine-grained permission.” Consequently, repository/organization policy restrictions could not be inspected. The logs show runner token permissions `contents: read` on a historical run. No root cause for schedule gaps is asserted.
 
