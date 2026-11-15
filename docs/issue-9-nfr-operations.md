@@ -47,6 +47,8 @@ The v1.2 document set in [PR #29](https://github.com/Raksha269/Event-Management-
 
 ## Availability monitoring
 
+Latest review: [Issue #38 uptime evidence](issue-38-uptime-evidence.md) preserves six raw CSV samples across seven run records as of 2026-11-15 12:05:38 UTC, including one post-PR #40 manual check. No post-change scheduled run appears in that snapshot. Earlier sample tables below are historical, not the final submission window. See the linked observation proposal for the confirmed 16 November 09:00 IST submission deadline, pending team acceptance and required final review. No availability percentage or completed cadence is claimed.
+
 The GitHub Actions workflow `.github/workflows/uptime-monitoring.yml` is configured to check `/health/ready/` every 15 minutes and on manual dispatch. The endpoint tests the Django process and database connectivity. Each run writes HTTP status and response time to the Actions summary and uploads a one-row CSV artifact for 35 days; failed checks also fail the workflow. The monitor does not page an on-call person; configure an external alert destination with the deployment owner if alerting is required.
 
 Observed post-merge scheduled samples (UTC):

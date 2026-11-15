@@ -1,0 +1,44 @@
+[
+  {
+    "id": 132466477960,
+    "name": "uptime-check",
+    "status": "completed",
+    "conclusion": "success",
+    "started_at": "2026-11-14T13:45:06Z",
+    "completed_at": "2026-11-14T13:45:46Z",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-14T13:45:07Z",
+        "completed_at": "2026-11-14T13:45:07Z"
+      },
+      {
+        "name": "Check Render website availability",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-14T13:45:07Z",
+        "completed_at": "2026-11-14T13:45:40Z"
+      },
+      {
+        "name": "Archive uptime result",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-14T13:45:40Z",
+        "completed_at": "2026-11-14T13:45:44Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4,
+        "started_at": "2026-11-14T13:45:44Z",
+        "completed_at": "2026-11-14T13:45:44Z"
+      }
+    ]
+  }
+]
