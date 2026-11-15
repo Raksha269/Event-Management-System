@@ -1,0 +1,24 @@
+{
+  "captured_at_utc": "2026-11-15T18:55:08Z",
+  "source": "gh run list --workflow 418077012 --limit 100 via GitHub CLI",
+  "repository": "Raksha269/Event-Management-System",
+  "default_branch": "main",
+  "workflow_state": "active",
+  "cron_utc": "7,22,37,52 * * * *",
+  "live_api_runs_returned": 7,
+  "live_api_run_ids": [43711931757, 43693758441, 43667292046, 43650227798, 43629277239, 43601319394, 43566650792],
+  "archived_run_not_returned_by_live_api": {
+    "run_id": 43736667439,
+    "number": 8,
+    "event": "schedule",
+    "created_at_utc": "2026-11-15T16:39:08Z",
+    "conclusion": "failure",
+    "evidence_directory": "43736667439/"
+  },
+  "pr44_merge_at_utc": "2026-11-15T16:55:27Z",
+  "post_pr44_nominal_slots_without_visible_run": [
+    "2026-11-15T17:07:00Z", "2026-11-15T17:22:00Z", "2026-11-15T17:37:00Z", "2026-11-15T17:52:00Z",
+    "2026-11-15T18:07:00Z", "2026-11-15T18:22:00Z", "2026-11-15T18:37:00Z", "2026-11-15T18:52:00Z"
+  ],
+  "interpretation": "Slots are nominal expected trigger times, not proof of trigger delivery or application downtime. Missing health observations remain UNKNOWN. No manual run was dispatched for this inventory."
+}

@@ -76,7 +76,13 @@ def collect(url, timeout, run_id, event, *, runner=subprocess.run, clock=time.pe
 
     elapsed = max(0.0, clock() - start)
     response_seconds = curl_latency if curl_latency is not None else elapsed
-    result = 'UP' if exit_code == 0 and status.isdigit() and 200 <= int(status) < 300 else 'DOWN'
+    received_http_response = status.isdigit() and status != '000' and 100 <= int(status) <= 599
+    if exit_code != 0 or not received_http_response:
+        # The probe did not produce a complete, classifiable HTTP result.
+        # This is missing health evidence, not proof the application is DOWN.
+        result = 'UNKNOWN'
+    else:
+        result = 'UP' if 200 <= int(status) < 300 else 'DOWN'
     return {
         'timestamp_utc': timestamp,
         'url': url,
@@ -118,8 +124,11 @@ def main(argv=None):
     print(f"Result: {record['result']}")
     if record['error_detail']:
         print(f"Error: {record['error_detail']}")
-    if record['result'] == 'DOWN':
-        print('Readiness check failed; the CSV evidence was retained.', file=sys.stderr)
+    if record['result'] != 'UP':
+        if record['result'] == 'UNKNOWN':
+            print('Readiness result is UNKNOWN; the CSV evidence was retained.', file=sys.stderr)
+        else:
+            print('Readiness returned a non-2xx HTTP status; the CSV evidence was retained.', file=sys.stderr)
         return 1
     return 0
 
