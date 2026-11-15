@@ -220,3 +220,11 @@ class UptimeEvidenceSummaryTests(SimpleTestCase):
             self.make_evidence(root, [(101, 'workflow_dispatch', self.sample())])
             with self.assertRaisesRegex(ValueError, 'event does not match'):
                 summarize(root)
+
+
+class UptimeWorkflowConfigurationTests(SimpleTestCase):
+    def test_checkout_and_output_directory_precede_collector_execution(self):
+        workflow_path = Path(__file__).resolve().parents[1] / '.github/workflows/uptime-monitoring.yml'
+        workflow = workflow_path.read_text(encoding='utf-8')
+        self.assertLess(workflow.index('uses: actions/checkout@v7'), workflow.index('python scripts/collect_uptime_check.py'))
+        self.assertLess(workflow.index('mkdir -p uptime-results'), workflow.index('> uptime-results/collector.log'))

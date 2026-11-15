@@ -1,16 +1,21 @@
 {
-  "captured_at_utc": "2026-11-15T15:14:50Z",
-  "base_revision": "8771cdaa643f7ea1570b9acf0e1eaf1981aeaa0a",
+  "captured_at_utc": "2026-11-15T16:32:55Z",
+  "base_revision": "f862d75a2b62a5c3719c860d47cab62ec469dfc8",
   "workflow_state": "active",
   "default_branch": "main",
   "new_schedule": "7,22,37,52 * * * *",
   "schedule_change_merged_at_utc": "2026-11-15T09:38:07Z",
   "schedule_change_pr": 40,
+  "collector_pr": 42,
+  "repository_checkout_pr": 43,
+  "pr43_merged_at_utc": "2026-11-15T15:55:43Z",
   "observation_plan": "Pending team confirmation; not inferred from a default selection",
   "submission_deadline_utc": "2026-11-16T03:30:00Z",
-  "previous_snapshot": "snapshot-pr41-2026-11-15T120538Z.json",
+  "previous_snapshot": "snapshot-2026-11-15T160757Z.json",
   "latest_run_inventory_source": "GitHub Actions API via gh run list",
   "latest_run_inventory_count": 7,
+  "latest_manual_run_id": 43711931757,
   "post_pr40_scheduled_runs": 0,
-  "latest_manual_run_id": 43711931757
+  "post_pr43_scheduled_runs": 0,
+  "post_pr43_nominal_slots_without_run_record": 2
 }
