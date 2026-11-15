@@ -480,6 +480,18 @@ def ticket_types_manage(request, pk):
     else:
         form = TicketTypeForm()
 
+    # Ticket-tier validation can fail either in the form itself or in the
+    # event-capacity/name checks above. Keep every rendered field error
+    # connected to its control for assistive technology.
+    for field in form:
+        if field.errors:
+            described_by = field.field.widget.attrs.get("aria-describedby", "").split()
+            error_id = f"{field.id_for_label}_error"
+            if error_id not in described_by:
+                described_by.append(error_id)
+            field.field.widget.attrs["aria-invalid"] = "true"
+            field.field.widget.attrs["aria-describedby"] = " ".join(described_by)
+
     ticket_types = event.ticket_types.all()
     configured_capacity = (
         ticket_types.aggregate(total=models.Sum("quantity_limit"))["total"] or 0

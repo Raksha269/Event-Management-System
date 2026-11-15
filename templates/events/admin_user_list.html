@@ -12,9 +12,9 @@
     <!-- Search & Filter Controls -->
     <div class="card" style="margin-bottom: 24px;">
         <form method="get" action="{% url 'admin_user_list' %}" style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by username or email..." style="flex: 2; min-width: 220px;">
+            <input type="text" name="q" value="{{ query }}" class="form-control" aria-label="Search users by username or email" placeholder="Search by username or email..." style="flex: 2; min-width: 220px;">
 
-            <select name="role" class="form-control" style="flex: 1; min-width: 160px;">
+            <select name="role" class="form-control" aria-label="Filter users by role" style="flex: 1; min-width: 160px;">
                 <option value="">All Roles</option>
                 {% for role_code, role_name in available_roles %}
                     <option value="{{ role_code }}" {% if selected_role == role_code %}selected{% endif %}>{{ role_name }}</option>
@@ -35,6 +35,7 @@
         {% if users %}
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <caption class="visually-hidden">Registered user accounts and available account actions</caption>
                     <thead>
                         <tr style="border-bottom: 2px solid var(--border); text-align: left;">
                             <th style="padding: 10px 12px;">User</th>
@@ -79,12 +80,12 @@
                                     {% else %}
                                         <form method="post" action="{% url 'admin_user_change_role' u.pk %}" style="display: flex; gap: 6px; align-items: center;">
                                             {% csrf_token %}
-                                            <select name="role" class="form-control" style="padding: 4px 8px; font-size: 13px; width: auto;">
+                                            <select name="role" class="form-control" aria-label="Role for {{ u.username }}" style="padding: 4px 8px; font-size: 13px; width: auto;">
                                                 {% for role_code, role_name in available_roles %}
                                                     <option value="{{ role_code }}" {% if u.role == role_code %}selected{% endif %}>{{ role_name }}</option>
                                                 {% endfor %}
                                             </select>
-                                            <button type="submit" class="button button-secondary" style="padding: 4px 10px; font-size: 12px;">Update</button>
+                                            <button type="submit" class="button button-secondary" aria-label="Update role for {{ u.username }}" style="padding: 4px 10px; font-size: 12px;">Update</button>
                                         </form>
                                     {% endif %}
                                 </td>
@@ -97,11 +98,11 @@
                                         <form method="post" action="{% url 'admin_user_toggle_active' u.pk %}" style="display: inline;">
                                             {% csrf_token %}
                                             {% if u.is_active %}
-                                                <button type="submit" class="button" style="padding: 5px 12px; font-size: 12px; background: #dc2626;" onclick="return confirm('Are you sure you want to deactivate {{ u.username }}? They will not be able to log in.');">
+                                                <button type="submit" class="button" aria-label="Deactivate {{ u.username }}" style="padding: 5px 12px; font-size: 12px; background: #dc2626;" onclick="return confirm('Are you sure you want to deactivate {{ u.username }}? They will not be able to log in.');">
                                                     Deactivate
                                                 </button>
                                             {% else %}
-                                                <button type="submit" class="button" style="padding: 5px 12px; font-size: 12px; background: #15803d;">
+                                                <button type="submit" class="button" aria-label="Activate {{ u.username }}" style="padding: 5px 12px; font-size: 12px; background: #15803d;">
                                                     Activate
                                                 </button>
                                             {% endif %}

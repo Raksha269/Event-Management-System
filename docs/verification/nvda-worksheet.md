@@ -1,6 +1,6 @@
 # Windows / NVDA screen-reader worksheet (#36)
 
-Status: NOT EXECUTED. Owner: Raksha269. Do not copy expected names into actual-announcement columns without hearing them.
+Status: PARTIAL EVIDENCE EXISTS IN LINKED USER-PERFORMED REPORTS; this worksheet has not been independently executed by the reviewer. Owner: Raksha269. Do not copy expected names into actual-announcement columns without hearing them. For the wider outstanding workflow matrix, see [Issue #36/#37 follow-up](accessibility/issue-36-37-followup-2026-11-15.md).
 
 1. On Windows, start NVDA (install from https://www.nvaccess.org/download/ if needed). Open NVDA's menu with NVDA+N; record Help → About version. NVDA normally uses Insert or Caps Lock as its modifier, depending on keyboard configuration.
 2. Record Windows version (`winver`) and browser version (Chrome/Edge Help → About, or the product version on `chrome://version` / `edge://version`). Do not post profile paths or account details.
