@@ -14,6 +14,16 @@
         <form method="post" novalidate>
             {% csrf_token %}
 
+            {% if form.errors %}
+                <div id="error-summary" tabindex="-1" role="alert" class="form-errors">
+                    <h2>Please correct the following errors</h2>
+                    <ul>{% for field in form %}{% for error in field.errors %}
+                        <li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>
+                    {% endfor %}{% endfor %}</ul>
+                </div>
+                <script>document.addEventListener('DOMContentLoaded', () => document.getElementById('error-summary').focus());</script>
+            {% endif %}
+
             {% if form.non_field_errors %}
                 <div class="form-errors">
                     {{ form.non_field_errors }}
@@ -23,33 +33,37 @@
             <div class="form-field">
                 <label for="{{ form.username.id_for_label }}">Username</label>
                 {{ form.username }}
-                {% for error in form.username.errors %}
-                    <p class="field-error">{{ error }}</p>
-                {% endfor %}
+                {% if form.username.help_text %}<div id="{{ form.username.id_for_label }}_helptext">{{ form.username.help_text }}</div>{% endif %}
+                {% if form.username.errors %}<div id="{{ form.username.id_for_label }}_error" class="field-error">
+                    {% for error in form.username.errors %}<p>{{ error }}</p>{% endfor %}
+                </div>{% endif %}
             </div>
 
             <div class="form-field">
                 <label for="{{ form.email.id_for_label }}">Email address</label>
                 {{ form.email }}
-                {% for error in form.email.errors %}
-                    <p class="field-error">{{ error }}</p>
-                {% endfor %}
+                {% if form.email.help_text %}<div id="{{ form.email.id_for_label }}_helptext">{{ form.email.help_text }}</div>{% endif %}
+                {% if form.email.errors %}<div id="{{ form.email.id_for_label }}_error" class="field-error">
+                    {% for error in form.email.errors %}<p>{{ error }}</p>{% endfor %}
+                </div>{% endif %}
             </div>
 
             <div class="form-field">
                 <label for="{{ form.password1.id_for_label }}">Password</label>
                 {{ form.password1 }}
-                {% for error in form.password1.errors %}
-                    <p class="field-error">{{ error }}</p>
-                {% endfor %}
+                {% if form.password1.help_text %}<div id="{{ form.password1.id_for_label }}_helptext">{{ form.password1.help_text }}</div>{% endif %}
+                {% if form.password1.errors %}<div id="{{ form.password1.id_for_label }}_error" class="field-error">
+                    {% for error in form.password1.errors %}<p>{{ error }}</p>{% endfor %}
+                </div>{% endif %}
             </div>
 
             <div class="form-field">
                 <label for="{{ form.password2.id_for_label }}">Confirm password</label>
                 {{ form.password2 }}
-                {% for error in form.password2.errors %}
-                    <p class="field-error">{{ error }}</p>
-                {% endfor %}
+                {% if form.password2.help_text %}<div id="{{ form.password2.id_for_label }}_helptext">{{ form.password2.help_text }}</div>{% endif %}
+                {% if form.password2.errors %}<div id="{{ form.password2.id_for_label }}_error" class="field-error">
+                    {% for error in form.password2.errors %}<p>{{ error }}</p>{% endfor %}
+                </div>{% endif %}
             </div>
 
             <button type="submit" class="btn btn-primary auth-submit">

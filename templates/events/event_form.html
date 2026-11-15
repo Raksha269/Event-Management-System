@@ -13,6 +13,15 @@
     <div class="card">
         <form method="post" novalidate>
             {% csrf_token %}
+            {% if form.errors %}
+                <div id="error-summary" tabindex="-1" role="alert" class="alert alert-error">
+                    <h2>Please correct the following errors</h2>
+                    <ul>{% for field in form %}{% for error in field.errors %}
+                        <li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>
+                    {% endfor %}{% endfor %}</ul>
+                </div>
+                <script>document.addEventListener('DOMContentLoaded', () => document.getElementById('error-summary').focus());</script>
+            {% endif %}
 
             {% if form.non_field_errors %}
                 <div class="alert alert-error">
@@ -26,7 +35,7 @@
                 <label for="{{ form.title.id_for_label }}">Event Title *</label>
                 {{ form.title }}
                 {% if form.title.errors %}
-                    <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.title.errors.0 }}</p>
+                    <p id="{{ form.title.id_for_label }}_error" style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.title.errors.0 }}</p>
                 {% endif %}
             </div>
 
@@ -34,16 +43,16 @@
                 <label for="{{ form.description.id_for_label }}">Description</label>
                 {{ form.description }}
                 {% if form.description.errors %}
-                    <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.description.errors.0 }}</p>
+                    <p id="{{ form.description.id_for_label }}_error" style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.description.errors.0 }}</p>
                 {% endif %}
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="event-form-grid">
                 <div class="form-group">
                     <label for="{{ form.category.id_for_label }}">Category *</label>
                     {{ form.category }}
                     {% if form.category.errors %}
-                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.category.errors.0 }}</p>
+                        <p id="{{ form.category.id_for_label }}_error" style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.category.errors.0 }}</p>
                     {% endif %}
                 </div>
 
@@ -51,17 +60,17 @@
                     <label for="{{ form.venue.id_for_label }}">Venue *</label>
                     {{ form.venue }}
                     {% if form.venue.errors %}
-                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.venue.errors.0 }}</p>
+                        <p id="{{ form.venue.id_for_label }}_error" style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.venue.errors.0 }}</p>
                     {% endif %}
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="event-form-grid">
                 <div class="form-group">
                     <label for="{{ form.date.id_for_label }}">Date & Time *</label>
                     {{ form.date }}
                     {% if form.date.errors %}
-                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.date.errors.0 }}</p>
+                        <p id="{{ form.date.id_for_label }}_error" style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.date.errors.0 }}</p>
                     {% endif %}
                 </div>
 
@@ -69,7 +78,7 @@
                     <label for="{{ form.capacity.id_for_label }}">Event Capacity (Max Attendees) *</label>
                     {{ form.capacity }}
                     {% if form.capacity.errors %}
-                        <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.capacity.errors.0 }}</p>
+                        <p id="{{ form.capacity.id_for_label }}_error" style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.capacity.errors.0 }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -79,7 +88,7 @@
                 {{ form.ticket_price }}
                 <span class="muted" style="font-size: 12px;">Set to 0.00 for free events. You can also configure specific ticket tiers later.</span>
                 {% if form.ticket_price.errors %}
-                    <p style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.ticket_price.errors.0 }}</p>
+                    <p id="{{ form.ticket_price.id_for_label }}_error" style="color: var(--danger); font-size: 13px; margin: 4px 0 0;">{{ form.ticket_price.errors.0 }}</p>
                 {% endif %}
             </div>
 
@@ -90,4 +99,9 @@
         </form>
     </div>
 </div>
+<style>
+.event-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.event-form-grid > * { min-width: 0; }
+@media (max-width: 600px) { .event-form-grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
 {% endblock %}

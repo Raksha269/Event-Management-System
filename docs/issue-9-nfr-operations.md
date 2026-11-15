@@ -1,5 +1,9 @@
 # Issue #9: NFR verification and operations
 
+## Remaining verification handoff (#36–#38)
+
+See [the scoped accessibility and uptime report](verification/README.md) for local browser findings/fixes, a Windows/NVDA worksheet, and a snapshot of scheduled monitoring history. This evidence leaves real screen-reader announcements, manual zoom/contrast and full-workflow verification, and accepted uptime observation coverage pending. It does not close Issue #9 or supersede an approved acceptance baseline.
+
 This runbook separates repeatable local/CI checks from evidence that requires the deployed service or its database owner. Do not use the live Render database for load tests, restore rehearsals, or synthetic data.
 
 ## Event-search load test
