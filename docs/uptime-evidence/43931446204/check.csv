@@ -1,0 +1,2 @@
+timestamp_utc,url,http_status,response_seconds,result,run_id,event,curl_exit_code,latency_source,transport_error,error_detail
+2026-11-16T18:41:25.822196Z,https://event-management-system-cqxx.onrender.com/health/ready/,200,31.598001,UP,43931446204,schedule,0,curl,,
