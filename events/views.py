@@ -41,6 +41,19 @@ from .security import (
 from .services import create_registration, process_payment
 
 
+def _add_accessible_error_attributes(form):
+    """Associate rendered field errors with their form controls."""
+    for field in form.visible_fields():
+        if not field.errors:
+            continue
+        described_by = field.field.widget.attrs.get("aria-describedby", "").split()
+        error_id = f"{field.id_for_label}_error"
+        if error_id not in described_by:
+            described_by.append(error_id)
+        field.field.widget.attrs["aria-invalid"] = "true"
+        field.field.widget.attrs["aria-describedby"] = " ".join(described_by)
+
+
 @login_required
 def profile_view(request):
     profile = UserProfile.objects.filter(user=request.user).first()
@@ -481,16 +494,8 @@ def ticket_types_manage(request, pk):
         form = TicketTypeForm()
 
     # Ticket-tier validation can fail either in the form itself or in the
-    # event-capacity/name checks above. Keep every rendered field error
-    # connected to its control for assistive technology.
-    for field in form:
-        if field.errors:
-            described_by = field.field.widget.attrs.get("aria-describedby", "").split()
-            error_id = f"{field.id_for_label}_error"
-            if error_id not in described_by:
-                described_by.append(error_id)
-            field.field.widget.attrs["aria-invalid"] = "true"
-            field.field.widget.attrs["aria-describedby"] = " ".join(described_by)
+    # event-capacity/name checks above.
+    _add_accessible_error_attributes(form)
 
     ticket_types = event.ticket_types.all()
     configured_capacity = (
@@ -542,6 +547,24 @@ def event_register(request, pk):
             )
         except ValueError as err:
             messages.error(request, str(err))
+    else:
+        _add_accessible_error_attributes(form)
+        ticket_types = event.ticket_types.annotate(
+            _active_registration_quantity=Coalesce(
+                models.Sum(
+                    "registrations__quantity",
+                    filter=~models.Q(
+                        registrations__status=Registration.Status.CANCELLED
+                    ),
+                ),
+                models.Value(0),
+            )
+        )
+        return render(
+            request,
+            "events/event_detail.html",
+            {"event": event, "form": form, "ticket_types": ticket_types},
+        )
 
     return redirect("event_detail", pk=event.pk)
 

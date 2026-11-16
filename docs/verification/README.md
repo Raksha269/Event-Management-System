@@ -4,6 +4,8 @@ This evidence supports #36, #37 and #38. It does not close them or certify WCAG 
 
 ## Accessibility (#37)
 
+The [2026-11-16 Issue #37 follow-up](accessibility/issue-37-followup-2026-11-16.md) records a newly fixed invalid attendee-registration error flow and its Django regression coverage. Its acceptance table distinguishes the local code checks from staging, keyboard, zoom/reflow, contrast and screen-reader checks that still need fresh manual evidence.
+
 The [2026-11-15 follow-up](accessibility/issue-36-37-followup-2026-11-15.md) records additional ticket-tier form error associations, admin control names and narrow-layout corrections, with fresh Django regression results. These changes have code-level verification only; the report lists browser and screen-reader retests still required. Earlier browser and NVDA evidence below remains preserved as historical, scoped evidence.
 
 See [browser-results.json](accessibility/browser-results.json) for the timestamp, base revision, exact paths, roles, accessibility trees, focus sequence, measured widths, axe version/results (including incomplete checks), and invalid-submit results. [template-manifest.json](accessibility/template-manifest.json) identifies the tested template contents on top of that base revision. The fixture contains three published events and synthetic attendee/organizer/admin users. The admin user was not used for the sampled routes.
