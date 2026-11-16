@@ -1,6 +1,6 @@
 # Issue #38: uptime cadence and evidence status
 
-**Status: INCOMPLETE.** Issue #38 and parent Issue #9 remain open. This report reflects repository main at `1b1420c9` and the Actions run inventory available at **2026-11-15 18:55:08 UTC**. The latest available Actions API inventory returned seven runs; the repository's preserved archive also contains Run #8, which is no longer returned by the live run-list API. No workflow was manually dispatched for this review.
+**Status: INCOMPLETE.** Issue #38 and parent Issue #9 remain open. The detailed run/artifact snapshot reflects repository main at `1b1420c9` and an Actions API cutoff of **2026-11-15 18:55:08 UTC**. A separate read-only Actions page check was made at **2026-11-16 14:15 UTC**; no workflow was manually dispatched for either review.
 
 ## Acceptance criteria
 
@@ -10,7 +10,13 @@
 | Agree observation period, cadence, availability calculation, missing-sample and maintenance rules with the team | **WAITING FOR TEAM APPROVAL** | The existing Issue #38 comment requests these decisions, but no approval is recorded. A scope clarification is also required; see below. |
 | Preserve timestamped status/latency evidence throughout the agreed period, including failures and missed checks | **INCOMPLETE** | Six archived CSV samples are retained: four scheduled and two manual. All six show HTTP 200 / UP. Scheduled observations are sparse; missed nominal slots remain UNKNOWN. Run #8 failed before an HTTP probe and has no CSV. |
 | Summarize coverage, downtime, gaps and limitations; calculate availability only with an agreed method and sufficient data | **INCOMPLETE** | Creation gaps among scheduled runs with probes were 310.52, 235.50 and 209.08 minutes. Gap from scheduled Run #5 to failed Run #8 was 858.98 minutes. These are gaps between workflow run creation times, not downtime durations. No availability percentage or downtime duration is supported. |
-| Submit changes for review and update consolidated NFR status | **INCOMPLETE** | PRs #40–#44 are merged. This report and the DOWN/UNKNOWN classification correction are being submitted in a new PR for review; they are not yet merged. |
+| Submit changes for review and update consolidated NFR status | **IN PROGRESS** | PRs #40–#47 are merged, including the workflow recovery fixes and the DOWN/UNKNOWN classification correction in [PR #47](https://github.com/Raksha269/Event-Management-System/pull/47). This inventory refresh and consolidated NFR status update are in branch `docs/issue-38-refresh-monitoring-inventory` for PR review. The observation and team-acceptance criteria remain incomplete. |
+
+## Live Actions inventory refresh
+
+At **2026-11-16 14:15 UTC**, the [Render Uptime Monitoring Actions page](https://github.com/Raksha269/Event-Management-System/actions/workflows/uptime-monitoring.yml) still listed seven runs, numbered #1–#7. The latest listed run was manual Run #7, created **2026-11-15 12:03:50 UTC**. No later scheduled run was visible. The historical archive retains scheduled Run #8 (ID `43736667439`, created **2026-11-15 16:39:08 UTC**); it failed before making an HTTP request and has no status/latency CSV.
+
+Run #8 predates the output-directory correction merged in PR #44 at **2026-11-15 16:55:27 UTC**. No scheduled run is visible after that correction or after the transport-failure classification fix in PR #47. The Actions page did not explain why later scheduled runs are absent. This inventory check adds no health samples and does not convert absent runs or nominal schedule slots into UP or DOWN observations; they remain **UNKNOWN**. It does not establish continuous coverage or availability.
 
 ## Workflow and code inspection
 
@@ -22,7 +28,7 @@
 
 ## Available run inventory
 
-Live `gh run list --workflow 418077012 --limit 100` returned seven completed successful workflow records, all on `main`:
+The detailed API inventory captured at **2026-11-15 18:55:08 UTC** returned seven completed successful workflow records, all on `main`:
 
 | Run | ID | Trigger | Created (UTC) | Health evidence |
 | --- | ---: | --- | --- | --- |
