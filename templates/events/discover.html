@@ -129,7 +129,7 @@
     {% endif %}
 {% else %}
     <div class="card" style="text-align: center; padding: 48px 24px;">
-        <h3 style="margin-bottom: 8px;">No events found</h3>
+        <h2 style="margin-bottom: 8px;">No events found</h2>
         <p class="muted">There are no published events matching your search criteria. Check back soon!</p>
         {% if query or selected_category %}
             <a href="{% url 'discover_events' %}" class="button button-secondary" style="margin-top: 12px;">View all published events</a>

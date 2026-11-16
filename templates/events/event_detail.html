@@ -51,7 +51,7 @@
         <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
 
         <div>
-            <h3 style="margin-bottom: 8px; font-size: 18px;">About This Event</h3>
+            <h2 style="margin-bottom: 8px; font-size: 18px;">About This Event</h2>
             <p style="color: #334155; white-space: pre-line; line-height: 1.7;">
                 {{ event.description|default:"No description provided." }}
             </p>
@@ -126,16 +126,36 @@
                 {{ form.idempotency_key }}
                 <h3 style="margin-top: 0; font-size: 16px; margin-bottom: 14px;">Select Tickets to Register</h3>
 
+                {% if form.errors %}
+                    <div id="registration-error-summary" tabindex="-1" role="alert" class="alert alert-error">
+                        <h4>Please correct the following errors</h4>
+                        <ul>
+                            {% for field in form.visible_fields %}
+                                {% for error in field.errors %}
+                                    <li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for field in form.hidden_fields %}
+                                {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    </div>
+                    <script>document.addEventListener('DOMContentLoaded', () => document.getElementById('registration-error-summary').focus());</script>
+                {% endif %}
+
                 {% if ticket_types %}
                     <div class="form-group">
                         <label for="{{ form.ticket_type.id_for_label }}">Select Ticket Type</label>
                         {{ form.ticket_type }}
+                        {% if form.ticket_type.errors %}<p id="{{ form.ticket_type.id_for_label }}_error" class="field-error">{{ form.ticket_type.errors.0 }}</p>{% endif %}
                     </div>
                 {% endif %}
 
                 <div class="form-group" style="max-width: 200px;">
                     <label for="{{ form.quantity.id_for_label }}">Quantity</label>
                     {{ form.quantity }}
+                    {% if form.quantity.errors %}<p id="{{ form.quantity.id_for_label }}_error" class="field-error">{{ form.quantity.errors.0 }}</p>{% endif %}
                 </div>
 
                 <button type="submit" class="button" style="padding: 12px 28px; font-size: 15px;">Register Now</button>
