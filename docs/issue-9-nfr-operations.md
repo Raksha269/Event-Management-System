@@ -71,7 +71,9 @@ The v1.2 document set in [PR #29](https://github.com/Raksha269/Event-Management-
 
 The included readiness endpoint checks whether the Django application can reach its configured database; the local test asserts HTTP 200, a JSON `{"status":"ok"}` response, and a generated request ID. The owner-run isolated PostgreSQL report records successful readiness both before testing and after restoring into a separate database. These checks verify local readiness behavior, not continuous availability.
 
-Scheduled uptime runs, their raw status/latency samples, cadence gaps and observation-window acceptance belong to [Issue #38](issue-38-uptime-evidence.md). Keep that workflow and its evidence history in its own review. No scheduled uptime percentage, production availability or hosting operations are asserted as Issue #9 local-prototype results.
+As of the **2026-11-16 14:15 UTC** Actions inventory check, no scheduled run is visible after the workflow recovery fix in PR #44. PR #47's transport-failure classification fix is merged, but it has no later scheduled observation in the available history. Team acceptance of the observation period, cadence, calculation, missing-sample and maintenance rules remains pending.
+
+Scheduled uptime runs, their raw status/latency samples, cadence gaps and observation-window acceptance belong to [Issue #38](issue-38-uptime-evidence.md). Keep that workflow and its evidence history in its own review. No scheduled uptime percentage, production availability or hosting operations are asserted as Issue #9 local-prototype results; Issue #9 remains open while its other verification and the separate #38 acceptance remain outstanding.
 
 ## Isolated backup and restore
 
