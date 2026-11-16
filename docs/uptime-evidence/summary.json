@@ -1,7 +1,7 @@
 {
   "snapshot": {
-    "captured_at_utc": "2026-11-15T16:47:59Z",
-    "base_revision": "f862d75a2b62a5c3719c860d47cab62ec469dfc8",
+    "captured_at_utc": "2026-11-16T16:12:08Z",
+    "base_revision": "9102e187dbdb12b25ab91d961c604938ebfb7e2a",
     "workflow_state": "active",
     "default_branch": "main",
     "new_schedule": "7,22,37,52 * * * *",
@@ -10,20 +10,36 @@
     "collector_pr": 42,
     "repository_checkout_pr": 43,
     "pr43_merged_at_utc": "2026-11-15T15:55:43Z",
+    "unknown_classification_pr": 47,
     "observation_plan": "Pending team confirmation; not inferred from a default selection",
-    "submission_deadline_utc": "2026-11-16T03:30:00Z",
-    "previous_snapshot": "snapshot-2026-11-15T163812Z.json",
-    "latest_run_inventory_source": "GitHub Actions API via gh run list",
-    "latest_run_inventory_count": 8,
-    "latest_scheduled_run_id": 43736667439,
-    "latest_manual_run_id": 43711931757,
-    "post_pr40_scheduled_runs": 1,
-    "post_pr43_scheduled_runs": 1,
-    "post_pr43_failed_run_id": 43736667439,
-    "post_pr43_nominal_slots_without_health_measurement": 3
+    "latest_run_inventory_source": "GitHub Actions API workflow_runs filtered to event=schedule",
+    "live_api_scheduled_run_count": 7,
+    "live_api_scheduled_run_ids": [
+      43829255391,
+      43785811701,
+      43763351798,
+      43667292046,
+      43650227798,
+      43629277239,
+      43601319394
+    ],
+    "archived_scheduled_run_not_returned_by_live_api": {
+      "run_id": 43736667439,
+      "number": 8,
+      "created_at_utc": "2026-11-15T16:39:08Z",
+      "conclusion": "failure",
+      "health_observation": "UNKNOWN",
+      "note": "Collector did not run; no HTTP status or latency sample"
+    },
+    "latest_scheduled_run_id": 43829255391,
+    "latest_scheduled_run_created_at_utc": "2026-11-16T08:11:25Z",
+    "post_pr40_scheduled_run_count": 4,
+    "post_pr43_scheduled_run_count": 4,
+    "post_pr47_successful_scheduled_sample_count": 3,
+    "latest_inventory_finding": "No later scheduled run was returned; later missing nominal slots remain UNKNOWN"
   },
-  "run_count": 8,
-  "scheduled_run_count": 5,
+  "run_count": 11,
+  "scheduled_run_count": 8,
   "manual_run_count": 3,
   "unsuccessful_workflow_runs": [
     43736667439
@@ -82,10 +98,50 @@
       "result": "UP",
       "run_id": 43711931757,
       "event": "workflow_dispatch"
+    },
+    {
+      "timestamp_utc": "2026-11-15T21:22:47.186604Z",
+      "url": "https://event-management-system-cqxx.onrender.com/health/ready/",
+      "http_status": "200",
+      "response_seconds": "31.715020",
+      "result": "UP",
+      "run_id": 43763351798,
+      "event": "schedule",
+      "curl_exit_code": "0",
+      "latency_source": "curl",
+      "transport_error": "",
+      "error_detail": ""
+    },
+    {
+      "timestamp_utc": "2026-11-16T01:21:45.356731Z",
+      "url": "https://event-management-system-cqxx.onrender.com/health/ready/",
+      "http_status": "200",
+      "response_seconds": "32.684809",
+      "result": "UP",
+      "run_id": 43785811701,
+      "event": "schedule",
+      "curl_exit_code": "0",
+      "latency_source": "curl",
+      "transport_error": "",
+      "error_detail": ""
+    },
+    {
+      "timestamp_utc": "2026-11-16T08:11:31.575947Z",
+      "url": "https://event-management-system-cqxx.onrender.com/health/ready/",
+      "http_status": "200",
+      "response_seconds": "31.760717",
+      "result": "UP",
+      "run_id": 43829255391,
+      "event": "schedule",
+      "curl_exit_code": "0",
+      "latency_source": "curl",
+      "transport_error": "",
+      "error_detail": ""
     }
   ],
-  "scheduled_samples": 4,
+  "scheduled_samples": 7,
   "failed_samples": [],
+  "unknown_samples": [],
   "runs_without_archived_csv": [
     43566650792,
     43736667439
@@ -110,6 +166,21 @@
       "from_run": 43667292046,
       "to_run": 43736667439,
       "minutes": 858.9833333333333
+    },
+    {
+      "from_run": 43736667439,
+      "to_run": 43763351798,
+      "minutes": 283.56666666666666
+    },
+    {
+      "from_run": 43763351798,
+      "to_run": 43785811701,
+      "minutes": 238.95
+    },
+    {
+      "from_run": 43785811701,
+      "to_run": 43829255391,
+      "minutes": 409.76666666666665
     }
   ],
   "scheduled_sample_intervals": [
@@ -127,9 +198,36 @@
       "from_run": 43650227798,
       "to_run": 43667292046,
       "minutes": 209.08333333333334
+    },
+    {
+      "from_run": 43667292046,
+      "to_run": 43763351798,
+      "minutes": 1142.5697767333334
+    },
+    {
+      "from_run": 43763351798,
+      "to_run": 43785811701,
+      "minutes": 238.96950211666666
+    },
+    {
+      "from_run": 43785811701,
+      "to_run": 43829255391,
+      "minutes": 409.7703202666667
     }
   ],
   "job_start_delays": [
+    {
+      "run_id": 43829255391,
+      "seconds_after_run_creation": 3.0
+    },
+    {
+      "run_id": 43785811701,
+      "seconds_after_run_creation": 3.0
+    },
+    {
+      "run_id": 43763351798,
+      "seconds_after_run_creation": 2.0
+    },
     {
       "run_id": 43736667439,
       "seconds_after_run_creation": 2.0
@@ -164,7 +262,10 @@
     }
   ],
   "post_change_scheduled_runs": [
-    43736667439
+    43736667439,
+    43763351798,
+    43785811701,
+    43829255391
   ],
   "nominal_post_change_cron_slots": [
     {
@@ -278,7 +379,383 @@
     {
       "nominal_time_utc": "2026-11-15T16:37:00Z",
       "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T16:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T17:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T17:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T17:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T17:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T18:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T18:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T18:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T18:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T19:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T19:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T19:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T19:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T20:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T20:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T20:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T20:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T21:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T21:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T21:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T21:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T22:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T22:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T22:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T22:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T23:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T23:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T23:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-15T23:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T00:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T00:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T00:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T00:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T01:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T01:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T01:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T01:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T02:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T02:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T02:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T02:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T03:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T03:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T03:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T03:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T04:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T04:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T04:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T04:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T05:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T05:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T05:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T05:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T06:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T06:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T06:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T06:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T07:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T07:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T07:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T07:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T08:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T08:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T08:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T08:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T09:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T09:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T09:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T09:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T10:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T10:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T10:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T10:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T11:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T11:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T11:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T11:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T12:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T12:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T12:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T12:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T13:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T13:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T13:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T13:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T14:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T14:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T14:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T14:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T15:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T15:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T15:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T15:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T16:07:00Z",
+      "observation": "UNKNOWN"
     }
   ],
   "interpretation": "Missing observations are UNKNOWN. Nominal cron slots are expected trigger times, not observed health checks or proven dropped events. Manual runs are separate. No uptime percentage, downtime duration, or continuous-availability claim is supported by this evidence."
-}\n
+}

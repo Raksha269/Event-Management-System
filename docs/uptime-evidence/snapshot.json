@@ -1,6 +1,6 @@
 {
-  "captured_at_utc": "2026-11-15T16:47:59Z",
-  "base_revision": "f862d75a2b62a5c3719c860d47cab62ec469dfc8",
+  "captured_at_utc": "2026-11-16T16:12:08Z",
+  "base_revision": "9102e187dbdb12b25ab91d961c604938ebfb7e2a",
   "workflow_state": "active",
   "default_branch": "main",
   "new_schedule": "7,22,37,52 * * * *",
@@ -9,15 +9,31 @@
   "collector_pr": 42,
   "repository_checkout_pr": 43,
   "pr43_merged_at_utc": "2026-11-15T15:55:43Z",
+  "unknown_classification_pr": 47,
   "observation_plan": "Pending team confirmation; not inferred from a default selection",
-  "submission_deadline_utc": "2026-11-16T03:30:00Z",
-  "previous_snapshot": "snapshot-2026-11-15T163812Z.json",
-  "latest_run_inventory_source": "GitHub Actions API via gh run list",
-  "latest_run_inventory_count": 8,
-  "latest_scheduled_run_id": 43736667439,
-  "latest_manual_run_id": 43711931757,
-  "post_pr40_scheduled_runs": 1,
-  "post_pr43_scheduled_runs": 1,
-  "post_pr43_failed_run_id": 43736667439,
-  "post_pr43_nominal_slots_without_health_measurement": 3
+  "latest_run_inventory_source": "GitHub Actions API workflow_runs filtered to event=schedule",
+  "live_api_scheduled_run_count": 7,
+  "live_api_scheduled_run_ids": [
+    43829255391,
+    43785811701,
+    43763351798,
+    43667292046,
+    43650227798,
+    43629277239,
+    43601319394
+  ],
+  "archived_scheduled_run_not_returned_by_live_api": {
+    "run_id": 43736667439,
+    "number": 8,
+    "created_at_utc": "2026-11-15T16:39:08Z",
+    "conclusion": "failure",
+    "health_observation": "UNKNOWN",
+    "note": "Collector did not run; no HTTP status or latency sample"
+  },
+  "latest_scheduled_run_id": 43829255391,
+  "latest_scheduled_run_created_at_utc": "2026-11-16T08:11:25Z",
+  "post_pr40_scheduled_run_count": 4,
+  "post_pr43_scheduled_run_count": 4,
+  "post_pr47_successful_scheduled_sample_count": 3,
+  "latest_inventory_finding": "No later scheduled run was returned; later missing nominal slots remain UNKNOWN"
 }

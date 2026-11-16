@@ -1,0 +1,5 @@
+Timestamp (UTC): 2026-11-16T08:11:31.575947Z
+Readiness endpoint: https://event-management-system-cqxx.onrender.com/health/ready/
+HTTP status: 200
+Response time (seconds): 31.760717 (curl)
+Result: UP

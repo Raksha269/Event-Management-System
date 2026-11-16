@@ -1,22 +1,40 @@
 # Issue #38: uptime cadence and evidence status
 
-**Status: INCOMPLETE.** Issue #38 and parent Issue #9 remain open. The detailed run/artifact snapshot reflects repository main at `1b1420c9` and an Actions API cutoff of **2026-11-15 18:55:08 UTC**. A separate read-only Actions page check was made at **2026-11-16 14:15 UTC**; no workflow was manually dispatched for either review.
+**Status: INCOMPLETE.** Issue #38 and parent Issue #9 remain open. The historical snapshot below records the Actions API inventory at **2026-11-15 18:55:08 UTC**. This report was refreshed from the schedule-filtered Actions API at **2026-11-16 16:12 UTC**. No workflow was manually dispatched for this review.
 
 ## Acceptance criteria
 
 | Criterion | Status | Evidence / remaining work |
 | --- | --- | --- |
-| Inspect scheduled Actions history, investigate multi-hour gaps, document findings and corrections | **INCOMPLETE** | Runs and archived Run #8 were reviewed. The workflow is active on default branch `main`; cron is `7,22,37,52 * * * *` UTC. The available history has large run-creation gaps. Actions policy settings could not be read (API 403), so the scheduling root cause is unknown. |
+| Inspect scheduled Actions history, investigate multi-hour gaps, document findings and corrections | **INCOMPLETE** | The workflow is active on default branch `main`; cron is `7,22,37,52 * * * *` UTC. Post-mitigation scheduled runs remain hours apart. Job starts were 2–3 seconds after creation, so runner queue delay does not explain the gaps. Actions policy settings could not be read (API 403); the scheduling root cause is unknown. |
 | Agree observation period, cadence, availability calculation, missing-sample and maintenance rules with the team | **WAITING FOR TEAM APPROVAL** | The existing Issue #38 comment requests these decisions, but no approval is recorded. A scope clarification is also required; see below. |
-| Preserve timestamped status/latency evidence throughout the agreed period, including failures and missed checks | **INCOMPLETE** | Six archived CSV samples are retained: four scheduled and two manual. All six show HTTP 200 / UP. Scheduled observations are sparse; missed nominal slots remain UNKNOWN. Run #8 failed before an HTTP probe and has no CSV. |
-| Summarize coverage, downtime, gaps and limitations; calculate availability only with an agreed method and sufficient data | **INCOMPLETE** | Creation gaps among scheduled runs with probes were 310.52, 235.50 and 209.08 minutes. Gap from scheduled Run #5 to failed Run #8 was 858.98 minutes. These are gaps between workflow run creation times, not downtime durations. No availability percentage or downtime duration is supported. |
-| Submit changes for review and update consolidated NFR status | **IN PROGRESS** | PRs #40–#47 are merged, including the workflow recovery fixes and the DOWN/UNKNOWN classification correction in [PR #47](https://github.com/Raksha269/Event-Management-System/pull/47). This inventory refresh and consolidated NFR status update are in branch `docs/issue-38-refresh-monitoring-inventory` for PR review. The observation and team-acceptance criteria remain incomplete. |
+| Preserve timestamped status/latency evidence throughout the agreed period, including failures and missed checks | **INCOMPLETE** | Nine raw CSV samples and collector logs are archived: seven scheduled and two manual. All nine have HTTP 200 / UP results. Scheduled observations remain sparse; missing slots remain UNKNOWN. Run #8 failed before an HTTP probe and has no CSV. This does not yet cover a team-approved observation period. |
+| Summarize coverage, downtime, gaps and limitations; calculate availability only with an agreed method and sufficient data | **INCOMPLETE** | Run-creation gaps include 310.52, 235.50, 209.08, 858.98, 283.57, 238.95 and 409.77 minutes. They are workflow-run gaps, not downtime. No availability percentage or downtime duration is supported. |
+| Submit changes for review and update consolidated NFR status | **IN PROGRESS** | PRs #40–#47 are merged, including the schedule mitigation and DOWN/UNKNOWN classification correction. This refresh adds post-PR #47 evidence and updates the consolidated [Issue #9 NFR status](issue-9-nfr-operations.md). The observation and team-acceptance criteria remain incomplete and require review. |
+
+## Latest inventory refresh (2026-11-16)
+
+The schedule-filtered Actions API returned seven scheduled runs at the refresh cutoff. It returned Runs #2–#5 and #9–#11; archived failed Run #8 is not returned by the live list. No later scheduled run was visible after #11, created **2026-11-16 08:11:25 UTC**, so the gap from that run to the **16:12 UTC** inventory cutoff is about eight hours. This is a run-history gap, not evidence of application downtime or of why scheduled triggers were absent.
+
+The three new scheduled artifacts contain one raw CSV sample and collector log each. They recorded HTTP 200 / UP at 31.715020 s (Run #9), 32.684809 s (Run #10), and 31.760717 s (Run #11). Their response times are readiness-check durations, not latency estimates from continuous service observation. Job creation/start/completion timestamps are preserved in each `jobs.json`. See the run table and files under `docs/uptime-evidence/<run-id>/`; artifact and canonical CSV SHA-256 values are in `artifact-metadata.json` and `sample-manifest.json`.
+
+| Run | ID | Created (UTC) | Sample time (UTC) | Status | Response |
+| --- | ---: | --- | --- | --- | ---: |
+| #9 | 43763351798 | 2026-11-15 21:22:42 | 2026-11-15 21:22:47.186604 | 200 / UP | 31.715020 s |
+| #10 | 43785811701 | 2026-11-16 01:21:39 | 2026-11-16 01:21:45.356731 | 200 / UP | 32.684809 s |
+| #11 | 43829255391 | 2026-11-16 08:11:25 | 2026-11-16 08:11:31.575947 | 200 / UP | 31.760717 s |
+
+These are seven scheduled CSV samples over a timestamp span of about **42 hours 26 minutes** across the full archive, not continuous coverage or the team-approved monthly observation period.
+
+The configured 15-minute schedule is best effort. The current evidence shows that successful post-fix runs exist, but substantial gaps remain. No Actions policy root cause was identified, no change to the schedule was made here, and nominal slots without a corresponding health sample remain UNKNOWN.
 
 ## Live Actions inventory refresh
 
-At **2026-11-16 14:15 UTC**, the [Render Uptime Monitoring Actions page](https://github.com/Raksha269/Event-Management-System/actions/workflows/uptime-monitoring.yml) still listed seven runs, numbered #1–#7. The latest listed run was manual Run #7, created **2026-11-15 12:03:50 UTC**. No later scheduled run was visible. The historical archive retains scheduled Run #8 (ID `43736667439`, created **2026-11-15 16:39:08 UTC**); it failed before making an HTTP request and has no status/latency CSV.
+The [Render Uptime Monitoring Actions page](https://github.com/Raksha269/Event-Management-System/actions/workflows/uptime-monitoring.yml) and schedule-filtered API were checked at **2026-11-16 16:12 UTC**. The API returned seven scheduled runs, latest Run #11 (ID `43829255391`), created **2026-11-16 08:11:25 UTC**. Archived Run #8 (ID `43736667439`, created **2026-11-15 16:39:08 UTC**) remains a failed pre-fix run without an HTTP sample.
 
-Run #8 predates the output-directory correction merged in PR #44 at **2026-11-15 16:55:27 UTC**. No scheduled run is visible after that correction or after the transport-failure classification fix in PR #47. The Actions page did not explain why later scheduled runs are absent. This inventory check adds no health samples and does not convert absent runs or nominal schedule slots into UP or DOWN observations; they remain **UNKNOWN**. It does not establish continuous coverage or availability.
+The offline summary lists **122 nominal post-PR #40 schedule timestamps** through the inventory cutoff as UNKNOWN. It does not map late workflow starts to individual cron slots because the team has not approved a grace or matching rule; 122 is not a count of proven dropped triggers. The timestamped API inventory is preserved in `docs/uptime-evidence/inventory-2026-11-16T161208Z.json`.
+
+In the **2026-11-15 18:55:08 UTC historical inventory**, Run #8 predated the output-directory correction merged in PR #44 at **2026-11-15 16:55:27 UTC**. At that historical cutoff, no scheduled run after PR #44 or PR #47 was visible. The current refresh above records later post-fix checks. The Actions API does not explain missing triggers. Absent runs and nominal schedule slots are not UP or DOWN observations; they remain **UNKNOWN** and do not establish continuous coverage or availability.
 
 ## Workflow and code inspection
 
@@ -26,7 +44,7 @@ Run #8 predates the output-directory correction merged in PR #44 at **2026-11-15
 - The collector records a UTC timestamp, HTTP status, elapsed response time, run identity and transport errors. A real HTTP response outside 2xx is **DOWN**; no complete HTTP response / curl transport failure is **UNKNOWN**. Failed checks retain measured timing or a labeled monotonic fallback, not a fabricated zero.
 - Before this change, transport failures were incorrectly labelled DOWN. The collector and offline summarizer now classify these as UNKNOWN; regression tests cover connection/timeout failures and ensure UNKNOWN is not counted as verified HTTP downtime.
 
-## Available run inventory
+## Historical run inventory (cutoff 2026-11-15 18:55:08 UTC)
 
 The detailed API inventory captured at **2026-11-15 18:55:08 UTC** returned seven completed successful workflow records, all on `main`:
 
@@ -42,15 +60,15 @@ The detailed API inventory captured at **2026-11-15 18:55:08 UTC** returned seve
 
 The repository archive preserves scheduled Run #8, ID `43736667439`, created 2026-11-15 16:39:08 UTC on `main`, trigger `schedule`, commit `f862d75a2b62a5c3719c860d47cab62ec469dfc8`. Its checkout succeeded, but the workflow shell failed before invoking the collector because `uptime-results/collector.log` did not exist. No request was made, no HTTP status or latency was measured, and no artifact was uploaded. This is a workflow failure and UNKNOWN application health, not evidence that Render was down. The current live run-list API no longer returns #8; its archived `run.json`, `jobs.json`, `logs.txt` and empty `artifacts.json` remain in `docs/uptime-evidence/43736667439/`.
 
-PR #44 corrected the missing-directory error. It merged after Run #8 on 2026-11-15 16:55:27 UTC (merge commit `37d7c37c...`). At the 18:55:08 UTC inventory cutoff, there was no scheduled run after PR #44; the latest run returned by the live API was manual Run #7. Nominal slots after PR #44 at 17:07, 17:22, 17:37, 17:52, 18:07, 18:22, 18:37 and 18:52 UTC have no visible run or health sample in the available inventory and remain UNKNOWN. A missing run-list entry does not establish why GitHub did not create a run. The archived evidence contains **5 scheduled / 3 manual runs**, with **4 scheduled / 2 manual CSV samples**. Manual samples are not used as scheduled coverage. No currently available run record is pending or cancelled; the API inventory is not sufficient to prove whether GitHub skipped trigger delivery for every absent cron slot.
+PR #44 corrected the missing-directory error. Runs #9–#11 are the first three successful scheduled observations after the transport-classification fix in PR #47. The archive now contains **8 scheduled / 3 manual runs**, with **7 scheduled / 2 manual CSV samples**; Run #8 failed before a health request and manual Run #1 has no CSV. Manual samples are not used as scheduled coverage. No returned run was pending or cancelled. The Actions API list is not sufficient to prove whether GitHub skipped trigger delivery for every absent nominal slot.
 
 ## Scheduling gaps and limits
 
-Observed scheduled run-creation gaps in the preserved eight-run history: #2→#3 **310.52 minutes**, #3→#4 **235.50 minutes**, #4→#5 **209.08 minutes**, and #5→#8 **858.98 minutes**. Available job metadata shows starts 2–3 seconds after run creation, so runner queue delay does not explain these observed gaps. This does not establish why scheduled runs were absent.
+Observed scheduled run-creation gaps in the preserved history: #2→#3 **310.52 minutes**, #3→#4 **235.50 minutes**, #4→#5 **209.08 minutes**, #5→#8 **858.98 minutes**, #8→#9 **283.57 minutes**, #9→#10 **238.95 minutes**, and #10→#11 **409.77 minutes**. Available job metadata shows starts 2–3 seconds after run creation, so runner queue delay does not explain these observed gaps. There was no later run visible at the inventory cutoff, about eight hours after #11. These gaps do not establish why scheduled runs were absent.
 
 The repository Actions permissions/policies endpoint returned HTTP 403 with: “You must have repository read permissions or have the repository Actions policies fine-grained permission.” Therefore repository/organization scheduling policy, restrictions or pause settings could not be verified. The workflow is shown as active and the default branch as `main`; no evidence identifies a root cause. Sparse health probes do not establish the service state between probes.
 
-The offline evidence summary currently reports **8 archived runs**, **5 scheduled**, **3 manual**, **6 valid CSV samples**, **1 unsuccessful workflow run (#8)**, and missing CSV evidence for #1 and #8. It does not calculate availability. Historical raw files, CSVs, manifests, hashes and snapshots were preserved; no production request was made as part of this review.
+The offline evidence summary reports **11 archived runs**, **8 scheduled**, **3 manual**, **9 valid CSV samples** (7 scheduled, 2 manual), **1 unsuccessful workflow run (#8)**, and missing CSV evidence for #1 and #8. It does not calculate availability. Raw CSVs, collector logs, manifests, artifact/CSV hashes and snapshots are preserved; the checks are those naturally scheduled by Actions, with no production mutation or manual dispatch in this review.
 
 ## Scope conflict requiring issue-owner decision
 
@@ -64,7 +82,7 @@ The question is prepared here; it has not been posted and no approval is implied
 
 1. Obtain the issue owner's/team's written decision on the scope conflict and the observation/acceptance rules above.
 2. If hosted monitoring remains in scope, ask a repository administrator to inspect Actions scheduling policies and continue collecting genuine scheduled observations over the approved period. Keep missing slots UNKNOWN; do not count manual runs as scheduled.
-3. Observe a natural scheduled execution after PR #44 and verify its CSV/log artifact. This review did not manually dispatch a run.
+3. Continue observing natural scheduled executions and preserve their CSV/log artifacts, including failed results. Do not manually dispatch checks to fill gaps.
 4. Reconcile the evidence against the confirmed acceptance method. Do not report availability or downtime without a supported calculation and sufficient observations.
 5. Review this PR through the team's normal process. Keep Issue #38 and parent #9 open until accepted evidence is complete.
 
