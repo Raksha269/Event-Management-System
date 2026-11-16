@@ -1,6 +1,6 @@
 {
-  "captured_at_utc": "2026-11-16T16:12:08Z",
-  "base_revision": "9102e187dbdb12b25ab91d961c604938ebfb7e2a",
+  "captured_at_utc": "2026-11-16T19:17:32Z",
+  "base_revision": "35122aac5e7a788d5dc024a36a02964f6f6c7a2d",
   "workflow_state": "active",
   "default_branch": "main",
   "new_schedule": "7,22,37,52 * * * *",
@@ -12,8 +12,9 @@
   "unknown_classification_pr": 47,
   "observation_plan": "Pending team confirmation; not inferred from a default selection",
   "latest_run_inventory_source": "GitHub Actions API workflow_runs filtered to event=schedule",
-  "live_api_scheduled_run_count": 7,
+  "live_api_scheduled_run_count": 8,
   "live_api_scheduled_run_ids": [
+    43931446204,
     43829255391,
     43785811701,
     43763351798,
@@ -30,10 +31,11 @@
     "health_observation": "UNKNOWN",
     "note": "Collector did not run; no HTTP status or latency sample"
   },
-  "latest_scheduled_run_id": 43829255391,
-  "latest_scheduled_run_created_at_utc": "2026-11-16T08:11:25Z",
-  "post_pr40_scheduled_run_count": 4,
-  "post_pr43_scheduled_run_count": 4,
-  "post_pr47_successful_scheduled_sample_count": 3,
-  "latest_inventory_finding": "No later scheduled run was returned; later missing nominal slots remain UNKNOWN"
+  "latest_scheduled_run_id": 43931446204,
+  "latest_scheduled_run_created_at_utc": "2026-11-16T18:41:19Z",
+  "latest_scheduled_sample_at_utc": "2026-11-16T18:41:25.822196Z",
+  "post_pr40_scheduled_run_count": 5,
+  "post_pr43_scheduled_run_count": 5,
+  "post_pr47_successful_scheduled_sample_count": 4,
+  "latest_inventory_finding": "No later scheduled run was returned; Run #12 was created 36.22 minutes before the inventory cutoff"
 }

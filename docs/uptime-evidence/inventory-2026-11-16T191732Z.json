@@ -1,0 +1,37 @@
+{
+  "captured_at_utc": "2026-11-16T19:17:32Z",
+  "source": "GitHub Actions API workflow_runs filtered to event=schedule",
+  "repository": "Raksha269/Event-Management-System",
+  "workflow_id": 418077012,
+  "default_branch": "main",
+  "workflow_state": "active",
+  "cron_utc": "7,22,37,52 * * * *",
+  "live_api_run_count": 8,
+  "live_api_run_ids_descending": [
+    43931446204,
+    43829255391,
+    43785811701,
+    43763351798,
+    43667292046,
+    43650227798,
+    43629277239,
+    43601319394
+  ],
+  "latest_scheduled_run": {
+    "run_id": 43931446204,
+    "number": 12,
+    "created_at_utc": "2026-11-16T18:41:19Z",
+    "conclusion": "success",
+    "head_sha": "35122aac5e7a788d5dc024a36a02964f6f6c7a2d"
+  },
+  "archived_scheduled_run_not_returned_by_live_api": {
+    "run_id": 43736667439,
+    "number": 8,
+    "created_at_utc": "2026-11-15T16:39:08Z",
+    "conclusion": "failure",
+    "health_observation": "UNKNOWN",
+    "note": "The workflow failed before the collector made an HTTP request."
+  },
+  "observation_plan": "Pending team confirmation; no availability calculation is authorized by this snapshot.",
+  "interpretation": "No later scheduled run is returned after Run #12. Missing runs and nominal cron slots are not evidence of application downtime or proven dropped triggers."
+}

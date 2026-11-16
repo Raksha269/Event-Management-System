@@ -1,7 +1,7 @@
 {
   "snapshot": {
-    "captured_at_utc": "2026-11-16T16:12:08Z",
-    "base_revision": "9102e187dbdb12b25ab91d961c604938ebfb7e2a",
+    "captured_at_utc": "2026-11-16T19:17:32Z",
+    "base_revision": "35122aac5e7a788d5dc024a36a02964f6f6c7a2d",
     "workflow_state": "active",
     "default_branch": "main",
     "new_schedule": "7,22,37,52 * * * *",
@@ -13,8 +13,9 @@
     "unknown_classification_pr": 47,
     "observation_plan": "Pending team confirmation; not inferred from a default selection",
     "latest_run_inventory_source": "GitHub Actions API workflow_runs filtered to event=schedule",
-    "live_api_scheduled_run_count": 7,
+    "live_api_scheduled_run_count": 8,
     "live_api_scheduled_run_ids": [
+      43931446204,
       43829255391,
       43785811701,
       43763351798,
@@ -31,15 +32,16 @@
       "health_observation": "UNKNOWN",
       "note": "Collector did not run; no HTTP status or latency sample"
     },
-    "latest_scheduled_run_id": 43829255391,
-    "latest_scheduled_run_created_at_utc": "2026-11-16T08:11:25Z",
-    "post_pr40_scheduled_run_count": 4,
-    "post_pr43_scheduled_run_count": 4,
-    "post_pr47_successful_scheduled_sample_count": 3,
-    "latest_inventory_finding": "No later scheduled run was returned; later missing nominal slots remain UNKNOWN"
+    "latest_scheduled_run_id": 43931446204,
+    "latest_scheduled_run_created_at_utc": "2026-11-16T18:41:19Z",
+    "latest_scheduled_sample_at_utc": "2026-11-16T18:41:25.822196Z",
+    "post_pr40_scheduled_run_count": 5,
+    "post_pr43_scheduled_run_count": 5,
+    "post_pr47_successful_scheduled_sample_count": 4,
+    "latest_inventory_finding": "No later scheduled run was returned; Run #12 was created 36.22 minutes before the inventory cutoff"
   },
-  "run_count": 11,
-  "scheduled_run_count": 8,
+  "run_count": 12,
+  "scheduled_run_count": 9,
   "manual_run_count": 3,
   "unsuccessful_workflow_runs": [
     43736667439
@@ -137,9 +139,22 @@
       "latency_source": "curl",
       "transport_error": "",
       "error_detail": ""
+    },
+    {
+      "timestamp_utc": "2026-11-16T18:41:25.822196Z",
+      "url": "https://event-management-system-cqxx.onrender.com/health/ready/",
+      "http_status": "200",
+      "response_seconds": "31.598001",
+      "result": "UP",
+      "run_id": 43931446204,
+      "event": "schedule",
+      "curl_exit_code": "0",
+      "latency_source": "curl",
+      "transport_error": "",
+      "error_detail": ""
     }
   ],
-  "scheduled_samples": 7,
+  "scheduled_samples": 8,
   "failed_samples": [],
   "unknown_samples": [],
   "runs_without_archived_csv": [
@@ -181,6 +196,11 @@
       "from_run": 43785811701,
       "to_run": 43829255391,
       "minutes": 409.76666666666665
+    },
+    {
+      "from_run": 43829255391,
+      "to_run": 43931446204,
+      "minutes": 629.9
     }
   ],
   "scheduled_sample_intervals": [
@@ -213,9 +233,18 @@
       "from_run": 43785811701,
       "to_run": 43829255391,
       "minutes": 409.7703202666667
+    },
+    {
+      "from_run": 43829255391,
+      "to_run": 43931446204,
+      "minutes": 629.9041041500001
     }
   ],
   "job_start_delays": [
+    {
+      "run_id": 43931446204,
+      "seconds_after_run_creation": 3.0
+    },
     {
       "run_id": 43829255391,
       "seconds_after_run_creation": 3.0
@@ -265,7 +294,8 @@
     43736667439,
     43763351798,
     43785811701,
-    43829255391
+    43829255391,
+    43931446204
   ],
   "nominal_post_change_cron_slots": [
     {
@@ -754,6 +784,54 @@
     },
     {
       "nominal_time_utc": "2026-11-16T16:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T16:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T16:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T16:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T17:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T17:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T17:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T17:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T18:07:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T18:22:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T18:37:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T18:52:00Z",
+      "observation": "UNKNOWN"
+    },
+    {
+      "nominal_time_utc": "2026-11-16T19:07:00Z",
       "observation": "UNKNOWN"
     }
   ],

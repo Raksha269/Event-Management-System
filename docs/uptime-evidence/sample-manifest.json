@@ -124,5 +124,23 @@
       "transport_error": "",
       "error_detail": ""
     }
+  },
+  {
+    "run_id": 43931446204,
+    "archive_sha256": "16031be03da73928af53fcd53654317af3c468119de2cee8d9f4076c9c22b106",
+    "csv_sha256": "7ede5fbc913c52e5e24d04761543b158dff83d89a5d01c4158f81e23bf11cab2",
+    "row": {
+      "timestamp_utc": "2026-11-16T18:41:25.822196Z",
+      "url": "https://event-management-system-cqxx.onrender.com/health/ready/",
+      "http_status": "200",
+      "response_seconds": "31.598001",
+      "result": "UP",
+      "run_id": "43931446204",
+      "event": "schedule",
+      "curl_exit_code": "0",
+      "latency_source": "curl",
+      "transport_error": "",
+      "error_detail": ""
+    }
   }
 ]
