@@ -1,5 +1,15 @@
 # Issue #37 follow-up — attendee registration errors and evidence status
 
+## Final academic-scope acceptance
+
+The repository owner recorded team acceptance in [Issue #9](https://github.com/Raksha269/Event-Management-System/issues/9#issuecomment-6932891735) and [Issue #38](https://github.com/Raksha269/Event-Management-System/issues/38#issuecomment-6932881938). Both issues are closed against the limited academic-project scope. This records the owner's stated team decision; no separate faculty approval is inferred.
+
+[Issue #37](https://github.com/Raksha269/Event-Management-System/issues/37#issuecomment-6922868953) records the owner's completed responsive/keyboard checks for User Administration and Security Alerts at 320, 360, 768 and 1440 px, NVDA form-error/navigation checks, and confirmation that Manage Tickets responsive and remaining contrast checks were checked. These are user-performed results. Additional numerical contrast measurements or independent retests are not invented here. This acceptance is not a full WCAG certification.
+
+Scheduled evidence is accepted with its gaps retained as UNKNOWN. Consistent 15-minute execution, monthly availability, availability percentages and downtime durations remain unverified. Maintenance exclusions require documented approval. Historical test results and limitations below remain unchanged.
+
+Historical findings below describe the earlier follow-up, before the later owner verification and closure. Their pending statements are retained as historical context.
+
 Date: 2026-11-16 (Asia/Kolkata). Code and Django tests were run in the isolated `feature/issue-37-accessibility-completion` worktree using an isolated SQLite test database. All test accounts and event records are synthetic. No production or shared database, hosted site, or live registration flow was used.
 
 ## Defect fixed

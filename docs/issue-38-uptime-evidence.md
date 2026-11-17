@@ -1,6 +1,18 @@
 # Issue #38: uptime cadence and evidence status
 
-**Status: INCOMPLETE.** Issue #38 and parent Issue #9 remain open. The historical snapshot below records the Actions API inventory at **2026-11-15 18:55:08 UTC**. This report was refreshed from the schedule-filtered Actions API at **2026-11-16 19:17:32 UTC**, after PR #50 merged. No workflow was manually dispatched for this review.
+**Status: CLOSED UNDER ACCEPTED LIMITED ACADEMIC SCOPE.** See the owner-recorded acceptance below. Scheduled availability itself remains unverified. The historical snapshot below records the Actions API inventory at **2026-11-15 18:55:08 UTC**. This report was refreshed from the schedule-filtered Actions API at **2026-11-16 19:17:32 UTC**, after PR #50 merged. No workflow was manually dispatched for this review.
+
+## Final academic-scope acceptance
+
+The repository owner recorded team acceptance in [Issue #9](https://github.com/Raksha269/Event-Management-System/issues/9#issuecomment-6932891735) and [Issue #38](https://github.com/Raksha269/Event-Management-System/issues/38#issuecomment-6932881938). Both issues are closed against the limited academic-project scope. This records the owner's stated team decision; no separate faculty approval is inferred.
+
+[Issue #37](https://github.com/Raksha269/Event-Management-System/issues/37#issuecomment-6922868953) records the owner's completed responsive/keyboard checks for User Administration and Security Alerts at 320, 360, 768 and 1440 px, NVDA form-error/navigation checks, and confirmation that Manage Tickets responsive and remaining contrast checks were checked. These are user-performed results. Additional numerical contrast measurements or independent retests are not invented here. This acceptance is not a full WCAG certification.
+
+Scheduled evidence is accepted with its gaps retained as UNKNOWN. Consistent 15-minute execution, monthly availability, availability percentages and downtime durations remain unverified. Maintenance exclusions require documented approval. Historical test results and limitations below remain unchanged.
+
+## Historical acceptance assessment before final owner approval
+
+The table below preserves the assessment at the evidence cutoff. Pending/open statements in this historical assessment are superseded by the final acceptance above; measurements and unresolved scheduling causes are unchanged.
 
 ## Acceptance criteria
 
@@ -71,7 +83,7 @@ The repository Actions permissions/policies endpoint returned HTTP 403 with: “
 
 The offline evidence summary reports **12 archived runs**, **9 scheduled**, **3 manual**, **10 valid CSV samples** (8 scheduled, 2 manual), **1 unsuccessful workflow run (#8)**, and missing CSV evidence for #1 and #8. It does not calculate availability. Raw CSVs, collector logs, manifests, artifact/CSV hashes and snapshots are preserved; the checks are those naturally scheduled by Actions, with no production mutation or manual dispatch in this review.
 
-## Scope conflict requiring issue-owner decision
+## Historical scope question (superseded by final owner acceptance)
 
 The revised README/NFR summary says this academic prototype is evaluated locally and hosted-service availability/production operations are outside scope, while the Issue #9 report says local readiness is verified and tracks scheduled monitoring separately under #38. The revised verification notes also refer to scheduled readiness monitoring and retained external checks over the available project observation window. These statements leave the intended acceptance boundary for #38 unclear. No team approval resolving this conflict was found.
 
@@ -79,7 +91,7 @@ The revised README/NFR summary says this academic prototype is evaluated locally
 
 The question is prepared here; it has not been posted and no approval is implied.
 
-## Remaining work
+## Historical proposed next steps (before final owner acceptance)
 
 1. Obtain the issue owner's/team's written decision on the scope conflict and the observation/acceptance rules above.
 2. If hosted monitoring remains in scope, ask a repository administrator to inspect Actions scheduling policies and continue collecting genuine scheduled observations over the approved period. Keep missing slots UNKNOWN; do not count manual runs as scheduled.
