@@ -1,6 +1,6 @@
 # Finalization and freeze preparation
 
-Status: DOCUMENTATION AND SPRINT 1 VIDEO MERGED VIA PR #52; SPRINT 2 TRANSFER PENDING. NOT AN OFFICIAL FREEZE OR RELEASE.
+Status: DOCUMENTATION AND SPRINT 1 VIDEO MERGED VIA PR #52; SPRINT 2 DRIVE LINK RECORDED. NOT AN OFFICIAL FREEZE OR RELEASE.
 
 ## Verified candidate baseline
 
@@ -16,7 +16,7 @@ This baseline precedes these local documentation changes. The final freeze must 
 
 - [ ] Review and merge the final documentation updates; verify the resulting commit’s CI.
 - [x] Add the supplied [Sprint 1 video](videos/sprint-1-demo.mp4) (98.7 seconds; the owner accepts the supplied duration).
-- [ ] Upload or link the required 2-minute Sprint 2 product video.
+- [x] Link the owner-supplied [Sprint 2 product video on Google Drive](https://drive.google.com/file/d/18mJD9VhMXXAD3nwdCQmB9pH4GEFNrY8B/view?usp=sharing); owner accepts the supplied duration.
 - [ ] Record both video locations and verify that evaluators can open them.
 - [ ] Confirm the SRS, Test Plan and SAD sections, diagrams, traceability and deviations against the evaluation checklist. Their detailed PDF contents were not re-audited in this finalization pass.
 - [ ] Confirm all board items have story points, individual assignees and Sprint 1/2 assignments. Private board field completeness was not verified in this pass.
@@ -24,7 +24,7 @@ This baseline precedes these local documentation changes. The final freeze must 
 - [ ] Record team agreement to stop development and the exact final commit.
 - [ ] Optionally create a final tag/release, for example `v1.0-final`, at that commit. A tag is a useful baseline marker, not an explicit checklist requirement.
 
-The supplied Sprint 1 recording is included unchanged. The supplied Sprint 2 file exceeded the workspace transfer limit of 32 MiB and could not be downloaded or committed. A smaller copy or an accessible uploaded location is required; its duration and content have not been verified.
+The supplied Sprint 1 recording is included unchanged. The supplied Sprint 2 file exceeded the workspace transfer limit of 32 MiB and could not be downloaded or committed. The owner subsequently supplied the Google Drive link above. Its duration and content have not been independently verified. The workspace link check returned HTTP 401, so anonymous playback remains unconfirmed; check it in a signed-out/private browser. External hosting acceptance against the checklist’s repository-upload wording remains to be confirmed.
 
 ## Freeze notice template (publish only after the checks above)
 

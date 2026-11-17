@@ -239,5 +239,5 @@ Visit `http://localhost:8000/` in your browser to access the Gather portal.
 ## Sprint demonstration videos and finalization
 
 - [Sprint 1 working-product video](docs/videos/sprint-1-demo.mp4): supplied recording, 98.7 seconds. The owner accepts the supplied duration.
-- Sprint 2 working-product video: supplied but awaiting a transferable copy under 32 MiB; not yet included.
-- [Finalization and freeze checklist](docs/finalization.md): records the baseline, accepted scope and outstanding handoff items. No final freeze is declared by this PR.
+- [Sprint 2 working-product video (Google Drive)](https://drive.google.com/file/d/18mJD9VhMXXAD3nwdCQmB9pH4GEFNrY8B/view?usp=sharing): owner-supplied recording; hosted externally. Keep sharing set to Anyone with the link → Viewer.
+- [Finalization and freeze checklist](docs/finalization.md): records the baseline, accepted scope and outstanding handoff items. No final freeze is declared by these documentation updates.
