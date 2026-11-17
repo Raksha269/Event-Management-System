@@ -1,6 +1,6 @@
 # Finalization and freeze preparation
 
-Status: SUBMITTED FOR REVIEW; NOT AN OFFICIAL FREEZE OR RELEASE.
+Status: DOCUMENTATION AND SPRINT 1 VIDEO MERGED VIA PR #52; SPRINT 2 TRANSFER PENDING. NOT AN OFFICIAL FREEZE OR RELEASE.
 
 ## Verified candidate baseline
 
@@ -15,7 +15,7 @@ This baseline precedes these local documentation changes. The final freeze must 
 ## Required before declaring the freeze
 
 - [ ] Review and merge the final documentation updates; verify the resulting commit’s CI.
-- [x] Add the supplied [Sprint 1 video](videos/sprint-1-demo.mp4) (98.7 seconds; the checklist requests a 1-minute demonstration, so duration acceptance or trimming remains to be confirmed).
+- [x] Add the supplied [Sprint 1 video](videos/sprint-1-demo.mp4) (98.7 seconds; the owner accepts the supplied duration).
 - [ ] Upload or link the required 2-minute Sprint 2 product video.
 - [ ] Record both video locations and verify that evaluators can open them.
 - [ ] Confirm the SRS, Test Plan and SAD sections, diagrams, traceability and deviations against the evaluation checklist. Their detailed PDF contents were not re-audited in this finalization pass.
@@ -30,4 +30,4 @@ The supplied Sprint 1 recording is included unchanged. The supplied Sprint 2 fil
 
 > Sprint 2 development is frozen at commit `<final SHA>` (tag `<tag, if used>`). The final documentation, test evidence and permitted scope deviations are linked in the repository. Sprint 1 video: `<link>`. Sprint 2 video: `<link>`. Further changes require an agreed correction and a new identified baseline.
 
-Archiving the repository is not required by the checklist. This documentation/video PR does not change GitHub settings, create a release, merge itself or freeze the repository.
+Archiving the repository is not required by the checklist. PR #52 merged the documentation and Sprint 1 recording. The subsequent owner-requested direct documentation update records duration acceptance. Neither update changes repository settings, creates a release or declares a final freeze.
