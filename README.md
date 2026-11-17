@@ -115,10 +115,20 @@ The revised NFR baseline (v1.2) evaluates this academic prototype locally. Hoste
 | `EMS-NF-001` Performance | Indexed event search, bounded pagination and compact paginated responses. Isolated PostgreSQL 16 with synthetic published events: 10/50/100 concurrent read-only clients; 160/160 responses succeeded; p95 0.171/0.359/0.795 s. | **Complete for the documented local benchmark scope.** p95 ≤2 s is an optimization goal; results do not establish hosted or sustained-load performance. |
 | `EMS-NF-002` Availability | `/health/ready/` checks local application/database readiness; tests and PostgreSQL restore evidence verify readiness. Scheduled uptime history is tracked separately under [Issue #38](https://github.com/Raksha269/Event-Management-System/issues/38). | **Local readiness verified.** This is not continuous or monthly availability evidence. |
 | `EMS-NF-003` Scalability/integrity | PostgreSQL transactions/row locks enforce capacity; a unique idempotency key prevents duplicate registration retries. Two-worker PostgreSQL tests cover last-ticket contention and concurrent retries. | **Complete for deterministic integrity checks.** No 500/10,000-registration stress result is claimed. |
-| `EMS-NF-004` Usability/accessibility | Responsive template fixes, labels, error descriptions/focus, local browser/axe checks and user-supplied NVDA reports. | **Partial.** Sampled evidence is not a full WCAG 2.1 AA audit. |
+| `EMS-NF-004` Usability/accessibility | Responsive template fixes, labels, error descriptions/focus, local browser/axe checks and user-supplied NVDA reports. | **Accepted for the scoped academic verification**, following the owner’s [#37 verification comment](https://github.com/Raksha269/Event-Management-System/issues/37#issuecomment-6922868953). Not a full WCAG conformance audit. |
 | `EMS-NF-005` Audit/recovery | Append-only audit events, admin-only read access, 1,095-day retention boundary test and isolated PostgreSQL dump/restore rehearsal. | **Complete for the local prototype scope.** Three-year elapsed retention and automatic archiving are not claimed. |
 
 The [local PostgreSQL report](docs/staging/report.md) and [runbook](docs/staging/README.md) capture the resource-limited benchmark, synthetic dataset and separate-database restore. Production configuration guidance below is deployment setup documentation, not an Issue #9 requirement or evidence of an actual hosted production environment. Scheduled uptime evidence remains in Issue #38; this section does not duplicate or replace it.
+
+## Final academic-scope acceptance
+
+The repository owner recorded team acceptance in [Issue #9](https://github.com/Raksha269/Event-Management-System/issues/9#issuecomment-6932891735) and [Issue #38](https://github.com/Raksha269/Event-Management-System/issues/38#issuecomment-6932881938). Both issues are closed against the limited academic-project scope. This records the owner's stated team decision; no separate faculty approval is inferred.
+
+[Issue #37](https://github.com/Raksha269/Event-Management-System/issues/37#issuecomment-6922868953) records the owner's completed responsive/keyboard checks for User Administration and Security Alerts at 320, 360, 768 and 1440 px, NVDA form-error/navigation checks, and confirmation that Manage Tickets responsive and remaining contrast checks were checked. These are user-performed results. Additional numerical contrast measurements or independent retests are not invented here. This acceptance is not a full WCAG certification.
+
+Scheduled evidence is accepted with its gaps retained as UNKNOWN. Consistent 15-minute execution, monthly availability, availability percentages and downtime durations remain unverified. Maintenance exclusions require documented approval. Historical test results and limitations below remain unchanged.
+
+See the [freeze preparation record](docs/finalization.md) and [Sprint 2 video guide](docs/sprint-2-demo-guide.md).
 
 ### Production configuration reference
 
@@ -154,7 +164,7 @@ Automated tests map directly to the IEEE Software Test Plan:
 | **TC-NF-01** | `EMS-NF-001` | Reproducible read-only event-search report at 10/50/100 clients with status, latency and environment recorded | **PASS (owner-run local PostgreSQL scope; p95 goal is optimization only)** |
 | **TC-NF-02** | `EMS-NF-002` | Local application/database readiness check; scheduled uptime evidence handled separately in Issue #38 | **LOCAL READINESS PASS; cadence tracked separately** |
 | **TC-NF-03** | `EMS-NF-003` | PostgreSQL concurrent last-ticket capacity and idempotent retry integrity checks | **PASS for deterministic integrity; no stress-load claim** |
-| **TC-NF-04** | `EMS-NF-004` | Responsive and scoped accessibility verification with documented limitations | **PARTIAL** |
+| **TC-NF-04** | `EMS-NF-004` | Responsive and scoped accessibility verification with documented limitations | **ACCEPTED FOR SCOPED USER VERIFICATION; no WCAG certification** |
 | **TC-NF-05** | `EMS-NF-005` | Audit access/retention checks and isolated PostgreSQL backup/restore | **PASS for local scope; elapsed 3-year retention not observed** |
 
 ### Test Execution Summary
@@ -225,3 +235,9 @@ cd RBAC && python manage.py test
 python manage.py runserver
 ```
 Visit `http://localhost:8000/` in your browser to access the Gather portal.
+
+## Sprint demonstration videos and finalization
+
+- [Sprint 1 working-product video](docs/videos/sprint-1-demo.mp4): supplied recording, 98.7 seconds. The evaluation checklist requests 1 minute; confirm acceptance or provide a trimmed version.
+- Sprint 2 working-product video: supplied but awaiting a transferable copy under 32 MiB; not yet included.
+- [Finalization and freeze checklist](docs/finalization.md): records the baseline, accepted scope and outstanding handoff items. No final freeze is declared by this PR.
